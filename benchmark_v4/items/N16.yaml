@@ -1,0 +1,89 @@
+id: N16
+version: '4.0'
+lineage: new
+category: GPU / LLM
+axis: REASON
+prompt: 'Run GPU-accelerated inference on a Jetson-class device on CHI@Edge: reserve one and start a CUDA-capable
+  container on it.'
+designed_trap: Jetson device_type strings are not in the fed tutorials; GPU access on edge needs runtime='nvidia',
+  which only one artifact shows.
+trap_tags:
+- gpu_runtime
+- live_state
+target_artifact:
+- A4
+fed_sets:
+  blind: []
+  matched:
+  - A2
+  - A4
+  heldout:
+  - A1
+  - A2
+  - A3
+tier_intent_by_condition:
+  matched: T3
+  heldout: T4
+key_tokens:
+  mechanism:
+  - get_devices
+  - add_device_reservation
+  - reservation_id
+  specifics:
+  - runtime="nvidia"
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import hardware, lease, container
+  from datetime import timedelta
+
+  # Jetson device_type strings are not documented in the tutorials; discover them.
+  devs = hardware.get_devices(filter_reserved=True)
+  jetsons = [d for d in devs if "jetson" in d.device_type.lower()
+             or "jetson" in d.device_name.lower()]
+  print([(d.device_name, d.device_type) for d in jetsons])
+
+  my_lease = lease.Lease("jetson-gpu-lease", duration=timedelta(hours=4))
+  my_lease.add_device_reservation(devices=[jetsons[0]])
+  my_lease.submit(idempotent=True)
+
+  c = container.Container(
+      name="jetson-infer",
+      reservation_id=my_lease.device_reservations[0]["id"],
+      image_ref="docker.io/ollama/ollama:latest",
+      runtime="nvidia",
+      exposed_ports=[],
+  )
+  c.submit(idempotent=True)
+gold_provenance: authored from artifact(s) ['A4']
+checkers:
+- check: required_call
+  group: mechanism
+  name: get_devices
+- check: required_call
+  group: mechanism
+  name: add_device_reservation
+- check: container_call
+  group: mechanism
+- check: reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Container
+  - create_container
+  arg:
+  - runtime
+  equals: nvidia
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance
+- check: name_no_underscore
+  group: safety

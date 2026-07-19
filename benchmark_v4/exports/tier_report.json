@@ -1,0 +1,1077 @@
+{
+  "rows": [
+    {
+      "item": "AV01",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "AV01",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "AV02",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "AV02",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "AV03",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "AV03",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "AV04",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "AV04",
+      "condition": "matched",
+      "fed": [
+        "A2",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "supported_device_profiles"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "N01",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N01",
+      "condition": "matched",
+      "fed": [
+        "A1"
+      ],
+      "tier": "T2",
+      "adapted_absent": [
+        "hours=6",
+        "amount=3"
+      ]
+    },
+    {
+      "item": "N02",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N02",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T2",
+      "adapted_absent": [
+        "-t 10000",
+        "--width 1280",
+        "--framerate 30"
+      ]
+    },
+    {
+      "item": "N02",
+      "condition": "heldout",
+      "fed": [
+        "A1",
+        "A3",
+        "A6"
+      ],
+      "tier": "T4",
+      "missing": [
+        "rpicam-vid"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "N03",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N03",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T2",
+      "adapted_absent": [
+        "hours=12",
+        "--width 640"
+      ]
+    },
+    {
+      "item": "N04",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N04",
+      "condition": "matched",
+      "fed": [
+        "A3"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "N04",
+      "condition": "heldout",
+      "fed": [
+        "A1",
+        "A2"
+      ],
+      "tier": "T4",
+      "missing": [
+        "environment",
+        "pi_gpio",
+        "iot-rpi-cm4-02",
+        "RPI_LGPIO_REVISION"
+      ],
+      "mech_cov": 0.5,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "N05",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N05",
+      "condition": "matched",
+      "fed": [
+        "A4"
+      ],
+      "tier": "T2",
+      "adapted_absent": [
+        "exposed_ports=[11434]"
+      ]
+    },
+    {
+      "item": "N05",
+      "condition": "heldout",
+      "fed": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "get_lease",
+        "runtime=\"nvidia\"",
+        "docker.io/ollama/ollama",
+        "11434"
+      ],
+      "mech_cov": 0.6666666666666667,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "N06",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N06",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "N07",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N07",
+      "condition": "matched",
+      "fed": [
+        "A1"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "N08",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N08",
+      "condition": "matched",
+      "fed": [
+        "A5"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "N08",
+      "condition": "heldout",
+      "fed": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "get_lease",
+        "get_logs",
+        "quay.io/jupyter/minimal-notebook",
+        "8888"
+      ],
+      "mech_cov": 0.33333333333333337,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "N09",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N09",
+      "condition": "matched",
+      "fed": [
+        "A2",
+        "A6"
+      ],
+      "tier": "T3",
+      "single_artifact_covers": false
+    },
+    {
+      "item": "N10",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N10",
+      "condition": "matched",
+      "fed": [
+        "A2",
+        "A3"
+      ],
+      "tier": "T3",
+      "single_artifact_covers": false
+    },
+    {
+      "item": "N11",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N11",
+      "condition": "matched",
+      "fed": [
+        "A2",
+        "A5"
+      ],
+      "tier": "T3",
+      "single_artifact_covers": false
+    },
+    {
+      "item": "N12",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N12",
+      "condition": "matched",
+      "fed": [
+        "A2",
+        "A6"
+      ],
+      "tier": "T3",
+      "single_artifact_covers": false
+    },
+    {
+      "item": "N13",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N13",
+      "condition": "matched",
+      "fed": [
+        "A6"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "N13",
+      "condition": "heldout",
+      "fed": [
+        "A2",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "create_lease",
+        "create_container",
+        "get_device_reservation",
+        "platform_version",
+        "python:3.9-slim",
+        "openssh-server"
+      ],
+      "mech_cov": 0.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "N14",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N14",
+      "condition": "uncovered",
+      "fed": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "microphone"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "N15",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N15",
+      "condition": "matched",
+      "fed": [
+        "A2",
+        "A5"
+      ],
+      "tier": "T3",
+      "single_artifact_covers": false
+    },
+    {
+      "item": "N15",
+      "condition": "heldout",
+      "fed": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "nyu-rpi5"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "N16",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N16",
+      "condition": "matched",
+      "fed": [
+        "A2",
+        "A4"
+      ],
+      "tier": "T3",
+      "single_artifact_covers": false
+    },
+    {
+      "item": "N16",
+      "condition": "heldout",
+      "fed": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "runtime=\"nvidia\""
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "N17",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N17",
+      "condition": "uncovered",
+      "fed": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "extend the lease"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "N18",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "N18",
+      "condition": "uncovered",
+      "fed": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "webcam"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "P01",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P01",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P02",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P02",
+      "condition": "matched",
+      "fed": [
+        "A3"
+      ],
+      "tier": "T2",
+      "adapted_absent": [
+        "hours=2"
+      ]
+    },
+    {
+      "item": "P03",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P03",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P04",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P04",
+      "condition": "matched",
+      "fed": [
+        "A3"
+      ],
+      "tier": "T2",
+      "adapted_absent": [
+        "amount=3"
+      ]
+    },
+    {
+      "item": "P05",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P05",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P06",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P06",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P07",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P07",
+      "condition": "matched",
+      "fed": [
+        "A1"
+      ],
+      "tier": "T2",
+      "adapted_absent": [
+        "8080"
+      ]
+    },
+    {
+      "item": "P08",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P08",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P09",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P09",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P10",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P10",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P11",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P11",
+      "condition": "matched",
+      "fed": [
+        "A1"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P11",
+      "condition": "heldout",
+      "fed": [
+        "A2",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "associate_floating_ip",
+        "ghcr.io/chameleoncloud/edge_ssh_image"
+      ],
+      "mech_cov": 0.6666666666666667,
+      "spec_cov": 0.5
+    },
+    {
+      "item": "P12",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P12",
+      "condition": "matched",
+      "fed": [
+        "A1"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P13",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P13",
+      "condition": "matched",
+      "fed": [
+        "A1"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P13",
+      "condition": "heldout",
+      "fed": [
+        "A2",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "ghcr.io/chameleoncloud/edge_ssh_image"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.5
+    },
+    {
+      "item": "P14",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P14",
+      "condition": "matched",
+      "fed": [
+        "A1"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P15",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P15",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P16",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P16",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P16",
+      "condition": "heldout",
+      "fed": [
+        "A1",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "pi_libcamera",
+        "ghcr.io/chameleoncloud/edge-picamera-image"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "P17",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P17",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P17",
+      "condition": "heldout",
+      "fed": [
+        "A1",
+        "A3"
+      ],
+      "tier": "T4",
+      "missing": [
+        "rpicam-still",
+        "--width 1920"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "P18",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P18",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P19",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P19",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P20",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P20",
+      "condition": "matched",
+      "fed": [
+        "A3"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P21",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P21",
+      "condition": "matched",
+      "fed": [
+        "A3"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P21",
+      "condition": "heldout",
+      "fed": [
+        "A1",
+        "A2"
+      ],
+      "tier": "T4",
+      "missing": [
+        "pi_sensehat",
+        "ghcr.io/chameleoncloud/edge_sensehat_image"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "P22",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P22",
+      "condition": "matched",
+      "fed": [
+        "A3"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P22",
+      "condition": "heldout",
+      "fed": [
+        "A1",
+        "A2"
+      ],
+      "tier": "T4",
+      "missing": [
+        "sense_hat",
+        "get_humidity"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "P23",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P23",
+      "condition": "matched",
+      "fed": [
+        "A3"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P24",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P24",
+      "condition": "matched",
+      "fed": [
+        "A3"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P24",
+      "condition": "heldout",
+      "fed": [
+        "A1",
+        "A2"
+      ],
+      "tier": "T4",
+      "missing": [
+        "pi_sensehat",
+        "ghcr.io/chameleoncloud/edge_sensehat_image"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "P25",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P25",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P26",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P26",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    },
+    {
+      "item": "P27",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P27",
+      "condition": "matched",
+      "fed": [
+        "A2"
+      ],
+      "tier": "T4",
+      "missing": [
+        "supported_device_profiles"
+      ],
+      "mech_cov": 1.0,
+      "spec_cov": 0.0
+    },
+    {
+      "item": "P28",
+      "condition": "blind",
+      "fed": [],
+      "tier": "blind",
+      "detail": "no fed artifacts"
+    },
+    {
+      "item": "P28",
+      "condition": "matched",
+      "fed": [
+        "A1"
+      ],
+      "tier": "T1",
+      "single_artifact_covers": true
+    }
+  ],
+  "mismatches": []
+}

@@ -1,0 +1,1 @@
+Record a 5-second 1080p video from the camera.

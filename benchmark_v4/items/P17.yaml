@@ -1,0 +1,54 @@
+id: P17
+version: '4.0'
+lineage: v3:P17
+category: Peripherals · Camera
+axis: ACT
+prompt: Capture a 1080p still from the Pi Camera and download it.
+designed_trap: Made-up capture API; no download.
+trap_tags:
+- magic_command
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+  heldout:
+  - A1
+  - A3
+tier_intent_by_condition:
+  matched: T1
+  heldout: T4
+key_tokens:
+  mechanism:
+  - execute
+  - download
+  specifics:
+  - rpicam-still
+  - --width 1920
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  result, code = my_container.execute(
+      "rpicam-still --nopreview --output /app/still.png --width 1920 --height 1080"
+  )
+  my_container.download("/app/still.png", ".")
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: execute("rpicam-still --nopreview
+  --output /app/x.png --width 1920 --height 1080"); download("/app/x.png", ".")'
+checkers:
+- check: required_call
+  group: mechanism
+  name: execute
+- check: required_code_string
+  group: specifics
+  s: rpicam-still
+- check: required_code_string
+  group: specifics
+  s: --width 1920
+- check: required_code_string
+  group: specifics
+  s: --height 1080
+- check: required_call
+  group: mechanism
+  name: download

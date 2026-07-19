@@ -1,0 +1,24 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 1.5,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge-picamera-image'], produced_by=tejas):\n- machine_type: raspberrypi4-64\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge-picamera-image:latest\n- device_profiles: ['pi_libcamera']\n- lease: count=1 duration_hours=3 platform_version=2 runtime=None exposed_ports=[]\n- reasoning: The raspberrypi4-64 is the most suitable device for running a container with libcamera and rpicam apps, as it supports the pi_libcamera profile required for camera support. It matches the arm64 architecture needed by the provided image.",
+  "grounded_by": [
+    "edge-picamera-image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.78,
+  "retrieval_sources": [],
+  "advisor_s": 32.59,
+  "llm_s": 47.17,
+  "item": "P16",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-17T17:28:11Z",
+  "total_s": 80.54,
+  "response_chars": 1809,
+  "n_code_fences": 1
+}

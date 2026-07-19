@@ -1,0 +1,101 @@
+id: N05
+version: '4.0'
+lineage: new
+category: GPU / LLM
+axis: ACT
+prompt: I already have an active CHI@Edge lease named 'my-llm-lease' on a GPU-capable device. Launch an
+  Ollama container on it with GPU support, exposing only the Ollama API port, and give it a public IP.
+designed_trap: Missing runtime='nvidia'; wrong port; re-creating the lease.
+trap_tags:
+- gpu_runtime
+- existing_lease
+target_artifact:
+- A4
+fed_sets:
+  blind: []
+  matched:
+  - A4
+  heldout:
+  - A1
+  - A2
+  - A3
+tier_intent_by_condition:
+  matched: T2
+  heldout: T4
+key_tokens:
+  mechanism:
+  - get_lease
+  - reservation_id
+  - associate_floating_ip
+  specifics:
+  - runtime="nvidia"
+  - docker.io/ollama/ollama
+  - '11434'
+  adapted:
+  - exposed_ports=[11434]
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import container, context, lease
+
+  context.version = "1.0"
+  context.choose_project()
+  context.choose_site(default="CHI@Edge")
+
+  l = lease.get_lease("my-llm-lease")
+
+  c = container.Container(
+      name="ollama-edge-serve",
+      reservation_id=l.device_reservations[0]["id"],
+      image_ref="docker.io/ollama/ollama:latest",
+      runtime="nvidia",
+      exposed_ports=[11434],
+  )
+  c.submit(idempotent=True)
+  c.associate_floating_ip()
+gold_provenance: authored from artifact(s) ['A4']
+checkers:
+- check: required_call
+  group: mechanism
+  name: get_lease
+- check: container_call
+  group: mechanism
+- check: reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call: &id001
+  - Container
+  - create_container
+  arg:
+  - runtime
+  equals: nvidia
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - image_ref
+  - image
+  equals_any:
+  - docker.io/ollama/ollama:latest
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - exposed_ports
+  contains: 11434
+- check: required_call
+  group: mechanism
+  name: associate_floating_ip
+- check: name_no_underscore
+  group: safety
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance

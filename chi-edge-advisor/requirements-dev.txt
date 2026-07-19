@@ -1,0 +1,4 @@
+# Development-only tooling. The suite also runs under stdlib unittest without
+# any of these installed (see README "Testing").
+-r requirements.txt
+pytest>=8.0

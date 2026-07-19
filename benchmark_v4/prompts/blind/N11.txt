@@ -1,0 +1,1 @@
+Reserve the Pi 5 named nyu-rpi5-03 for exactly 2 hours using python-chi (no Horizon GUI), then launch the Jupyter minimal-notebook container on it with port 8888 and a public IP.

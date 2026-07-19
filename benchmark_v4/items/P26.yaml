@@ -1,0 +1,43 @@
+id: P26
+version: '4.0'
+lineage: v3:P26
+category: Availability
+axis: READ
+prompt: Before reserving on CHI@Edge, check whether a given device is free right now.
+designed_trap: Claims it has no live state; fabricates an API.
+trap_tags:
+- live_state
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - get_devices
+  - filter_reserved
+  specifics:
+  - raspberrypi4-64
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import hardware
+
+  devs = hardware.get_devices(filter_reserved=True, device_type="raspberrypi4-64")
+  free_names = [d.device_name for d in devs]
+  target = "iot-rpi4-01"
+  print(f"{target} is free right now" if target in free_names else f"{target} is not free")
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: hardware.get_devices(filter_reserved=True,
+  device_type="raspberrypi4-64") — a free device in the result means it''s available.'
+checkers:
+- check: availability_query
+  group: mechanism
+  device_type: raspberrypi4-64
+- check: required_code_string
+  group: mechanism
+  any:
+  - device_name

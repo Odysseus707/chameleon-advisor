@@ -1,0 +1,37 @@
+id: P23
+version: '4.0'
+lineage: v3:P23
+category: Peripherals · Sense HAT
+axis: VALIDATE
+prompt: From inside the container, list the I2C addresses to debug the sensor bus.
+designed_trap: No I2C access path.
+trap_tags:
+- magic_command
+target_artifact:
+- A3
+fed_sets:
+  blind: []
+  matched:
+  - A3
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - execute
+  specifics:
+  - i2cdetect -y 1
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  result, code = my_container.execute("i2cdetect -y 1")
+  print(result)
+gold_provenance: 'authored from artifact(s) [''A3''] extractions; v3 gold: execute("i2cdetect -y 1")  (needs
+  the pi_sensehat profile exposing /dev/i2c-*)'
+checkers:
+- check: required_call
+  group: mechanism
+  name: execute
+- check: required_code_string
+  group: specifics
+  s: i2cdetect -y 1

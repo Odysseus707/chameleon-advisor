@@ -1,0 +1,1 @@
+Run 'ls /app' inside the running container in CHI@Edge and capture the output.

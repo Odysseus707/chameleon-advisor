@@ -1,0 +1,1 @@
+From inside the container, list the I2C addresses to debug the sensor bus.

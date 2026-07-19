@@ -1,0 +1,46 @@
+id: P27
+version: '4.0'
+lineage: v3:P27
+category: Availability
+axis: READ
+prompt: How do I find which device_profiles a device supports?
+designed_trap: Guesses a call.
+trap_tags:
+- live_state
+- magic_profile
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T4
+key_tokens:
+  mechanism:
+  - get_devices
+  specifics:
+  - supported_device_profiles
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import hardware
+
+  # Device objects expose supported_device_profiles (verified against python-chi);
+  # this is not documented in the tutorial artifacts, which hardcode profile names.
+  devs = hardware.get_devices(filter_reserved=True)
+  for d in devs:
+      print(d.device_name, d.supported_device_profiles)
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: The artifact README documents
+  the device''s profile (e.g. pi_libcamera, pi_sensehat); pass it via device_profiles.'
+checkers:
+- check: required_call
+  group: mechanism
+  name: get_devices
+- check: required_code_string
+  group: specifics
+  s: supported_device_profiles
+notes: 'Gold upgraded from v3 (which pointed at README prose) to the verified supported_device_profiles
+  field from the advisor prototype probe. Computed tier vs matched fed set is honestly T4: no artifact
+  documents this field. Logged as D15.'

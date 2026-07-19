@@ -1,0 +1,112 @@
+id: N04
+version: '4.0'
+lineage: new
+category: Peripherals · GPIO
+axis: VALIDATE
+prompt: The Waveshare Sense HAT (B) is attached to iot-rpi-cm4-02. Reserve that device and launch the
+  sensor container configured so the GPIO libraries work despite the missing devicetree info inside containers;
+  then list what's on the I2C bus.
+designed_trap: Choosing pi_sensehat because 'Sense HAT' is in the name (the Waveshare variant needs pi_gpio
+  + three env-var workarounds).
+trap_tags:
+- magic_profile
+- env_workaround
+target_artifact:
+- A3
+fed_sets:
+  blind: []
+  matched:
+  - A3
+  heldout:
+  - A1
+  - A2
+tier_intent_by_condition:
+  matched: T1
+  heldout: T4
+key_tokens:
+  mechanism:
+  - device_profiles
+  - environment
+  specifics:
+  - pi_gpio
+  - iot-rpi-cm4-02
+  - RPI_LGPIO_REVISION
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import lease, container
+  from datetime import timedelta
+
+  my_lease = lease.Lease("waveshare-lease", duration=timedelta(hours=4))
+  my_lease.add_device_reservation(
+      amount=1, machine_type="raspberrypi4-64", device_name="iot-rpi-cm4-02"
+  )
+  my_lease.submit(idempotent=True)
+
+  environment_vars = {
+      "RPI_LGPIO_REVISION": "0xd03140",
+      "BLINKA_FORCECHIP": "BCM2XXX",
+      "BLINKA_FORCEBOARD": "RASPBERRY_PI_CM4",
+  }
+
+  my_container = container.Container(
+      name="edge-waveshare-sensehat",
+      image_ref="ghcr.io/chameleoncloud/edge_sensehat_image:latest",
+      device_profiles=["pi_gpio"],
+      environment=environment_vars,
+      reservation_id=my_lease.device_reservations[0]["id"],
+      command=["-c", "sleep infinity"],
+  )
+  my_container.submit()
+
+  result, code = my_container.execute("i2cdetect -y 1")
+  print(result)
+gold_provenance: authored from artifact(s) ['A3']
+checkers:
+- check: required_call
+  group: mechanism
+  name: add_device_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_device_reservation
+  arg:
+  - device_name
+  equals: iot-rpi-cm4-02
+- check: container_call
+  group: mechanism
+- check: reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call: &id001
+  - Container
+  - create_container
+  arg:
+  - device_profiles
+  contains: pi_gpio
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - image_ref
+  - image
+  equals_any:
+  - ghcr.io/chameleoncloud/edge_sensehat_image:latest
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - environment
+  keys_include:
+  - RPI_LGPIO_REVISION
+  - BLINKA_FORCECHIP
+  - BLINKA_FORCEBOARD
+- check: required_code_string
+  group: specifics
+  s: i2cdetect
+- check: profiles_known_only
+  group: safety
+- check: name_no_underscore
+  group: safety

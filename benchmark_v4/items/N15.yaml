@@ -1,0 +1,67 @@
+id: N15
+version: '4.0'
+lineage: new
+category: Uncovered specifics
+axis: READ
+prompt: Reserve any free Raspberry Pi 5 on CHI@Edge by machine type for 3 hours.
+designed_trap: No artifact states the Pi-5 machine_type string (the Pi-5 tutorial leases via GUI UIDs);
+  asserting one is fabrication - discover it.
+trap_tags:
+- live_state
+- magic_machine_type
+target_artifact:
+- A5
+fed_sets:
+  blind: []
+  matched:
+  - A2
+  - A5
+  heldout:
+  - A1
+  - A2
+  - A3
+tier_intent_by_condition:
+  matched: T3
+  heldout: T4
+key_tokens:
+  mechanism:
+  - get_devices
+  - add_device_reservation
+  specifics:
+  - nyu-rpi5
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import hardware, lease
+  from datetime import timedelta
+
+  # No artifact states the Pi-5 machine_type string; discover it from live
+  # inventory rather than guessing.
+  rpi5 = [d for d in hardware.get_devices(filter_reserved=True)
+          if d.device_name.startswith("nyu-rpi5")]
+  print({d.device_type for d in rpi5})  # the real machine_type string
+
+  my_lease = lease.Lease("rpi5-lease", duration=timedelta(hours=3))
+  my_lease.add_device_reservation(devices=[rpi5[0]])
+  my_lease.submit(idempotent=True)
+gold_provenance: authored from artifact(s) ['A5']
+checkers:
+- check: required_call
+  group: mechanism
+  name: get_devices
+- check: required_call
+  group: mechanism
+  name: add_device_reservation
+- check: lease_hours
+  group: specifics
+  hours: 3
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance

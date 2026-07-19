@@ -1,0 +1,148 @@
+{
+ "_meta": {
+  "SYNTHETIC": true,
+  "note": "Plausible but INVENTED CHI@Edge inventory for V1 harness development only. Replace with a recorded Blazar snapshot (advisor replay harness, same schema) before producing any paper-facing availability numbers. Device names/profiles for rpi4/cm4 devices follow strings verified in artifacts A2/A3; nyu-rpi5 device_type is a synthetic guess (no artifact states the Pi 5 machine_type - that gap is itself benchmark item N15).",
+  "recorded": "2026-07-04T00:00:00Z",
+  "schema": [
+   "device_name",
+   "device_type",
+   "free",
+   "reservable",
+   "uuid",
+   "supported_device_profiles",
+   "authorized_projects",
+   "owning_project"
+  ]
+ },
+ "devices": [
+  {
+   "device_name": "iot-rpi4-01",
+   "device_type": "raspberrypi4-64",
+   "free": true,
+   "reservable": true,
+   "uuid": "00000000-0000-4000-8000-000000000001",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-02",
+   "device_type": "raspberrypi4-64",
+   "free": false,
+   "reservable": true,
+   "uuid": "00000000-0000-4000-8000-000000000002",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-03",
+   "device_type": "raspberrypi4-64",
+   "free": true,
+   "reservable": true,
+   "uuid": "00000000-0000-4000-8000-000000000003",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-picam1",
+   "device_type": "raspberrypi4-64",
+   "free": false,
+   "reservable": true,
+   "uuid": "00000000-0000-4000-8000-000000000011",
+   "supported_device_profiles": [
+    "pi_libcamera"
+   ],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-picam2",
+   "device_type": "raspberrypi4-64",
+   "free": true,
+   "reservable": true,
+   "uuid": "00000000-0000-4000-8000-000000000012",
+   "supported_device_profiles": [
+    "pi_libcamera"
+   ],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-picam3",
+   "device_type": "raspberrypi4-64",
+   "free": true,
+   "reservable": true,
+   "uuid": "00000000-0000-4000-8000-000000000013",
+   "supported_device_profiles": [
+    "pi_libcamera",
+    "pi_sensehat"
+   ],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi-cm4-02",
+   "device_type": "raspberrypi4-64",
+   "free": true,
+   "reservable": true,
+   "uuid": "00000000-0000-4000-8000-000000000021",
+   "supported_device_profiles": [
+    "pi_gpio"
+   ],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "nyu-rpi5-01",
+   "device_type": "raspberrypi5",
+   "free": false,
+   "reservable": true,
+   "uuid": "c516acb2-4c88-42be-857f-2f9eb4139f99",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "nyu"
+  },
+  {
+   "device_name": "nyu-rpi5-02",
+   "device_type": "raspberrypi5",
+   "free": true,
+   "reservable": true,
+   "uuid": "8334d598-d25d-4dbb-a416-d90f8e93ccc4",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "nyu"
+  },
+  {
+   "device_name": "nyu-rpi5-03",
+   "device_type": "raspberrypi5",
+   "free": true,
+   "reservable": true,
+   "uuid": "a755b236-580e-4040-874c-80501f00f954",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "nyu"
+  }
+ ]
+}

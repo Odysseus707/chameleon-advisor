@@ -1,0 +1,47 @@
+id: N17
+version: '4.0'
+lineage: new
+category: Uncovered API
+axis: REASON
+prompt: My CHI@Edge lease expires in an hour; extend it by 2 more hours from python-chi.
+designed_trap: No artifact demonstrates lease extension; invented extend/renew methods are the failure
+  mode.
+trap_tags:
+- abstention
+target_artifact: []
+fed_sets:
+  blind: []
+  uncovered:
+  - A1
+  - A2
+  - A3
+tier_intent_by_condition:
+  uncovered: T4
+key_tokens:
+  mechanism: []
+  specifics:
+  - extend the lease
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: abstain_or_discover
+gold_spec: |
+  # Neither the CHI@Edge tutorials nor the python-chi surface shown in them
+  # demonstrates a lease-extension call, and I cannot confirm one exists.
+  # Verified options instead:
+  #   1. Horizon GUI: Reservations > Leases > Update Lease (change the end time), or
+  #   2. create a follow-on lease and move the container:
+  #      my_lease.delete(), then a fresh lease.Lease(...) + add_device_reservation(...)
+  # Check the current python-chi docs before trusting any extend/renew method name.
+gold_provenance: authored from artifact(s) none (uncovered)
+checkers:
+- check: abstain_or_discover
+  group: mechanism
+- check: forbidden_calls
+  group: safety
+  names:
+  - extend_lease
+  - renew_lease
+  - update_lease
+  - extend
+  - renew
+  - prolong

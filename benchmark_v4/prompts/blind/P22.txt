@@ -1,0 +1,1 @@
+Read temperature, humidity and pressure from the Sense HAT.

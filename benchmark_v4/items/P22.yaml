@@ -1,0 +1,55 @@
+id: P22
+version: '4.0'
+lineage: v3:P22
+category: Peripherals · Sense HAT
+axis: ACT
+prompt: Read temperature, humidity and pressure from the Sense HAT.
+designed_trap: Assumes host access; wrong library.
+trap_tags:
+- peripheral_library
+target_artifact:
+- A3
+fed_sets:
+  blind: []
+  matched:
+  - A3
+  heldout:
+  - A1
+  - A2
+tier_intent_by_condition:
+  matched: T1
+  heldout: T4
+key_tokens:
+  mechanism:
+  - execute
+  specifics:
+  - sense_hat
+  - get_humidity
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  cmd_str = """
+  from sense_hat import SenseHat
+  sense = SenseHat()
+  print(sense.get_pressure(), sense.get_humidity(), sense.get_temperature_from_humidity())
+  """
+  stdout, code = my_container.execute(f"python3 -c '{cmd_str}'")
+  print(stdout)
+gold_provenance: 'authored from artifact(s) [''A3''] extractions; v3 gold: execute python: from sense_hat
+  import SenseHat; .get_temperature_from_humidity()/.get_humidity()/.get_pressure()'
+checkers:
+- check: required_call
+  group: mechanism
+  name: execute
+- check: required_code_string
+  group: specifics
+  any:
+  - sense_hat
+  - SenseHat
+- check: required_code_string
+  group: specifics
+  any:
+  - get_humidity
+  - get_pressure
+  - get_temperature

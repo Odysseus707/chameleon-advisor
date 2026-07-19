@@ -1,0 +1,100 @@
+id: N07
+version: '4.0'
+lineage: new
+category: Multi-device
+axis: ACT
+prompt: Reserve two Raspberry Pi 4s in one CHI@Edge lease and start an SSH-enabled container on each of
+  them.
+designed_trap: One reservation but only one container; separate leases per device.
+trap_tags:
+- bare_metal_api
+- multi_container
+target_artifact:
+- A1
+fed_sets:
+  blind: []
+  matched:
+  - A1
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - add_device_reservation
+  - reservation_id
+  specifics:
+  - ghcr.io/chameleoncloud/edge_ssh_image
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import lease, container
+  from datetime import timedelta
+
+  my_lease = lease.Lease("two-ssh-lease", duration=timedelta(hours=4))
+  my_lease.add_device_reservation(amount=2, machine_type="raspberrypi4-64")
+  my_lease.submit(idempotent=True)
+
+  reservation_id = my_lease.device_reservations[0]["id"]
+  containers = []
+  for i in range(2):
+      c = container.Container(
+          f"ssh-box-{i}",
+          image_ref="ghcr.io/chameleoncloud/edge_ssh_image:latest",
+          exposed_ports=[22],
+          reservation_id=reservation_id,
+      )
+      c.submit()
+      containers.append(c)
+gold_provenance: authored from artifact(s) ['A1']
+checkers:
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance
+- check: required_call
+  group: mechanism
+  name: add_device_reservation
+- check: kwarg
+  group: specifics
+  call: &id001
+  - add_device_reservation
+  arg:
+  - machine_type
+  - machine_name
+  equals: raspberrypi4-64
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - amount
+  - count
+  equals: 2
+- check: container_call
+  group: mechanism
+- check: reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call: &id002
+  - Container
+  - create_container
+  arg:
+  - image_ref
+  - image
+  equals_any:
+  - ghcr.io/chameleoncloud/edge_ssh_image:latest
+- check: kwarg
+  group: specifics
+  call: *id002
+  arg:
+  - exposed_ports
+  contains: 22
+- check: name_no_underscore
+  group: safety
+notes: The per-device fan-out (one container per reserved device) is graded on the human axis; checkers
+  verify amount=2 plus a correct container path.

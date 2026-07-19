@@ -1,0 +1,49 @@
+id: P12
+version: '4.0'
+lineage: v3:P12
+category: SSH / Dev
+axis: VALIDATE
+prompt: Inject my public key so I can SSH in as root.
+designed_trap: Wrong key path / mechanism.
+trap_tags:
+- key_injection
+target_artifact:
+- A1
+fed_sets:
+  blind: []
+  matched:
+  - A1
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - upload
+  - execute
+  specifics:
+  - authorized_keys
+  - /root/.ssh
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  my_container.upload("./edge_user_public_key", "/root/.ssh/")
+  my_container.execute('/bin/bash -c "chmod 600 /root/.ssh/authorized_keys"')
+  my_container.execute('/bin/bash -c "cat /root/.ssh/edge_user_public_key >> /root/.ssh/authorized_keys"')
+gold_provenance: 'authored from artifact(s) [''A1''] extractions; v3 gold: upload pubkey to /root/.ssh/;
+  execute chmod 600 authorized_keys; cat key >> /root/.ssh/authorized_keys'
+checkers:
+- check: required_call
+  group: mechanism
+  name: upload
+- check: required_call
+  group: mechanism
+  name: execute
+- check: required_code_string
+  group: specifics
+  s: authorized_keys
+- check: required_code_string
+  group: specifics
+  s: chmod 600
+- check: required_code_string
+  group: specifics
+  s: /root/.ssh

@@ -1,0 +1,76 @@
+id: P04
+version: '4.0'
+lineage: v3:P04
+category: Reservation
+axis: ACT
+prompt: Reserve 3 Raspberry Pis on CHI@Edge of the same type in one lease.
+designed_trap: Node reservation; count mishandled.
+trap_tags:
+- bare_metal_api
+- count_handling
+target_artifact:
+- A3
+fed_sets:
+  blind: []
+  matched:
+  - A3
+tier_intent_by_condition:
+  matched: T2
+key_tokens:
+  mechanism:
+  - add_device_reservation
+  - Lease
+  specifics:
+  - raspberrypi4-64
+  adapted:
+  - amount=3
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import lease
+  from datetime import timedelta
+
+  my_lease = lease.Lease("rpi4-x3-lease", duration=timedelta(hours=4))
+  my_lease.add_device_reservation(amount=3, machine_type="raspberrypi4-64")
+  my_lease.submit(idempotent=True)
+gold_provenance: 'authored from artifact(s) [''A3''] extractions; v3 gold: .add_device_reservation(machine_type="raspberrypi4-64",
+  amount=3)'
+checkers:
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance
+- check: required_call
+  group: mechanism
+  any:
+  - Lease
+  - create_lease
+- check: required_call
+  group: mechanism
+  name: add_device_reservation
+- check: kwarg
+  group: specifics
+  call: &id001
+  - add_device_reservation
+  arg:
+  - machine_type
+  - machine_name
+  equals: raspberrypi4-64
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - amount
+  - count
+  equals: 3
+- check: required_call
+  group: mechanism
+  any:
+  - submit
+  - create_lease

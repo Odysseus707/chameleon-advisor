@@ -1,0 +1,41 @@
+id: AV02
+version: '4.0'
+lineage: new
+category: Availability
+axis: READ
+prompt: Print True if the device iot-rpi4-picam2 is free to reserve right now on CHI@Edge, otherwise print
+  False.
+designed_trap: Static answers; direction bug on filter_reserved.
+trap_tags:
+- live_state
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - get_devices
+  - filter_reserved
+  specifics:
+  - iot-rpi4-picam2
+api_anchor: python-chi OO generation (D01)
+verification_level: V1
+expected_answer_type: code
+v1_expect:
+  stdout_contains_all:
+  - 'True'
+  stdout_not_contains:
+  - 'False'
+gold_spec: |
+  from chi import hardware
+
+  devs = hardware.get_devices(filter_reserved=True, device_type="raspberrypi4-64")
+  print(any(d.device_name == "iot-rpi4-picam2" for d in devs))
+gold_provenance: get_devices pattern from A2; Device fields from the advisor prototype probe
+checkers:
+- check: availability_query
+  group: mechanism

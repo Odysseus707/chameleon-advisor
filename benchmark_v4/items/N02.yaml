@@ -1,0 +1,60 @@
+id: N02
+version: '4.0'
+lineage: new
+category: Peripherals · Camera
+axis: ACT
+prompt: Record a 10-second 720p video at 30 fps from the Pi camera and download it to my machine.
+designed_trap: All three rpicam-vid parameters adapted from the tutorial values.
+trap_tags:
+- magic_command
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+  heldout:
+  - A1
+  - A3
+  - A6
+tier_intent_by_condition:
+  matched: T2
+  heldout: T4
+key_tokens:
+  mechanism:
+  - execute
+  - download
+  specifics:
+  - rpicam-vid
+  adapted:
+  - -t 10000
+  - --width 1280
+  - --framerate 30
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  result, code = my_container.execute(
+      "rpicam-vid --nopreview -t 10000 --output /app/clip.mp4 --width 1280 --height 720 --framerate 30"
+  )
+  my_container.download("/app/clip.mp4", ".")
+gold_provenance: authored from artifact(s) ['A2']
+checkers:
+- check: required_call
+  group: mechanism
+  name: execute
+- check: required_code_string
+  group: specifics
+  s: rpicam-vid
+- check: required_code_string
+  group: specifics
+  s: -t 10000
+- check: required_code_string
+  group: specifics
+  s: --width 1280
+- check: required_code_string
+  group: specifics
+  s: --framerate 30
+- check: required_call
+  group: mechanism
+  name: download

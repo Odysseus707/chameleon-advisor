@@ -1,0 +1,597 @@
+artifact_id: A3
+repo_url: https://github.com/ChameleonCloud/edge_sensehat_image
+commit_hash: a81192bdceca4ae8f020e16412cefa2aa8e69122
+api_generation: oo
+
+summary: >-
+  A CHI@Edge tutorial artifact demonstrating how to read from Raspberry Pi
+  Sense HAT and Waveshare Sense HAT (B) peripherals by leasing a specific
+  edge device, launching a prebuilt ARM container with an appropriate device
+  profile, and executing sensor-reading scripts inside it. It uses the
+  object-oriented python-chi API (lease.Lease / container.Container). Two
+  parallel notebooks cover the two HAT variants, differing mainly in device
+  name, device profile, and environment variables.
+
+workflow_stages:
+  # ---------- rpi_sense.ipynb ----------
+  - stage: site/auth
+    source_ref: rpi_sense.ipynb cell 2 (id ad4bcf2d-b458-4436-95ab-4cd99e6321f0)
+    verbatim_code: |
+      import chi
+
+      chi.context.use_site("CHI@Edge")
+      chi.context.choose_project() # comment this line if running outside of jupyterhub
+
+      # # If running this nodebook outside of chameleon's jupyterhub, uncomment this section and fill in your_project_name
+      # import openstack
+      # chi.set("project_domain_name", "chameleon")
+      # chi.set("project_name", "your_project_name")
+      # connection = openstack.connect(cloud="edge")
+      # chi.set("token", connection.auth_token)
+
+  - stage: lease
+    source_ref: rpi_sense.ipynb cell 4 (id 5d19779e-e688-45e0-90f0-8b336411ec4a)
+    verbatim_code: |
+      from chi import lease
+      import os
+
+      # machine name refers to the "type" of device
+      machine_name = "raspberrypi4-64"
+
+      # Reserving the specific device to which the Sense Hat is attached
+      # Note: Soon, we'll have peripherals listed in the hardware browser, and reservable via blazar query, so you won't need to know the right name ahead of time
+
+      # device_name = "iot-rpi4-picam2" # RPI sense hat
+      device_name = "iot-rpi4-picam3" # RPI sense hat
+      # device_name = "iot-rpi-cm4-02" # waveshare sense hat
+
+      # make a unique name for the lease
+      username = os.environ.get("USER")
+      lease_name = f"{username}-{device_name}"
+      container_lease = lease.Lease(name=lease_name, duration=lease.timedelta(hours=4))
+      container_lease.add_device_reservation(
+          amount=1, machine_type=machine_name, device_name=device_name
+      )
+      container_lease.submit()
+      print("Done!")
+
+  - stage: container
+    source_ref: rpi_sense.ipynb cell 6 (id 77feeef9-9f69-440e-a1b9-d392d9b5db33)
+    verbatim_code: |
+      from chi import container
+
+      # Set a name for the container. Because CHI@Edge uses Kubernetes, ensure that underscores aren't in the name
+      container_name = "edge-rpi-sensehat".replace("_", "-")
+
+      environment_vars = {}
+
+      my_container = container.Container(
+          name=container_name,
+          image_ref="ghcr.io/chameleoncloud/edge_sensehat_image:latest",
+          device_profiles=["pi_sensehat"],
+          environment=environment_vars,
+          reservation_id=container_lease.device_reservations[0]["id"],
+          command=["-c", "sleep infinity"],
+      )
+      my_container.submit()
+
+  - stage: exec
+    source_ref: rpi_sense.ipynb cell 8 (id 97f0e5c4)
+    verbatim_code: |
+      cmd_str = """
+      from sense_hat import SenseHat
+
+      sense = SenseHat()
+      sense.clear()
+
+      # Returns the pressure in Millibars
+      pressure = sense.get_pressure()
+
+      # Returns the temperature in Celsius from the pressure sensor
+      temperature_pressure = sense.get_temperature_from_pressure()
+
+      # Returns the percentage of relative humidity
+      humidity = sense.get_humidity()
+
+      # Returns the temperature in Celsius from the humidity sensor
+      temperature_humidity = sense.get_temperature_from_humidity()
+
+      print(
+          "Pressure: {:.1f} mbar, Temperature (from pres): {:.1f} C,  Relative Humidity: {:.1f} %, Temperature (from hum): {:.1f} C".format(
+              pressure, temperature_pressure, humidity, temperature_humidity
+          )
+      )
+      """
+
+      # if you see '0' values, try running this again. The sensors may need to be initialized.
+
+      stdout,resultcode = my_container.execute(f"python3 -c '{cmd_str}'")
+      print(stdout)
+
+  - stage: exec
+    source_ref: rpi_sense.ipynb cell 10 (id 040e561d)
+    verbatim_code: |
+      # example showing detected i2c addresses
+      result, code = my_container.execute("i2cdetect -y 1")
+      print(result)
+
+  - stage: teardown
+    source_ref: rpi_sense.ipynb cell 13 (id f08334e4-e3ef-4f1f-ac11-320db998a8fe)
+    verbatim_code: |
+      # delete the container so it doesn't hang around
+      my_container.delete()
+
+  - stage: teardown
+    source_ref: rpi_sense.ipynb cell 14 (id 4e23dad9)
+    verbatim_code: |
+      # deleting the lease will free up the device now, instead of waiting for it to expire later
+      container_lease.delete()
+
+  # ---------- waveshare_sense.ipynb ----------
+  - stage: site/auth
+    source_ref: waveshare_sense.ipynb cell 1 (id ad4bcf2d-b458-4436-95ab-4cd99e6321f0)
+    verbatim_code: |
+      import chi
+
+      chi.context.use_site("CHI@Edge")
+      chi.context.choose_project() # comment this line if running outside of jupyterhub
+
+      # # If running this nodebook outside of chameleon's jupyterhub, uncomment this section and fill in your_project_name
+      # import openstack
+      # chi.set("project_domain_name", "chameleon")
+      # chi.set("project_name", "your_project_name")
+      # connection = openstack.connect(cloud="edge")
+      # chi.set("token", connection.auth_token)
+
+  - stage: lease
+    source_ref: waveshare_sense.ipynb cell 3 (id 5d19779e-e688-45e0-90f0-8b336411ec4a)
+    verbatim_code: |
+      from chi import lease
+      import os
+
+      # machine name refers to the "type" of device
+      machine_name = "raspberrypi4-64"
+
+      # Reserving the specific device to which the Sense Hat is attached
+      # Note: Soon, we'll have peripherals listed in the hardware browser, and reservable via blazar query, so you won't need to know the right name ahead of time
+
+      # device_name = "iot-rpi4-picam2" # RPI sense hat
+      # device_name = "iot-rpi4-picam3" # RPI sense hat
+      device_name = "iot-rpi-cm4-02" # waveshare sense hat
+
+      # make a unique name for the lease
+      username = os.environ.get("USER")
+      lease_name = f"{username}-{device_name}"
+      container_lease = lease.Lease(name=lease_name, duration=lease.timedelta(hours=4))
+      container_lease.add_device_reservation(
+          amount=1, machine_type=machine_name, device_name=device_name
+      )
+      container_lease.submit()
+      print("Done!")
+
+  - stage: container
+    source_ref: waveshare_sense.ipynb cell 5 (id 77feeef9-9f69-440e-a1b9-d392d9b5db33)
+    verbatim_code: |
+      from chi import container
+
+      # Set a name for the container. Because CHI@Edge uses Kubernetes, ensure that underscores aren't in the name
+      container_name = "edge-waveshare-sensehat".replace("_", "-")
+
+      # The following env vars are a workaround for /sys/firmware/devicetree/base not being availabile inside
+      # the containers, otherwise these libraries would auto-detect the correct device info.
+      # RPI_LGPIO_REVISION
+      # see https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#new-style-revision-codes
+
+      environment_vars = {
+          "RPI_LGPIO_REVISION": "0xd03140",
+          "BLINKA_FORCECHIP": "BCM2XXX",
+          "BLINKA_FORCEBOARD": "RASPBERRY_PI_CM4",
+      }
+
+      my_container = container.Container(
+          name=container_name,
+          image_ref="ghcr.io/chameleoncloud/edge_sensehat_image:latest",
+          device_profiles=["pi_gpio"],
+          environment=environment_vars,
+          reservation_id=container_lease.device_reservations[0]["id"],
+          command=["-c", "sleep infinity"],
+      )
+      my_container.submit()
+
+  - stage: exec
+    source_ref: waveshare_sense.ipynb cell 7 (id 3f286a39-9652-4baf-a091-a285aa1d6655)
+    verbatim_code: |
+      # example showing detected i2c addresses
+      result, code = my_container.execute("i2cdetect -y 1")
+      print(result)
+
+  - stage: exec
+    source_ref: waveshare_sense.ipynb cell 11 (id 28caaf2e-afc2-497a-b1f4-795c6a84b2c7)
+    verbatim_code: |
+      script_file = "examples/SHTC3_temp_and_humidity_sensor_test.py"
+      result, code = my_container.execute(f"python3 {script_file}")
+      print(result)
+
+  - stage: exec
+    source_ref: waveshare_sense.ipynb cell 13 (id 69f25041-373c-4f8d-82a6-e95719b93556)
+    verbatim_code: |
+      script_file = "examples/ADS1015_analog_to_digital_test.py"
+      result, code = my_container.execute(f"python3 {script_file}")
+      print(result)
+
+  - stage: exec
+    source_ref: waveshare_sense.ipynb cell 15 (id 86531121-e058-423b-9118-4cd829836bc9)
+    verbatim_code: |
+      script_file = "examples/ICM-20948_9-axis_sensor_test.py"
+      result, code = my_container.execute(f"python3 {script_file}")
+      print(result)
+
+  - stage: exec
+    source_ref: waveshare_sense.ipynb cell 17 (id 8c77337f-6fab-425b-92b3-1af8a0a1d847)
+    verbatim_code: |
+      script_file = "examples/LPS22HB_air_pressure_sensor_test.py"
+      result, code = my_container.execute(f"python3 {script_file}")
+      print(result)
+
+  - stage: exec
+    source_ref: waveshare_sense.ipynb cell 19 (id 7a0a9ad9-ac25-446b-88ef-0d6919eb8058)
+    verbatim_code: |
+      script_file = "examples/TCS34725_color_recognition_sensor_test.py"
+      result, code = my_container.execute(f"python3 {script_file}")
+      print(result)
+
+  - stage: teardown
+    source_ref: waveshare_sense.ipynb cell 21 (id 0e6162d3)
+    verbatim_code: |
+      # delete the container so it doesn't hang around
+      my_container.delete()
+
+  - stage: teardown
+    source_ref: waveshare_sense.ipynb cell 22 (id 27789956)
+    verbatim_code: |
+      # deleting the lease will free up the device now, instead of waiting for it to expire later
+      container_lease.delete()
+
+api_calls:
+  - module: chi.context
+    function: use_site
+    exact_kwargs_as_used: '"CHI@Edge"  # positional arg'
+    source_ref: rpi_sense.ipynb cell 2 (id ad4bcf2d); waveshare_sense.ipynb cell 1 (id ad4bcf2d)
+
+  - module: chi.context
+    function: choose_project
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: rpi_sense.ipynb cell 2 (id ad4bcf2d); waveshare_sense.ipynb cell 1 (id ad4bcf2d)
+
+  - module: chi.lease
+    function: Lease
+    exact_kwargs_as_used: 'name=lease_name, duration=lease.timedelta(hours=4)'
+    source_ref: rpi_sense.ipynb cell 4 (id 5d19779e); waveshare_sense.ipynb cell 3 (id 5d19779e)
+
+  - module: chi.lease
+    function: timedelta
+    exact_kwargs_as_used: 'hours=4'
+    source_ref: rpi_sense.ipynb cell 4 (id 5d19779e); waveshare_sense.ipynb cell 3 (id 5d19779e)
+
+  - module: chi.lease.Lease (instance)
+    function: add_device_reservation
+    exact_kwargs_as_used: 'amount=1, machine_type=machine_name, device_name=device_name'
+    source_ref: rpi_sense.ipynb cell 4 (id 5d19779e); waveshare_sense.ipynb cell 3 (id 5d19779e)
+
+  - module: chi.lease.Lease (instance)
+    function: submit
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: rpi_sense.ipynb cell 4 (id 5d19779e); waveshare_sense.ipynb cell 3 (id 5d19779e)
+
+  - module: chi.lease.Lease (instance)
+    function: device_reservations
+    exact_kwargs_as_used: 'container_lease.device_reservations[0]["id"]  # attribute access, indexed'
+    source_ref: rpi_sense.ipynb cell 6 (id 77feeef9); waveshare_sense.ipynb cell 5 (id 77feeef9)
+
+  - module: chi.lease.Lease (instance)
+    function: delete
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: rpi_sense.ipynb cell 14 (id 4e23dad9); waveshare_sense.ipynb cell 22 (id 27789956)
+
+  - module: chi.container
+    function: Container
+    exact_kwargs_as_used: >-
+      name=container_name, image_ref="ghcr.io/chameleoncloud/edge_sensehat_image:latest",
+      device_profiles=["pi_sensehat"], environment=environment_vars,
+      reservation_id=container_lease.device_reservations[0]["id"], command=["-c", "sleep infinity"]
+    source_ref: rpi_sense.ipynb cell 6 (id 77feeef9)
+
+  - module: chi.container
+    function: Container
+    exact_kwargs_as_used: >-
+      name=container_name, image_ref="ghcr.io/chameleoncloud/edge_sensehat_image:latest",
+      device_profiles=["pi_gpio"], environment=environment_vars,
+      reservation_id=container_lease.device_reservations[0]["id"], command=["-c", "sleep infinity"]
+    source_ref: waveshare_sense.ipynb cell 5 (id 77feeef9)
+
+  - module: chi.container.Container (instance)
+    function: submit
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: rpi_sense.ipynb cell 6 (id 77feeef9); waveshare_sense.ipynb cell 5 (id 77feeef9)
+
+  - module: chi.container.Container (instance)
+    function: execute
+    exact_kwargs_as_used: "f\"python3 -c '{cmd_str}'\"  # positional command string"
+    source_ref: rpi_sense.ipynb cell 8 (id 97f0e5c4)
+
+  - module: chi.container.Container (instance)
+    function: execute
+    exact_kwargs_as_used: '"i2cdetect -y 1"  # positional command string'
+    source_ref: rpi_sense.ipynb cell 10 (id 040e561d); waveshare_sense.ipynb cell 7 (id 3f286a39)
+
+  - module: chi.container.Container (instance)
+    function: execute
+    exact_kwargs_as_used: 'f"python3 {script_file}"  # positional command string'
+    source_ref: waveshare_sense.ipynb cells 11,13,15,17,19 (ids 28caaf2e, 69f25041, 86531121, 8c77337f, 7a0a9ad9)
+
+  - module: chi.container.Container (instance)
+    function: delete
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: rpi_sense.ipynb cell 13 (id f08334e4); waveshare_sense.ipynb cell 21 (id 0e6162d3)
+
+magic_strings:
+  - value: "CHI@Edge"
+    kind: other
+    source_ref: rpi_sense.ipynb cell 2 (id ad4bcf2d); waveshare_sense.ipynb cell 1 (id ad4bcf2d)
+    note: site name passed to chi.context.use_site
+
+  - value: "raspberrypi4-64"
+    kind: machine_type
+    source_ref: rpi_sense.ipynb cell 4 (id 5d19779e); waveshare_sense.ipynb cell 3 (id 5d19779e)
+    note: assigned to machine_name, passed as machine_type to add_device_reservation
+
+  - value: "iot-rpi4-picam2"
+    kind: device_name
+    source_ref: rpi_sense.ipynb cell 4 (id 5d19779e); waveshare_sense.ipynb cell 3 (id 5d19779e)
+    note: commented out in both notebooks
+
+  - value: "iot-rpi4-picam3"
+    kind: device_name
+    source_ref: rpi_sense.ipynb cell 4 (id 5d19779e - ACTIVE); waveshare_sense.ipynb cell 3 (commented)
+    note: active device_name in rpi notebook; commented in waveshare notebook
+
+  - value: "iot-rpi-cm4-02"
+    kind: device_name
+    source_ref: waveshare_sense.ipynb cell 3 (id 5d19779e - ACTIVE); rpi_sense.ipynb cell 4 (commented)
+    note: active device_name in waveshare notebook; commented in rpi notebook
+
+  - value: "ghcr.io/chameleoncloud/edge_sensehat_image:latest"
+    kind: image_ref
+    source_ref: rpi_sense.ipynb cell 6 (id 77feeef9); waveshare_sense.ipynb cell 5 (id 77feeef9)
+
+  - value: "soufianejounaid/chi_edge_sensehat:latest"
+    kind: image_ref
+    source_ref: waveshare_sense.ipynb cell 4 markdown (id 7da6af80)
+    note: >-
+      Mentioned in markdown prose as the image provided, but the actual container.Container
+      call uses ghcr.io/chameleoncloud/edge_sensehat_image:latest. Stale/inconsistent reference.
+
+  - value: "pi_sensehat"
+    kind: device_profile
+    source_ref: rpi_sense.ipynb cell 6 (id 77feeef9)
+    note: element of device_profiles list
+
+  - value: "pi_gpio"
+    kind: device_profile
+    source_ref: waveshare_sense.ipynb cell 5 (id 77feeef9)
+    note: element of device_profiles list
+
+  - value: "edge-rpi-sensehat"
+    kind: other
+    source_ref: rpi_sense.ipynb cell 6 (id 77feeef9)
+    note: container_name (with .replace("_", "-") applied)
+
+  - value: "edge-waveshare-sensehat"
+    kind: other
+    source_ref: waveshare_sense.ipynb cell 5 (id 77feeef9)
+    note: container_name (with .replace("_", "-") applied)
+
+  - value: "RPI_LGPIO_REVISION"
+    kind: env_var
+    source_ref: waveshare_sense.ipynb cell 5 (id 77feeef9)
+    note: env var key; value "0xd03140"
+
+  - value: "0xd03140"
+    kind: other
+    source_ref: waveshare_sense.ipynb cell 5 (id 77feeef9)
+    note: RPI_LGPIO_REVISION value actually set in code
+
+  - value: "0xd03115"
+    kind: other
+    source_ref: waveshare_sense.ipynb cell 4 markdown (id 7da6af80)
+    note: >-
+      Revision number described in markdown prose (Q1 2022 4 Model B, 8GB) but does NOT match
+      the "0xd03140" value actually set in the environment_vars dict. Inconsistency.
+
+  - value: "BLINKA_FORCECHIP"
+    kind: env_var
+    source_ref: waveshare_sense.ipynb cell 5 (id 77feeef9)
+    note: env var key; value "BCM2XXX"
+
+  - value: "BCM2XXX"
+    kind: other
+    source_ref: waveshare_sense.ipynb cell 5 (id 77feeef9)
+    note: BLINKA_FORCECHIP value
+
+  - value: "BLINKA_FORCEBOARD"
+    kind: env_var
+    source_ref: waveshare_sense.ipynb cell 5 (id 77feeef9)
+    note: env var key; value "RASPBERRY_PI_CM4"
+
+  - value: "RASPBERRY_PI_CM4"
+    kind: other
+    source_ref: waveshare_sense.ipynb cell 5 (id 77feeef9)
+    note: BLINKA_FORCEBOARD value
+
+  - value: "USER"
+    kind: env_var
+    source_ref: rpi_sense.ipynb cell 4 (id 5d19779e); waveshare_sense.ipynb cell 3 (id 5d19779e)
+    note: read via os.environ.get("USER") to build lease_name
+
+  - value: '["-c", "sleep infinity"]'
+    kind: other
+    source_ref: rpi_sense.ipynb cell 6 (id 77feeef9); waveshare_sense.ipynb cell 5 (id 77feeef9)
+    note: command kwarg to container.Container
+
+  - value: "i2cdetect -y 1"
+    kind: other
+    source_ref: rpi_sense.ipynb cell 10 (id 040e561d); waveshare_sense.ipynb cell 7 (id 3f286a39)
+    note: shell command run via container.execute
+
+  - value: "examples/SHTC3_temp_and_humidity_sensor_test.py"
+    kind: other
+    source_ref: waveshare_sense.ipynb cell 11 (id 28caaf2e)
+
+  - value: "examples/ADS1015_analog_to_digital_test.py"
+    kind: other
+    source_ref: waveshare_sense.ipynb cell 13 (id 69f25041)
+
+  - value: "examples/ICM-20948_9-axis_sensor_test.py"
+    kind: other
+    source_ref: waveshare_sense.ipynb cell 15 (id 86531121)
+
+  - value: "examples/LPS22HB_air_pressure_sensor_test.py"
+    kind: other
+    source_ref: waveshare_sense.ipynb cell 17 (id 8c77337f)
+
+  - value: "examples/TCS34725_color_recognition_sensor_test.py"
+    kind: other
+    source_ref: waveshare_sense.ipynb cell 19 (id 7a0a9ad9)
+
+  - value: "0x68"
+    kind: other
+    source_ref: examples/ICM-20948_9-axis_sensor_test.py line 6
+    note: I2C address passed to adafruit_icm20x.ICM20948(i2c, address=0x68)
+
+  - value: "0x5C"
+    kind: other
+    source_ref: examples/LPS22HB_air_pressure_sensor_test.py line 6
+    note: I2C address passed to adafruit_lps2x.LPS22(i2c, address=0x5C)
+
+  - value: "0x29"
+    kind: other
+    source_ref: examples/TCS34725_color_recognition_sensor_test.py line 6
+    note: I2C address passed to adafruit_tcs34725.TCS34725(i2c, address=0x29)
+
+  - value: "0x48"
+    kind: other
+    source_ref: waveshare_sense.ipynb cell 9 markdown (id 4d4a1ea4)
+    note: >-
+      ADS1015 I2C address shown in markdown snippet "ads = ADS.ADS1015(i2c, address=0x48)";
+      NOTE the actual examples/ADS1015_analog_to_digital_test.py does NOT pass address= and
+      instantiates ADS1015(i2c) with no address kwarg.
+
+preconditions:
+  - Assumes running inside Chameleon's JupyterHub (chi.context.choose_project() interactive
+    picker); the notebook provides commented openstack/token fallback for running elsewhere.
+  - Assumes valid Chameleon credentials / app credentials are already sourced in the environment.
+  - Assumes a USER environment variable is set (used to build the lease name).
+  - Assumes the specific edge devices exist and are enrolled with the correct sense HAT
+    physically attached (iot-rpi4-picam3 for RPi HAT, iot-rpi-cm4-02 for Waveshare HAT).
+  - Assumes the device profiles "pi_sensehat" and "pi_gpio" already exist and expose the
+    required /dev devices and boot options / device-tree overlays.
+  - Assumes the prebuilt multi-arch (arm64) image ghcr.io/chameleoncloud/edge_sensehat_image:latest
+    is published and pullable, and contains the /examples scripts.
+  - Container stages assume an active lease with a device reservation whose id is read from
+    container_lease.device_reservations[0]["id"].
+
+traps_illustrated:
+  - Device reservation (not node reservation) - uses add_device_reservation with machine_type
+    and device_name rather than a physical-host/node reservation.
+  - Container (not server/instance) - launches container.Container on CHI@Edge, not a bare-metal
+    server; command is ["-c", "sleep infinity"] to keep the container alive.
+  - reservation_id wiring - the container's reservation_id is pulled from
+    container_lease.device_reservations[0]["id"] after the lease submits.
+  - ARM image - the image is built for linux/arm64 (Raspberry Pi); Dockerfile/CI target arm64.
+  - device_profile strings - correct profile string differs per HAT ("pi_sensehat" vs "pi_gpio"),
+    exposing different /dev devices.
+  - Kubernetes naming constraint - container_name uses .replace("_", "-") because CHI@Edge runs
+    on Kubernetes and disallows underscores in names.
+  - Environment-variable workarounds - Waveshare path sets RPI_LGPIO_REVISION / BLINKA_FORCECHIP /
+    BLINKA_FORCEBOARD because /sys/firmware/devicetree/base is unavailable inside containers.
+  - Executing code in a container via container.execute (both inline "python3 -c" and running
+    prebuilt /examples scripts) rather than SSH into a server.
+
+not_covered:
+  - Does not use the imperative python-chi API (no chi.lease.create_lease / chi.container.* module
+    functions); OO only.
+  - Does not demonstrate blazar query/discovery of peripherals (explicitly noted as "soon"); device
+    names are hardcoded.
+  - Does not cover the RPi Sense HAT LED matrix (/dev/fb0) or joystick (/dev/input) beyond mention;
+    no code drives them.
+  - Does not read the RPi Sense HAT IMU (LSM9DS1: accelerometer/gyroscope/magnetometer) or color
+    sensor (TCS3400) in code; only pressure/temperature/humidity via sense_hat.
+  - No image/camera capture, no network services, no port exposure/binding, no volume mounts.
+  - No file upload/download to the container (no upload/get_logs beyond execute stdout).
+  - No lease waiting/status polling, no error handling/retries, no wait_for_active logic shown.
+  - No SSH/floating IP/networking, no bare-metal server provisioning.
+  - Does not build or push the Docker image at runtime (built separately via GitHub Actions CI).
+  - Waveshare ADS1015 example does not pass the address kwarg despite markdown implying address=0x48.
+  - Does not cover GPIO output/actuation (gpiod/libgpiod present in image but no example uses them).
+
+memorization_probes:
+  - "edge-waveshare-sensehat" (container_name literal in waveshare_sense.ipynb)
+  - 'environment_vars = {"RPI_LGPIO_REVISION": "0xd03140", "BLINKA_FORCECHIP": "BCM2XXX", "BLINKA_FORCEBOARD": "RASPBERRY_PI_CM4"}'
+  - 'lease_name = f"{username}-{device_name}"  with device_name = "iot-rpi-cm4-02"'
+
+uncertainties:
+  - Exact python-chi method signatures (e.g. whether use_site/execute accept the shown values as
+    positional vs keyword) are inferred from usage; the repo shows positional usage only.
+  - device_reservations is accessed as an attribute returning a list of dicts; I classified it as an
+    instance attribute rather than a method (no parentheses in source). Whether it is a property vs
+    plain attribute is not determinable from this repo alone.
+  - The markdown prose contains two internal inconsistencies vs the executed code: image name
+    (soufianejounaid/chi_edge_sensehat:latest vs ghcr.io/chameleoncloud/edge_sensehat_image:latest)
+    and revision number (0xd03115 in prose vs 0xd03140 in code). Both literals are transcribed; which
+    is "correct" is not resolvable from the repo.
+  - README lists RPi profile /dev devices and a "pi_sensehat" concept but the profile definitions
+    themselves are not in this repo (defined server-side / in device enrollment), so their exact
+    contents are not verifiable here.
+
+# ============================================================================
+# GREP VERIFICATION SUMMARY (run at commit a81192bdceca4ae8f020e16412cefa2aa8e69122)
+# grep -rF over *.ipynb and *.py. All counts are literal-substring occurrences.
+# ----------------------------------------------------------------------------
+# api_calls (function/method identifiers) — all FOUND:
+#   chi.context.use_site:2  chi.context.choose_project:2  lease.Lease:2
+#   lease.timedelta:2  add_device_reservation:2  .submit():4  device_reservations:2
+#   .delete():4  container.Container:2  .execute(:8
+#   => 10/10 api_call identifiers verified present verbatim.
+#
+# api_calls kwargs — all FOUND:
+#   name=lease_name:2  duration=lease.timedelta(hours=4):2  amount=1:2
+#   machine_type=machine_name:2  device_name=device_name:2  image_ref=:2
+#   device_profiles=:2  environment=environment_vars:2
+#   reservation_id=container_lease.device_reservations[0]:2
+#   command=["-c", "sleep infinity"]: 2 (matched with JSON-escaped quotes:
+#       command=[\"-c\", \"sleep infinity\"] — appears once per notebook)
+#   => all kwargs verified.
+#
+# magic_strings — all FOUND (counts):
+#   CHI@Edge:10  raspberrypi4-64:2  iot-rpi4-picam2:2  iot-rpi4-picam3:2
+#   iot-rpi-cm4-02:2  ghcr.io/chameleoncloud/edge_sensehat_image:latest:2
+#   soufianejounaid/chi_edge_sensehat:latest:1  pi_sensehat:1  pi_gpio:2
+#   edge-rpi-sensehat:1  edge-waveshare-sensehat:1  RPI_LGPIO_REVISION:3
+#   0xd03140:1  0xd03115:1  BLINKA_FORCECHIP:1  BCM2XXX:1  BLINKA_FORCEBOARD:1
+#   RASPBERRY_PI_CM4:1  "sleep infinity":2  "i2cdetect -y 1":2  USER:2
+#   os.environ.get:2 (the "os.environ.get(\"USER\")" 0-count was a quote-escaping
+#       artifact of raw .ipynb JSON; base pattern confirms 2 occurrences)
+#   examples/SHTC3_temp_and_humidity_sensor_test.py:1
+#   examples/ADS1015_analog_to_digital_test.py:1
+#   examples/ICM-20948_9-axis_sensor_test.py:1
+#   examples/LPS22HB_air_pressure_sensor_test.py:1
+#   examples/TCS34725_color_recognition_sensor_test.py:1
+#   address=0x68:1  address=0x5C:1  address=0x29:1  address=0x48:1
+#   => all 30 magic_strings verified present verbatim.
+#
+# memorization_probes — component literals confirmed present
+#   (edge-waveshare-sensehat:1, 0xd03140/BCM2XXX/RASPBERRY_PI_CM4:1 each,
+#    iot-rpi-cm4-02:2, lease_name f-string present in both notebooks).
+#
+# RESULT: 0 invented identifiers. Every field-level identifier grep-confirmed.
+# ============================================================================

@@ -1,0 +1,665 @@
+Here is reference material about CHI@Edge on Chameleon Cloud that may be relevant to my question.
+=== REFERENCE MATERIAL ===
+# edge-picamera-image
+Trovi artifact detailing how to use the libcamera driver stack
+on CHI@Edge.
+
+Provides a Jupyter Notebook, Dockerfile, and example python code.
+
+The Dockerfile packages minimal dependencies for libcamera libraries, picamera2
+libcamera bindings, and libcamera cli applications. Due to installing from the 
+raspberry pi maintained apt repo, we no longer need manual compilation of these deps.
+
+For further details, please refer to the Raspberry Pi Camera documentation:
+https://www.raspberrypi.com/documentation/computers/camera_software.html
+
+For proper functionality, libcamera requires access to the following devices
+under /dev inside the container. In CHI@Edge, this is provided by the 
+"pi_libcamera" device profile.
+
+video* device nodes are  documented here: https://www.raspberrypi.com/documentation/computers/camera_software.html#device-nodes-when-using-libcamera
+
+- `dma_heap`: required for contiguous memory allocation used for capture buffers
+- `media[0:4]`
+- `v4l-subdev0`
+- `vchiq`
+- `vcsm-cma`
+- `video[10:16]`
+- `video[18:23]`
+- `video31`
+
+In order for all of these devices to appear, the following /boot/config.txt
+options must be specified.
+
+- camera_auto_detect=1  # enables automatic loading of correct dtoverlay
+- start_x=0             # default, ensures legacy camera stack does not load
+
+And, `gpu_mem` must *not* be set, or if set, be at least 128 or the camera
+stack will not start.
+
+For the picamera3 (imx708) to be auto-detected, a relatively recent OS version
+is needed. BalenaOS version 6.5.42+rev2 with kernel 6.12.32-v8 is known to work.
+
+Finally, libcamera requires read-only access to `/run/udev` to enumerate 
+available cameras. This is also provided by CHI@Edge, but can be accomplished 
+manually via 
+
+`docker run -v /run/udev:/run/udev:ro`
+
+---
+
+# picamera_tutorial.ipynb
+
+## [markdown]
+
+# Peripheral showcase: Pi Camera Module 3 in CHI@Edge
+
+Welcome to this Jupyter notebook guide on using the Camera on Raspberry Pis in CHI@Edge. This artifact will walk you through the steps to access and utilize the camera for your edge computing experiments.
+
+**Important Note:** This notebook will work with any camera module, but only for devices that are set up to use the "libcamera" drivers. As of July 2025, all devices in CHI@Edge are configured this way.
+
+In the following example we'll show how to use the Pi Camera Module 3 on a Raspberry Pi 4 to capture both a png image and an h264 30 fps video.
+
+## [code]
+
+```python
+from chi import context
+
+context.choose_site(default="CHI@Edge")
+context.choose_project()
+```
+
+## [markdown]
+
+## Creating the Lease
+
+To access the camera, we need to make a lease for the specific device that the camera is currently attached to. As of July 2025, we're still implementing the autodetection of this, but the below devices will have it attached.
+
+## [code]
+
+```python
+from chi import hardware
+
+device_type = "raspberrypi4-64"
+available_devices = hardware.get_devices(filter_reserved=True, device_type=device_type)
+
+picamera_devs = [d for d in available_devices if d.device_name.startswith("iot-rpi4-picam")]
+display([d.device_name for d in picamera_devs])
+```
+
+## [markdown]
+
+And then make a lease for one of them.
+
+## [code]
+
+```python
+from chi import lease
+from datetime import timedelta
+
+my_lease = lease.Lease("rpi4-camera-lease", duration=timedelta(hours=3))
+
+my_lease.add_device_reservation(devices=[picamera_devs[0]])  # we're just getting a list of 1 device
+# my_lease.add_device_reservation(device_name='iot-rpi4-picam2',amount=1) # or a specific one!
+my_lease.submit(idempotent=True)
+```
+
+## [markdown]
+
+## Launching a container with libcamera and the rpicam apps
+
+To take pictures and videos with the camera, we need to launch a container image with all the following pre-requisites:
+
+- pi_libcamera device profile: a flag to expose all the necessary /dev devices required for the camera support
+- libcamera: A complex camera stack designed to support all kinds of cameras on Linux.
+- rpicam-apps: A set of example applications demonstrating how to use libcamera on Raspberry Pi.
+
+We provide a prebuilt container image with these dependencies: ```ghcr.io/chameleoncloud/edge-picamera-image:latest```. For reprodcibility and customization, the Dockerfile for the image can be found in the same repo as this notebook.
+
+Below, we will launch a long-running container doing more or less "nothing" so that it stays running, and then execute commands interactively.
+
+## [code]
+
+```python
+from chi import container
+
+my_container = container.Container(
+    "rpi4-camera-test-01",
+    image_ref="ghcr.io/chameleoncloud/edge-picamera-image:latest",
+    exposed_ports=[],
+    reservation_id=my_lease.device_reservations[0]["id"],
+    command=["sleep", "infinity"],
+    device_profiles=["pi_libcamera"],
+)
+my_container.submit()
+```
+
+## [markdown]
+
+## Verifying that the camera and drivers work
+
+First, lets run a simple command to see if libcamera finds our camera. If the container started with the pi_libcamera device profile, this *should* work, but there are always some edge cases.
+This will also help identify the capabilities of the attached camera.
+
+Note: We specify `--nopreview` since there's no display attached to the device.
+
+## [code]
+
+```python
+cmd = "rpicam-hello --nopreview --list-cameras"
+result,code = my_container.execute(cmd)
+print(result)
+```
+
+## [markdown]
+
+## Capturing a still 1920x1080 picture with the camera
+
+To capture pictures, we use the rpicam applications ([code](https://github.com/raspberrypi/rpicam-apps)). We use ```rpicam-still```[(docs)](https://www.raspberrypi.com/documentation/computers/camera_software.html#rpicam-still) to capture a 1920x1080 still png using the camera. Please visit the rpicam-apps [documentation](https://www.raspberrypi.com/documentation/computers/camera_software.html#rpicam-apps) to learn how to use other utilities.
+
+**Important notes**: 
+
+- Capturing frames can take some time. It is not instant.
+- If you run into dma_heap allocation issues/failure to allocate capture buffers, please lower the quality/size of your image or use the png format. The error occurs because the device to which the camera is attached currently only allocates a very limited amount of 64MB of contiguous memory blocks (cma). Each still capture requires a cma buffer amount that is proportional to the size of the target picture. Development efforts are currently ongoing to allow the allocation of more CMA on boot time to allow for larger frames.
+
+## [code]
+
+```python
+cmd = "rpicam-still  --nopreview  --output /app/test1.png --width 1920 --height 1080"
+result,code = my_container.execute(cmd)
+print(result)
+```
+
+## [markdown]
+
+Download the captured image from the running container using our ```container.download()``` utility. (**Note**: it takes a slight moment for the jupyter directory navigation pane to refresh and show the downloaded file)
+
+## [code]
+
+```python
+my_container.download("/app/test1.png", ".")
+from IPython.display import Image
+Image("test1.png", height=640,width=480)
+```
+
+## [markdown]
+
+## Using the picamera2 library instead of cli
+
+Now, insted of running the command interactively, we'll instead use the picamera2 library to do the same task. 
+
+The snippet below will copy a script into the container, execute it, then copy the captured image image back.
+
+## [code]
+
+```python
+# Need to get the path for the python script in jupyter
+import os
+cwd = os.getcwd()
+my_container.upload(f"{cwd}/camera_test.py", "/app/")
+
+# execute it
+result,code = my_container.execute("python3 camera_test.py")
+print(result)
+```
+
+## [code]
+
+```python
+# copy the output image back
+my_container.download("/app/test2.png", ".")
+from IPython.display import Image
+Image("test2.png", height=640,width=480)
+```
+
+## [markdown]
+
+## Capturing a 5 second 1080p 30fps H264 video with the camera
+
+To capture an h264 video we use the ```rpicam-vid```[(docs)](https://www.raspberrypi.com/documentation/computers/camera_software.html#rpicam-vid) utility to capture a 5 second 1080p video at a framerate of 30 fps. To playback the video, please download the file through the jupyter interface and use a video playback utility such as ```vlc```.
+
+**Note**: the ```container.download()``` utility is primarily meant for smaller size files. Please resort to other methods such as cloud storage or scp to download larger files.
+
+## [code]
+
+```python
+cmd = "rpicam-vid --nopreview -t 5000 --output /app/video1.mp4 --width 1920 --height 1080 --framerate 24"
+result,code = my_container.execute(cmd)
+print(result)
+```
+
+## [code]
+
+```python
+# and copy it back
+my_container.download("/app/video1.h264", ".")
+```
+
+## [markdown]
+
+## Cleanup :)
+
+## [code]
+
+```python
+my_container.delete()
+```
+
+## [code]
+
+```python
+my_lease.delete()
+```
+
+---
+
+# camera_test.py
+
+```python
+import time
+
+from picamera2 import Picamera2
+
+picam2 = Picamera2()
+
+camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)})
+picam2.configure(camera_config)
+
+picam2.start()
+time.sleep(2)
+
+metadata = picam2.capture_file("/app/test2.png")
+print(metadata)
+
+picam2.close()
+```
+
+---
+
+# Dockerfile
+
+```dockerfile
+FROM debian:bookworm-20250630-slim AS base
+
+RUN apt-get update && apt-get install -y --no-install-recommends gnupg
+RUN echo "deb http://archive.raspberrypi.org/debian/ bookworm main" > /etc/apt/sources.list.d/raspi.list \
+  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    python3-libcamera \
+    python3-picamera2 \
+    libcamera-apps-lite
+
+WORKDIR /app
+
+CMD ["sleep", "infinity"]
+```
+
+
+# README.md
+
+# Serving machine learning models on edge devices
+
+In a [previous experiment](https://teaching-on-testbeds.github.io/serve-model-chi/), we explored some model-level optimizations for model serving. Now, we will evaluate some of the models we created in that experiment on a low-resource edge device.
+
+Follow along at [Serving machine learning models on edge devices](https://teaching-on-testbeds.github.io/serve-edge-chi).
+
+Note: this tutorial requires advance reservation of specific hardware! You will reserve a 2-hour block on a Raspberry Pi 5 on CHI@Edge.
+
+---
+
+This material is based upon work supported by the National Science Foundation under Grant No. 2230079.
+
+---
+
+# Notebook: 0_intro.ipynb
+
+## [markdown cell 0]
+
+# Serving machine learning models on edge devices
+
+In this tutorial, we will benchmark machine learning models on a low-resource edge device (a Raspberry Pi 5 with Arm Cortext A76 processor). We will measure the inference time of:
+
+-   a baseline model
+-   a model with INT8 quantization
+
+To run this experiment, you should have already created an account on Chameleon, and become part of a project.
+
+## [markdown cell 1]
+
+## Context
+
+The premise of this example is as follows: You are working as a machine learning engineer at a small startup company called GourmetGram. They are developing an online photo sharing community focused on food. You have developed a convolutional neural network in Pytorch that automatically classifies photos of food into one of a set of categories: Bread, Dairy product, Dessert, Egg, Fried food, Meat, Noodles/Pasta, Rice, Seafood, Soup, and Vegetable/Fruit.
+
+Now that you have trained a model, you are preparing to serve predictions using this model. Your manager has advised that since GourmetGram is an early-stage startup, they can’t afford much compute for serving models. Your manager wants you to prepare a few different options, that they will then price out among cloud providers and decide which to use:
+
+-   inference on a server-grade CPU (AMD EPYC 7763). Your manager wants to see an option that has less than 3ms median inference latency for a single input sample, and has a batch throughput of at least 1000 frames per second.
+-   inference on a server-grade GPU (A100). Since GourmetGram won’t be able to afford to load balance across several GPUs, your manager said that the GPU option must have strong enough performance to handle the workload with a single GPU node: they are looking for less than 1ms median inference latency for a single input sample, and a batch throughput of at least 5000 frames per second.
+-   inference on end-user devices, as part of an app. For this option, the model itself should be less than 5MB on disk, because users are sensitive to storage space on mobile devices. Because the total prediction time will not include any network delay when the model is on the end-user device, the “budget” for inference time is larger: your manager wants less than 15ms median inference latency for a single input sample on a low-resource edge device (ARM Cortex A76 processor).
+
+You have [evaluated your model on server-grade CPU and GPU already](https://teaching-on-testbeds.github.io/serve-model-chi/); now you are ready to benchmark on a low-resource edge device.
+
+## [markdown cell 2]
+
+## Experiment resources
+
+For this experiment, we will provision one Raspberry Pi 5 at CHI@Edge. Edge devices, like bare metal devices, need to be reserved in advance.
+
+## [markdown cell 3]
+
+## Create a lease for an edge device
+
+## [markdown cell 4]
+
+For this experiment, we will reserve a 2-hour block on a Raspberry Pi 5.
+
+We can use the OpenStack graphical user interface, Horizon, to submit a lease. To access this interface,
+
+-   from the [Chameleon website](https://chameleoncloud.org/)
+-   click “Experiment” \> “CHI@Edge”
+-   log in if prompted to do so
+-   check the project drop-down menu near the top left (which shows e.g. “CHI-XXXXXX”), and make sure the correct project is selected.
+
+## [markdown cell 5]
+
+Then,
+
+-   On the left side, click on “Reservations” \> “Leases”, and then click on “Device Calendar”. In the “Vendor” drop down menu, change the type to “Raspberry Pi” to see the schedule of availability. We are looking specifically for the devices whose name is in the format **nyu-rpi5-XX**, for some number XX. You may change the date range setting to “30 days” to see a longer time scale. Note that the dates and times in this display are in UTC.
+
+-   Once you have identified an available two-hour block in UTC time that works for you in your local time zone, make a note of:
+
+    -   the name of the device, and
+    -   the start and end time of the time you will try to reserve. (Note that if you mouse over an existing reservation, a pop up will show you the exact start and end time of that reservation.)
+
+-   Then, on the left side, click on “Reservations” \> “Leases”, and then click on “Create Lease”:
+
+    -   set the “Name” to <code>serve_edge\_<b>netID</b></code> where in place of <code><b>netID</b></code> you substitute your actual net ID.
+    -   set the start date and time in UTC. To make scheduling smoother, please start your lease on an hour boundary, e.g. `XX:00`.
+    -   modify the lease length (in days) until the end date is correct. Then, set the end time. To be mindful of other users, you should limit your lease time to two hours as directed. Also, to avoid a potential race condition that occurs when one lease starts immediately after another lease ends, you should end your lease five minutes before the end of an hour, e.g. at `YY:55`.
+    -   Click “Next”.
+
+-   Click “Next”. (We won’t include any network resources in this lease.)
+
+-   On the “Devices” tab,
+
+    -   check the “Reserve devices” box
+    -   leave the “Minimum number of hosts” and “Maximum number of hosts” at 1
+    -   in “Resource properties”, to reserve a specific device, specify its `uid`. These are the UUIDs of our Pi 5s:
+
+| Raspberry Pi Node | UUID                                   |
+|-------------------|----------------------------------------|
+| `nyu-rpi5-01`     | `c516acb2-4c88-42be-857f-2f9eb4139f99` |
+| `nyu-rpi5-02`     | `8334d598-d25d-4dbb-a416-d90f8e93ccc4` |
+| `nyu-rpi5-03`     | `a755b236-580e-4040-874c-80501f00f954` |
+| `nyu-rpi5-04`     | `9a7823ea-bf40-4141-b7d7-943bfb389091` |
+| `nyu-rpi5-05`     | `54a6e248-cbb2-472d-bde7-0b4ac3bd911a` |
+| `nyu-rpi5-06`     | `52341ad4-ff91-4516-a3ec-88687a8d984b` |
+| `nyu-rpi5-07`     | `7bfe3fe8-6f1e-41a4-8d9a-aa9668db8805` |
+
+-   Then, click “Create”.
+
+Your lease status should show as “Pending”. Click on the lease to see an overview. It will show the start time and end time, and it will show the name of the physical host that is reserved for you as part of your lease. Make sure that the lease details are correct.
+
+## [markdown cell 6]
+
+## At the beginning of your edge device lease
+
+At the beginning of your edge device lease time, you will continue with the next step, in which you will launch a container on the device! To begin this step, open this experiment on Trovi:
+
+-   Use this link: [Serving machine learning models on edge devices](https://chameleoncloud.org/experiment/share/a1662022-9017-45b1-9b96-31705ca20358) on Trovi
+-   Then, click “Launch on Chameleon”. This will start a new Jupyter server for you, with the experiment materials already in it, including the notebook to launch the container.
+
+---
+
+# Notebook: 1_create_edge_container.ipynb
+
+## [markdown cell 0]
+
+## Launch a container on an edge device - with python-chi
+
+At the beginning of the lease time for your device, we will use the `python-chi` Python API to Chameleon to launch a container on it, using OpenStack’s Zun container service.
+
+We will execute the cells in this notebook inside the Chameleon Jupyter environment.
+
+Run the following cell, and make sure the correct project is selected. Make sure the site is set to CHI@Edge.
+
+## [code cell 1]
+
+```python
+# runs in Chameleon Jupyter environment
+from chi import container, context, lease
+import os
+import chi
+
+context.version = "1.0" 
+context.choose_project()
+context.choose_site(default="CHI@Edge")
+```
+
+## [markdown cell 2]
+
+Change the string in the following cell to reflect the name of *your* lease (**with your own net ID**), then run it to get your lease:
+
+## [code cell 3]
+
+```python
+# runs in Chameleon Jupyter environment
+l = lease.get_lease(f"serve_edge_netID") 
+l.show()
+```
+
+## [markdown cell 4]
+
+The status should show as “ACTIVE” now that we are past the lease start time.
+
+## [markdown cell 5]
+
+We will use the lease to launch a Jupyter notebook container on a Raspberry Pi 5 edge device.
+
+> **Note**: the following cell brings up a container only if you don’t already have one with the same name! (Regardless of its error state.) If you have a container in ERROR state already, delete it first in the Horizon GUI before you run this cell.
+
+## [code cell 6]
+
+```python
+# runs in Chameleon Jupyter environment
+username = os.getenv('USER') # exp resources will have this suffix
+c = container.Container(
+    name = f"node-serve-edge-{username}".replace('_', '-'),
+    reservation_id = l.device_reservations[0]["id"],
+    image_ref = "quay.io/jupyter/minimal-notebook:latest", 
+    exposed_ports = [8888]
+)
+c.submit(idempotent=True, wait_timeout=1200)
+```
+
+## [markdown cell 7]
+
+Then, we’ll associate a floating IP with the container, so that we can access the Jupyter service running in it.
+
+## [code cell 8]
+
+```python
+# runs in Chameleon Jupyter environment
+c.associate_floating_ip()
+```
+
+## [markdown cell 9]
+
+In the output above, make a note of the floating IP that has been assigned to your container.
+
+## [markdown cell 10]
+
+Let’s retrieve a copy of these materials on the container:
+
+## [code cell 11]
+
+```python
+# runs in Chameleon Jupyter environment
+stdout, code = c.execute("git clone https://github.com/teaching-on-testbeds/serve-edge-chi.git")
+print(stdout)
+```
+
+## [markdown cell 12]
+
+Wait a few moments for this to finish before you go on to the next step.
+
+## [code cell 13]
+
+```python
+# runs in Chameleon Jupyter environment
+stdout, code = c.execute("mv serve-edge-chi/workspace/models work/")
+print(stdout)
+```
+
+## [code cell 14]
+
+```python
+# runs in Chameleon Jupyter environment
+stdout, code = c.execute("mv serve-edge-chi/workspace/2_measure_pi.ipynb work/")
+print(stdout)
+```
+
+## [markdown cell 15]
+
+and, install the ONNX runtime Python module:
+
+## [code cell 16]
+
+```python
+# runs in Chameleon Jupyter environment
+stdout, code = c.execute("python3 -m pip install onnxruntime")
+print(stdout)
+```
+
+## [code cell 17]
+
+```python
+# runs in Chameleon Jupyter environment
+stdout, code = c.execute("rm -rf serve-edge-chi")
+print(stdout)
+```
+
+## [markdown cell 18]
+
+Finally, we will get the container logs. Run:
+
+## [code cell 19]
+
+```python
+# runs in Chameleon Jupyter environment
+print(chi.container.get_logs(c.id))
+```
+
+## [markdown cell 20]
+
+and look for a line like
+
+        http://127.0.0.1:8888/lab?token=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+Paste this into a browser tab, but in place of 127.0.0.1, substitute the floating IP assigned to your container, to open the Jupyter notebook interface that is running *on your Raspberry Pi 5*.
+
+Then, in the file browser on the left side, open the “work” directory and find the `2_measure_pi.ipynb` notebook to continue.
+
+---
+
+# Notebook: workspace/2_measure_pi.ipynb
+
+## [markdown cell 0]
+
+## Measure inference performance of ONNX model on low-resource edge device
+
+Now, we’re going to benchmark a couple of previously created ONNX models on our low-resource edge device.
+
+You will execute this notebook *in a Jupyter container running on an edge device*, not on the general-purpose Chameleon Jupyter environment from which you provision resources.
+
+## [code cell 1]
+
+```python
+# runs in Jupyter container on edge device
+import os, time
+import numpy as np
+import onnxruntime as ort
+```
+
+## [markdown cell 2]
+
+We’ll define a benchmark function. For convenience (since we don’t need real data for benchmarking) we will use random “fake” samples to evaluate our models’ inference performance.
+
+## [code cell 3]
+
+```python
+# runs in Jupyter container on edge device
+def benchmark_session(ort_session):
+
+    ## Benchmark inference latency for single sample
+
+    num_trials = 100  # Number of trials
+    input_shape = ort_session.get_inputs()[0].shape  # Get expected input shape
+    input_dtype = np.float32  # Adjust dtype as needed
+    fixed_shape = (1, *input_shape[1:])  
+
+    # Generate a single dummy sample with random values
+    single_sample = np.random.rand(*fixed_shape).astype(input_dtype)
+
+    # Warm-up run
+    ort_session.run(None, {ort_session.get_inputs()[0].name: single_sample})
+
+    latencies = []
+    for _ in range(num_trials):
+        start_time = time.time()
+        _ = ort_session.run(None, {ort_session.get_inputs()[0].name: single_sample})
+        latencies.append(time.time() - start_time)
+
+    print(f"Inference Latency (single sample, median): {np.percentile(latencies, 50) * 1000:.2f} ms")
+    print(f"Inference Latency (single sample, 95th percentile): {np.percentile(latencies, 95) * 1000:.2f} ms")
+    print(f"Inference Latency (single sample, 99th percentile): {np.percentile(latencies, 99) * 1000:.2f} ms")
+    print(f"Inference Throughput (single sample): {num_trials/np.sum(latencies):.2f} FPS")
+```
+
+## [markdown cell 4]
+
+Now, let’s evaluate our “baseline” ONNX model:
+
+## [code cell 5]
+
+```python
+# runs in Jupyter container on edge device
+onnx_model_path = "models/food11.onnx"
+ort_session = ort.InferenceSession(onnx_model_path, providers=['CPUExecutionProvider'])
+benchmark_session(ort_session)
+```
+
+## [markdown cell 6]
+
+a model quantized with dynamic quantization:
+
+## [code cell 7]
+
+```python
+# runs in Jupyter container on edge device
+onnx_model_path = "models/food11_quantized_dynamic.onnx"
+ort_session = ort.InferenceSession(onnx_model_path, providers=['CPUExecutionProvider'])
+benchmark_session(ort_session)
+```
+
+## [markdown cell 8]
+
+and a model quantized with static quantization, for which we permit up to 0.05 decrease in accuracy:
+
+## [code cell 9]
+
+```python
+# runs in Jupyter container on edge device
+onnx_model_path = "models/food11_quantized_aggressive.onnx"
+ort_session = ort.InferenceSession(onnx_model_path, providers=['CPUExecutionProvider'])
+benchmark_session(ort_session)
+```
+
+## [markdown cell 10]
+
+When you are done, download the fully executed notebook from the Jupyter container environment for later reference. (Note: because it is an executable file, and you are downloading it from a site that is not secured with HTTPS, you may have to explicitly confirm the download in some browsers.)
+
+=== END REFERENCE MATERIAL ===
+
+Question: Reserve the Pi 5 named nyu-rpi5-03 for exactly 2 hours using python-chi (no Horizon GUI), then launch the Jupyter minimal-notebook container on it with port 8888 and a public IP.

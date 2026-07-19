@@ -1,0 +1,1 @@
+Reserve 3 Raspberry Pis on CHI@Edge of the same type in one lease.

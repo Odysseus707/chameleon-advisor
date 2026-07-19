@@ -1,0 +1,112 @@
+id: P14
+version: '4.0'
+lineage: v3:P14
+category: SSH / Dev
+axis: REASON
+prompt: 'End-to-end: get me a Pi on CHI@Edge I can hit with VS Code Remote-SSH.'
+designed_trap: Drops a link in reserve->image->key->FIP chain.
+trap_tags:
+- bare_metal_api
+- magic_image
+- key_injection
+- floating_ip
+target_artifact:
+- A1
+fed_sets:
+  blind: []
+  matched:
+  - A1
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - add_device_reservation
+  - reservation_id
+  - associate_floating_ip
+  - upload
+  specifics:
+  - ghcr.io/chameleoncloud/edge_ssh_image
+  - raspberrypi4-64
+  - authorized_keys
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import context, lease, container
+  from datetime import timedelta
+
+  context.choose_site(default="CHI@Edge")
+  context.choose_project()
+
+  my_lease = lease.Lease("vscode-pi-lease", duration=timedelta(hours=4))
+  my_lease.add_device_reservation(amount=1, machine_type="raspberrypi4-64")
+  my_lease.submit(idempotent=True)
+
+  my_container = container.Container(
+      "vscode-ssh-target",
+      image_ref="ghcr.io/chameleoncloud/edge_ssh_image:latest",
+      exposed_ports=[22],
+      reservation_id=my_lease.device_reservations[0]["id"],
+  )
+  my_container.submit()
+
+  my_container.upload("./edge_user_public_key", "/root/.ssh/")
+  my_container.execute('/bin/bash -c "chmod 600 /root/.ssh/authorized_keys"')
+  my_container.execute('/bin/bash -c "cat /root/.ssh/edge_user_public_key >> /root/.ssh/authorized_keys"')
+
+  ip = my_container.associate_floating_ip()
+  print(f"Point VS Code Remote-SSH at root@{ip}")
+gold_provenance: 'authored from artifact(s) [''A1''] extractions; v3 gold: reserve Pi -> Container(edge_ssh_image,
+  exposed_ports=[22]) -> upload+authorize key -> associate_floating_ip -> VS Code to root@ip'
+checkers:
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance
+- check: required_call
+  group: mechanism
+  name: add_device_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_device_reservation
+  arg:
+  - machine_type
+  - machine_name
+  equals: raspberrypi4-64
+- check: container_call
+  group: mechanism
+- check: reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call: &id001
+  - Container
+  - create_container
+  arg:
+  - image_ref
+  - image
+  equals_any:
+  - ghcr.io/chameleoncloud/edge_ssh_image:latest
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - exposed_ports
+  contains: 22
+- check: required_call
+  group: mechanism
+  name: upload
+- check: required_code_string
+  group: specifics
+  s: authorized_keys
+- check: required_call
+  group: mechanism
+  name: associate_floating_ip
+- check: name_no_underscore
+  group: safety

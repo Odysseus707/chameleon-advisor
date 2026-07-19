@@ -1,0 +1,100 @@
+id: N10
+version: '4.0'
+lineage: new
+category: Composition
+axis: ACT
+prompt: The device iot-rpi4-picam3 has both a camera module and a Sense HAT attached. Reserve it and launch
+  ONE container that can access both peripherals; then verify each (list cameras; probe the sensor bus).
+designed_trap: device_profiles is a list and can carry both profiles; models tend to pick one profile
+  or launch two containers.
+trap_tags:
+- composition
+- magic_profile
+target_artifact:
+- A2
+- A3
+fed_sets:
+  blind: []
+  matched:
+  - A2
+  - A3
+tier_intent_by_condition:
+  matched: T3
+key_tokens:
+  mechanism:
+  - device_profiles
+  specifics:
+  - pi_libcamera
+  - pi_sensehat
+  - iot-rpi4-picam3
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import lease, container
+  from datetime import timedelta
+
+  my_lease = lease.Lease("dual-periph-lease", duration=timedelta(hours=4))
+  my_lease.add_device_reservation(
+      amount=1, machine_type="raspberrypi4-64", device_name="iot-rpi4-picam3"
+  )
+  my_lease.submit(idempotent=True)
+
+  my_container = container.Container(
+      "dual-periph-run",
+      image_ref="ghcr.io/chameleoncloud/edge-picamera-image:latest",
+      exposed_ports=[],
+      reservation_id=my_lease.device_reservations[0]["id"],
+      command=["sleep", "infinity"],
+      device_profiles=["pi_libcamera", "pi_sensehat"],
+  )
+  my_container.submit()
+
+  result, code = my_container.execute("rpicam-hello --nopreview --list-cameras")
+  print(result)
+  result, code = my_container.execute("i2cdetect -y 1")
+  print(result)
+gold_provenance: authored from artifact(s) ['A2', 'A3']
+checkers:
+- check: required_call
+  group: mechanism
+  name: add_device_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_device_reservation
+  arg:
+  - device_name
+  equals: iot-rpi4-picam3
+- check: container_call
+  group: mechanism
+- check: reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Container
+  - create_container
+  arg:
+  - device_profiles
+  contains_all:
+  - pi_libcamera
+  - pi_sensehat
+- check: profiles_known_only
+  group: safety
+- check: required_call
+  group: mechanism
+  name: execute
+- check: required_code_string
+  group: specifics
+  s: rpicam-hello
+- check: required_code_string
+  group: specifics
+  any:
+  - i2cdetect
+  - sense_hat
+  - SenseHat
+- check: name_no_underscore
+  group: safety
+notes: Gold uses the camera image; sensor-side python libs may need a runtime install. The checked core
+  is profile-list composition + per-peripheral verification commands.

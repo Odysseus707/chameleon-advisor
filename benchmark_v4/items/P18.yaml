@@ -1,0 +1,45 @@
+id: P18
+version: '4.0'
+lineage: v3:P18
+category: Peripherals · Camera
+axis: ACT
+prompt: Record a 5-second 1080p video from the camera.
+designed_trap: Wrong tool / flags.
+trap_tags:
+- magic_command
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - execute
+  specifics:
+  - rpicam-vid
+  - -t 5000
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  result, code = my_container.execute(
+      "rpicam-vid --nopreview -t 5000 --output /app/video1.mp4 --width 1920 --height 1080 --framerate 24"
+  )
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: execute("rpicam-vid --nopreview
+  -t 5000 --output /app/v.mp4 --width 1920 --height 1080 --framerate 24")'
+checkers:
+- check: required_call
+  group: mechanism
+  name: execute
+- check: required_code_string
+  group: specifics
+  s: rpicam-vid
+- check: required_code_string
+  group: specifics
+  s: -t 5000
+- check: required_code_string
+  group: specifics
+  s: --framerate

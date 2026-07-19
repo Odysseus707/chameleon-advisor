@@ -1,0 +1,1 @@
+Reserve a camera-equipped Pi, start the camera container, and retrofit SSH access into it (port 22, my public key, root login) so a teammate can log in and run captures themselves.

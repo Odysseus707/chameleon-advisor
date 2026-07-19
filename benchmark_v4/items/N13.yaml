@@ -1,0 +1,134 @@
+id: N13
+version: '4.0'
+lineage: new
+category: API translation
+axis: ACT
+prompt: Our lab standardized on the classic imperative python-chi API. Using ONLY that style (module functions
+  - no Lease/Container classes), reserve one Pi 4 for 10 hours starting now and launch python:3.9-slim
+  on it with SSH installed and reachable from outside.
+designed_trap: platform_version=2 is mandatory on create_container; OO habits leak in.
+trap_tags:
+- api_generation
+- platform_version
+target_artifact:
+- A6
+fed_sets:
+  blind: []
+  matched:
+  - A6
+  heldout:
+  - A2
+  - A3
+tier_intent_by_condition:
+  matched: T1
+  heldout: T4
+key_tokens:
+  mechanism:
+  - create_lease
+  - create_container
+  - get_device_reservation
+  specifics:
+  - platform_version
+  - python:3.9-slim
+  - openssh-server
+api_anchor: python-chi OO generation (D01); item demands imperative (documented exception)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  import chi, os
+  from chi import lease, container
+
+  chi.use_site("CHI@Edge")
+  chi.set("project_name", os.getenv("OS_PROJECT_NAME"))
+  username = os.getenv("USER")
+
+  res = []
+  lease.add_device_reservation(res, machine_name="raspberrypi4-64", count=1)
+  start_date, end_date = lease.lease_duration(days=0, hours=10)
+  l = lease.create_lease(f"{username}-imp-lease", res,
+                         start_date=start_date, end_date=end_date)
+  l = lease.wait_for_active(l["id"])
+
+  container_name = f"{username}-imp-ssh".replace("_", "-")
+  my_container = container.create_container(
+      container_name,
+      image="python:3.9-slim",
+      reservation_id=lease.get_device_reservation(l["id"]),
+      interactive=True,
+      exposed_ports=[22],
+      platform_version=2,
+  )
+  container.wait_for_active(my_container.uuid)
+  public_ip = container.associate_floating_ip(my_container.uuid)
+
+  container.execute(my_container.uuid, "apt update")
+  container.execute(my_container.uuid, "apt -y install openssh-server")
+  container.execute(my_container.uuid, "mkdir -p /root/.ssh")
+  container.upload(my_container.uuid, "./tmp_keys/authorized_keys", "/root/.ssh")
+  container.execute(my_container.uuid, "chmod 600 /root/.ssh/authorized_keys")
+  container.execute(my_container.uuid, "service ssh start")
+  print("ssh root@%s" % public_ip)
+gold_provenance: authored from artifact(s) ['A6']
+checkers:
+- check: required_call
+  group: mechanism
+  name: create_lease
+- check: required_call
+  group: mechanism
+  name: create_container
+- check: forbidden_calls
+  group: specifics
+  names:
+  - Lease
+  - Container
+- check: kwarg
+  group: safety
+  call:
+  - create_container
+  arg:
+  - platform_version
+  present: true
+- check: lease_hours
+  group: specifics
+  hours: 10
+- check: kwarg
+  group: specifics
+  call: &id001
+  - add_device_reservation
+  arg:
+  - machine_type
+  - machine_name
+  equals: raspberrypi4-64
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - amount
+  - count
+  equals: 1
+- check: kwarg
+  group: specifics
+  call:
+  - Container
+  - create_container
+  arg:
+  - exposed_ports
+  contains: 22
+- check: required_code_string
+  group: specifics
+  s: openssh-server
+- check: required_call
+  group: mechanism
+  name: associate_floating_ip
+- check: reservation_wiring
+  group: mechanism
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance
+notes: 'Documented exception to the D01 OO anchor: the prompt itself demands the imperative generation.'

@@ -1,0 +1,307 @@
+artifact_id: A1
+repo_url: https://github.com/ChameleonCloud/edge_ssh_image
+commit_hash: 4d7f9bed2f3cdefceea3272f7cfcbac2b85fe7ea
+api_generation: imperative
+
+summary: >
+  A CHI@Edge Trovi artifact that builds an Ubuntu 22.04 Docker image with an
+  SSH-enabled sshd config (packaged via Dockerfile + GitHub Actions arm64 build)
+  and a tutorial notebook that reserves a raspberrypi4-64 edge device, launches
+  the SSH container, uploads the user's public key, and associates a floating IP
+  so the user can SSH in as root. All python-chi calls use the imperative
+  module-function API (chi.*, chi.lease.*, chi.container.*); create_container
+  returns an object whose .uuid attribute is used in later calls.
+
+workflow_stages:
+  - stage: site/auth
+    verbatim_code: |
+      import chi
+      # Before we go any further, we need to select which Chameleon site we will be using.
+      chi.use_site("CHI@Edge")
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 1
+  - stage: site/auth
+    verbatim_code: |
+      chi.set("project_name", "Chameleon")
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 2
+  - stage: other
+    verbatim_code: |
+      from chi import container
+      from chi import lease
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 3
+  - stage: lease
+    verbatim_code: |
+      # machine name refers to the "type" of device
+      machine_name = "raspberrypi4-64"
+
+      # get dates for lease start and end
+      start, end = lease.lease_duration(days=1)
+
+      # make a unique name for the lease
+      lease_name = f"ssh-{machine_name}-{start}"
+
+      reservations = []
+      lease.add_device_reservation(reservations, count=2, machine_name=machine_name)
+      container_lease = lease.create_lease(lease_name, reservations)
+      lease_id = container_lease["id"]
+
+      print(f"created lease with name {lease_name} and uuid {lease_id}, waiting for it to start. This can take up to 60s.")
+      lease.wait_for_active(lease_id)
+      print("Done!")
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 5
+  - stage: container
+    verbatim_code: |
+      print("Requesting container ... This may take a while as the large container image is being downloaded")
+
+      # Set a name for the container. Because CHI@Edge uses Kubernetes, ensure that underscores aren't in the name
+      container_name = f"tutorial-{machine_name}-ssh".replace("_","-")
+
+      try:
+          my_container = container.create_container(
+              container_name,
+              image="ghcr.io/chameleoncloud/edge_ssh_image:latest",
+              workdir="/home",
+              exposed_ports=[22],
+              reservation_id=lease.get_device_reservation(lease_id),
+              platform_version=2,
+          )
+      except RuntimeError as ex:
+          print(ex)
+          print(f"please stop and/or delete {container_name} and try again")
+      else:
+          print(f"Successfully created container: {container_name}!")
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 7
+  - stage: exec
+    verbatim_code: |
+      chi.container.upload(my_container.uuid, "./edge_user_public_key", "/root/.ssh/")
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 9
+  - stage: exec
+    verbatim_code: |
+      cmd = "/bin/bash -c \"chmod 600 /root/.ssh/authorized_keys\""
+      chi.container.execute(my_container.uuid, cmd)
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 10
+  - stage: exec
+    verbatim_code: |
+      cmd = "/bin/bash -c \"cat /root/.ssh/edge_user_public_key >> /root/.ssh/authorized_keys\""
+      chi.container.execute(my_container.uuid, cmd)
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 11
+  - stage: exec
+    verbatim_code: |
+      ip_address = chi.container.associate_floating_ip(my_container.uuid)
+
+      print("use the following command to ssh into the container: ssh root@" + ip_address)
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 13
+  - stage: teardown
+    verbatim_code: |
+      chi.container.destroy_container(my_container.uuid)
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 15
+
+api_calls:
+  - module: chi
+    function: use_site
+    exact_kwargs_as_used: '"CHI@Edge"  (positional)'
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 1
+  - module: chi
+    function: set
+    exact_kwargs_as_used: '"project_name", "Chameleon"  (positional)'
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 2
+  - module: chi.lease  (imported as `from chi import lease`)
+    function: lease_duration
+    exact_kwargs_as_used: days=1
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 5
+  - module: chi.lease
+    function: add_device_reservation
+    exact_kwargs_as_used: reservations (positional), count=2, machine_name=machine_name  (machine_name == "raspberrypi4-64")
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 5
+  - module: chi.lease
+    function: create_lease
+    exact_kwargs_as_used: lease_name (positional), reservations (positional)
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 5
+  - module: chi.lease
+    function: wait_for_active
+    exact_kwargs_as_used: lease_id  (positional)
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 5
+  - module: chi.container  (imported as `from chi import container`)
+    function: create_container
+    exact_kwargs_as_used: >
+      container_name (positional), image="ghcr.io/chameleoncloud/edge_ssh_image:latest",
+      workdir="/home", exposed_ports=[22],
+      reservation_id=lease.get_device_reservation(lease_id), platform_version=2
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 7
+  - module: chi.lease
+    function: get_device_reservation
+    exact_kwargs_as_used: lease_id (positional)  # called inline as reservation_id= argument
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 7
+  - module: chi.container
+    function: upload
+    exact_kwargs_as_used: 'my_container.uuid, "./edge_user_public_key", "/root/.ssh/"  (all positional)'
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 9
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: 'my_container.uuid, cmd  (positional); cmd == "/bin/bash -c \"chmod 600 /root/.ssh/authorized_keys\""'
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 10
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: 'my_container.uuid, cmd  (positional); cmd == "/bin/bash -c \"cat /root/.ssh/edge_user_public_key >> /root/.ssh/authorized_keys\""'
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 11
+  - module: chi.container
+    function: associate_floating_ip
+    exact_kwargs_as_used: my_container.uuid  (positional)
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 13
+  - module: chi.container
+    function: destroy_container
+    exact_kwargs_as_used: my_container.uuid  (positional)
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 15
+
+magic_strings:
+  - value: "CHI@Edge"
+    kind: other  # Chameleon site name passed to chi.use_site
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 1
+  - value: "project_name"
+    kind: other  # chi.set key
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 2
+  - value: "Chameleon"
+    kind: other  # project_name value
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 2
+  - value: "raspberrypi4-64"
+    kind: machine_type
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 5
+  - value: "ssh-{machine_name}-{start}"
+    kind: other  # lease_name f-string template
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 5
+  - value: "tutorial-{machine_name}-ssh"
+    kind: other  # container_name f-string template (with .replace("_","-"))
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 7
+  - value: "ghcr.io/chameleoncloud/edge_ssh_image:latest"
+    kind: image_ref
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 7
+  - value: "/home"
+    kind: other  # container workdir
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 7
+  - value: 22
+    kind: port  # exposed_ports=[22]
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 7
+  - value: 2
+    kind: other  # platform_version=2
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 7
+  - value: 2
+    kind: other  # count=2 device reservation count
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 5
+  - value: "./edge_user_public_key"
+    kind: other  # local file uploaded to container
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 9
+  - value: "/root/.ssh/"
+    kind: other  # upload destination path
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 9
+  - value: "/bin/bash -c \"chmod 600 /root/.ssh/authorized_keys\""
+    kind: other  # exec command
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 10
+  - value: "/bin/bash -c \"cat /root/.ssh/edge_user_public_key >> /root/.ssh/authorized_keys\""
+    kind: other  # exec command
+    source_ref: SSH_on_chiedge_tutorial.ipynb cell 11
+  - value: "ubuntu:22.04"
+    kind: image_ref  # Dockerfile base image
+    source_ref: Dockerfile line 1
+  - value: "ghcr.io"
+    kind: other  # container registry (CI env REGISTRY)
+    source_ref: .github/workflows/docker-ci.yml
+  - value: "linux/arm64"
+    kind: other  # docker build platform (ARM edge target)
+    source_ref: .github/workflows/docker-ci.yml
+  - value: "replace this line with your RSA public key"
+    kind: other  # placeholder contents of edge_user_public_key file
+    source_ref: edge_user_public_key
+
+preconditions:
+  - Assumes python-chi (the `chi` package) is installed and importable in the notebook kernel.
+  - Assumes valid Chameleon credentials / app credentials are already sourced in the
+    environment (the notebook only calls chi.use_site and chi.set project_name; it does
+    not perform explicit authentication).
+  - Assumes the user belongs to a project named "Chameleon" (hardcoded via chi.set).
+  - Assumes CHI@Edge has available raspberrypi4-64 devices to satisfy count=2.
+  - Assumes the prebuilt image ghcr.io/chameleoncloud/edge_ssh_image:latest exists and is arm64.
+  - Assumes the user has edited the local edge_user_public_key file to contain their real RSA
+    public key before running the upload cell.
+  - Cells run in order: exec/upload/floating-ip cells assume the lease is active and the
+    container (my_container) was successfully created.
+
+traps_illustrated:
+  - Device reservation (lease.add_device_reservation with machine_name) rather than node
+    reservation — CHI@Edge reserves edge *devices*, not bare-metal nodes.
+  - Container workflow (container.create_container) rather than a bare-metal server/instance.
+  - ARM64 image target — the image is built for linux/arm64 for the raspberrypi4-64 device.
+  - device_profile / machine_type string "raspberrypi4-64" is the CHI@Edge device type name.
+  - reservation_id wiring — reservation_id is populated by lease.get_device_reservation(lease_id),
+    NOT the raw lease_id, and is passed into create_container.
+  - Kubernetes naming constraint — container_name must not contain underscores
+    (.replace("_","-")).
+  - platform_version=2 required kwarg for CHI@Edge container creation.
+  - Floating IP association is a separate explicit step (associate_floating_ip) after container start.
+
+not_covered:
+  - No explicit authentication / app-credential sourcing code (assumes environment already set).
+  - No lease deletion / teardown (only the container is destroyed; the lease is left active).
+  - No node/bare-metal (chi.server / hardware) reservation or instance launch.
+  - No network, subnet, router, or security-group configuration APIs.
+  - No blazarclient direct usage — leasing goes only through chi.lease wrappers.
+  - No image building/registration from within the notebook (image is prebuilt via GitHub Actions).
+  - No use of container.get_container, list, logs, snapshot, or wait_for_active on the container.
+  - No error handling beyond a single try/except RuntimeError around create_container.
+  - No GPU, FPGA, sensor, camera, serial, or other peripheral device usage.
+  - No object storage (Swift), Gnocchi metrics, or Keystone/openstack SDK calls.
+  - No multi-device orchestration despite count=2 (only one container is created/used).
+  - No detach/removal of floating IP; no chi.container.destroy of the reservation.
+
+memorization_probes:
+  - "cat /root/.ssh/edge_user_public_key >> /root/.ssh/authorized_keys"
+  - 'container_name = f"tutorial-{machine_name}-ssh".replace("_","-")'
+  - "if ssh'ing into the device hangs forever when connecting to device part, please release the floating IP via the chi@edge openstack dashboard and rerun the cell below"
+
+uncertainties:
+  - api_generation classified as "imperative": all calls are module-level functions
+    (chi.*, chi.lease.*, chi.container.*). However create_container returns an object
+    and later calls read `my_container.uuid`, a mildly OO-flavored return value. Not
+    "oo" in the lease.Lease/container.Container sense, so recorded as imperative.
+  - Module paths: `lease` and `container` are bound via `from chi import container`
+    and `from chi import lease`; calls appear both as bare `lease.`/`container.` and as
+    `chi.container.` (e.g. chi.container.upload). I recorded the fully-qualified chi.lease
+    / chi.container module for clarity; the source uses the shorter aliases for lease/create
+    calls and `chi.container.` for upload/execute/associate_floating_ip/destroy.
+  - The `end` variable from lease.lease_duration(days=1) is unpacked but never used.
+  - count=2 reserves two devices but only a single container is ever created; unclear
+    whether the extra device is intentional.
+  - edge_user_public_key on disk contains the placeholder text
+    "replace this line with your RSA public key" (not a real key).
+
+# ============================================================================
+# STEP 3 — GREP VERIFICATION SUMMARY (run against commit 4d7f9be, repo root)
+# Each identifier / kwarg / magic string below was confirmed to appear verbatim.
+#
+# api_calls (14 call sites) — all function names grep-confirmed:
+#   use_site .............. 1 hit  (cell 1)
+#   chi.set / set ......... 1 hit  (cell 2)
+#   lease_duration ........ 1 hit  (cell 5)
+#   add_device_reservation  1 hit  (cell 5)
+#   create_lease .......... 1 hit  (cell 5)
+#   wait_for_active ....... 1 hit  (cell 5)
+#   create_container ...... 1 hit  (cell 7)
+#   get_device_reservation  1 hit  (cell 7)
+#   container.upload ...... 1 hit  (cell 9)
+#   container.execute ..... 2 hits (cells 10, 11)
+#   associate_floating_ip . 1 hit  (cell 13)
+#   destroy_container ..... 1 hit  (cell 15)
+#
+# kwargs — grep-confirmed verbatim:
+#   days=1, count=2, machine_name=, image=, workdir=, exposed_ports=[22],
+#   reservation_id=, platform_version=2  — all present.
+#
+# magic_strings — grep-confirmed verbatim:
+#   "CHI@Edge", "project_name", "Chameleon", "raspberrypi4-64",
+#   "ghcr.io/chameleoncloud/edge_ssh_image:latest", "/home", exposed_ports=[22],
+#   platform_version=2, "./edge_user_public_key", "/root/.ssh/",
+#   chmod 600 ... authorized_keys, cat ... edge_user_public_key >> ... authorized_keys,
+#   "ubuntu:22.04" (Dockerfile), "ghcr.io" & "linux/arm64" (docker-ci.yml),
+#   "replace this line with your RSA public key" (edge_user_public_key) — all present.
+#
+# memorization_probes — all 3 grep-confirmed verbatim in the notebook.
+# No invented identifiers remained after verification.
+# ============================================================================

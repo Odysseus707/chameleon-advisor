@@ -1,0 +1,49 @@
+id: AV01
+version: '4.0'
+lineage: new
+category: Availability
+axis: READ
+prompt: Print the device_name of every raspberrypi4-64 device on CHI@Edge that is free to reserve right
+  now (one per line).
+designed_trap: filter_reserved=False (or omitted) lists reserved devices too.
+trap_tags:
+- live_state
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - get_devices
+  - filter_reserved
+  specifics:
+  - raspberrypi4-64
+api_anchor: python-chi OO generation (D01)
+verification_level: V1
+expected_answer_type: code
+v1_expect:
+  stdout_contains_all:
+  - iot-rpi4-01
+  - iot-rpi4-03
+  - iot-rpi4-picam2
+  - iot-rpi4-picam3
+  - iot-rpi-cm4-02
+  stdout_not_contains:
+  - iot-rpi4-02
+  - iot-rpi4-picam1
+  - nyu-rpi5
+gold_spec: |
+  from chi import hardware
+
+  devs = hardware.get_devices(filter_reserved=True, device_type="raspberrypi4-64")
+  for d in devs:
+      print(d.device_name)
+gold_provenance: get_devices pattern from A2; Device fields from the advisor prototype probe
+checkers:
+- check: availability_query
+  group: mechanism
+  device_type: raspberrypi4-64

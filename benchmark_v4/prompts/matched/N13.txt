@@ -1,0 +1,557 @@
+Here is reference material about CHI@Edge on Chameleon Cloud that may be relevant to my question.
+=== REFERENCE MATERIAL ===
+# edge-cpu-inference — grounding content
+
+Source repository: https://github.com/teaching-on-testbeds/edge-cpu-inference
+Commit: 825fc32139dfd1e9f55ca43e68084e3dec41e575
+
+---
+
+## README.md
+
+# Using edge devices for CPU-based inference
+
+Machine learning models are most often trained in the “cloud”, on powerful centralized servers with specialized resources (like GPU acceleration) for training machine learning models.
+
+However, for a variety of reasons including privacy, latency, and network connectivity or bandwidth constraints, it is often preferable to use these models (i.e. do inference) at “edge” devices located wherever the input data is/where the model’s prediction is going to be used.
+
+These edge devices are less powerful and typically lack any special acceleration, so the inference time (the time from when the input is fed to the model, until the model outputs its prediction) may not be as fast as it would be on a cloud server - but we avoid having to send the input data to the cloud and then sending the prediction back.
+
+In this experiment, we will use an edge device for inference in an image classification context.
+
+To run this experiment on Chameleon, open a terminal inside the Chameleon Jupyter environment and run
+
+```
+cd ~/work
+git clone https://github.com/teaching-on-testbeds/edge-cpu-inference
+```
+
+Then, open the notebook inside the `edge-cpu-inference` directory and follow along with the instructions there.
+
+> Note: This experiment assumes that you already have a lease for an edge device on CHI@Edge!
+
+---
+This material is based upon work supported by the National Science Foundation under Grant No. 2230079.
+
+---
+
+## Notebook: reserve.ipynb
+
+### [markdown cell-0]
+
+# Run a single user notebook server on Chameleon
+
+This notebook describes how to reserve resources for an edge device. This allows you to run experiments requiring inferences on edge devices like Raspberry Pi, Coral and, Nvidia and compute resources on Chameleon using a Jupyter notebook interface.
+
+### [markdown cell-1]
+
+## Provision the resource
+
+### Check resource availability
+
+This notebook will try to reserve a Raspberry Pi on CHI@Edge - pending availability. Before you begin, you should check the host calendar at https://chi.edge.chameleoncloud.org/project/leases/calendar/device/ to see what node types are available.
+
+### Chameleon configuration
+
+You can change your Chameleon project name (if not using the one that is automatically configured in the JupyterHub environment) and the site on which to reserve resources (depending on availability) in the following cell.
+
+### [code cell-2]
+
+```python
+import chi, os, time
+from chi import lease
+from chi import server
+from chi import container
+
+PROJECT_NAME = os.getenv('OS_PROJECT_NAME') # change this if you need to
+chi.use_site("CHI@Edge")
+chi.set("project_name", PROJECT_NAME)
+username = os.getenv('USER') # all exp resources will have this prefix
+```
+
+### [markdown cell-3]
+
+If you need to change the details of the Chameleon server, e.g. use a different edge device (NODE_TYPE), or a different node type depending on availability, you can do that in the following cell.
+
+### [code cell-4]
+
+```python
+NODE_TYPE = 'raspberrypi4-64'
+expname = "edge-cpu"
+```
+
+### [code cell-5]
+
+```python
+res = []
+lease.add_device_reservation(res, machine_name=NODE_TYPE, count=1)
+
+start_date, end_date = lease.lease_duration(days=0, hours=10)
+# if you won't start right now - comment the line above, uncomment two lines below
+# start_date = '2024-04-02 15:24' # manually define to desired start time 
+# end_date = '2024-04-03 01:00' # manually define to desired start time 
+
+l = lease.create_lease(f"{username}-{NODE_TYPE}", res, start_date=start_date, end_date=end_date)
+l = lease.wait_for_active(l["id"])  #Comment this line if the lease starts in the future
+```
+
+### [code cell-6]
+
+```python
+# continue here, whether using a lease created just now or one created earlier
+l = lease.get_lease(f"{username}-{NODE_TYPE}")
+l['id']
+```
+
+### [markdown cell-7]
+
+### Delete the container
+
+Finally, we should stop and delete our lease so that other users can use the resources and create their own leases. To delete our lease, we can run the following cells:
+
+This section is designed to work as a “standalone” portion - you can come back to this notebook, ignore the top part, and just run this section to delete your resources
+
+### [code cell-8]
+
+```python
+# setup environment - if you made any changes in the top part, make the same changes here
+import chi, os
+from chi import lease
+
+PROJECT_NAME = os.getenv('OS_PROJECT_NAME') # change this if you need to
+chi.use_site("CHI@Edge")
+chi.set("project_name", PROJECT_NAME)
+username = os.getenv('USER') 
+
+lease = chi.lease.get_lease(f"{username}-{NODE_TYPE}")
+```
+
+### [code cell-9]
+
+```python
+DELETE = False #Default value is False to prevent any accidental deletes. Change it to True for deleting the resources
+
+if DELETE:
+
+    # delete lease
+    chi.lease.delete_lease(lease["id"])
+```
+
+---
+
+## Notebook: edge_cpu_inference.ipynb
+
+### [markdown cell-0]
+
+# Using edge devices for CPU-based inference
+
+### [markdown cell-1]
+
+Machine learning models are most often trained in the “cloud”, on powerful centralized servers with specialized resources (like GPU acceleration) for training machine learning models.
+
+However, for a variety of reasons including privacy, latency, and network connectivity or bandwidth constraints, it is often preferable to *use* these models (i.e. do inference) at “edge” devices located wherever the input data is/where the model’s prediction is going to be used.
+
+These edge devices are less powerful and typically lack any special acceleration, so the inference time (the time from when the input is fed to the model, until the model outputs its prediction) may not be as fast as it would be on a cloud server - but we avoid having to send the input data to the cloud and then sending the prediction back.
+
+### [markdown cell-2]
+
+This notebook assumes you already have a “lease” available for a device on the CHI@Edge testbed. Then, it will show you how to:
+
+-   launch a “container” on that device
+-   attach an IP address to the container, so that you can access it over SSH
+-   transfer files to and from the container
+-   use a pre-trained image classification model to do inference on the edge device
+-   delete the container
+
+### [markdown cell-3]
+
+## Launch a container on an edge device
+
+We will start by preparing our environment in this notebook, then launching a container on an edge device using our pre-existing lease.
+
+### [markdown cell-4]
+
+First, we load some required libraries:
+
+### [code cell-5]
+
+```python
+import chi
+from chi import container
+from chi import lease
+import datetime
+import os
+```
+
+### [markdown cell-6]
+
+We indicate that we’re going to use the CHI@Edge site. We also need to specify the name of the Chameleon “project” that this experiment is part of. This can be found using the `os.getenv('OS_PROJECT_NAME')`. The project name will have the format “CHI-XXXXXX”, where the last part is a 6-digit number. You can also find it on your [user dashboard](https://chameleoncloud.org/user/dashboard/).
+
+In the cell below, replace the project ID with your *own* project ID, then run the cell.
+
+### [code cell-7]
+
+```python
+PROJECT_NAME = os.getenv('OS_PROJECT_NAME') #"CHI-XXXXXX" format; Change this if needed
+chi.use_site("CHI@Edge")
+chi.set("project_name", PROJECT_NAME)
+```
+
+### [markdown cell-8]
+
+Next, we’ll specify the lease ID. This notebook assumes you already have a “lease” for a device on CHI@Edge. To get the ID of this lease,
+
+-   Vist the CHI@Edge [“reservations” page](https://chi.edge.chameleoncloud.org/project/leases/).
+-   Click on the lease name.
+-   On the following page, look for the value next to the word “Id” in the “Lease” section.
+
+Fill in the lease ID inside the quotation marks in the following cell, then run the cell.
+
+### [code cell-9]
+
+```python
+lease_id ="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+```
+
+### [markdown cell-10]
+
+Now, we are ready to launch a container!
+
+-   **Container** : A container is like a logical “box” that holds everything needed to run an application. It includes the application itself, along with all the necessary prerequisite software, files, and settings it needs to work properly.
+-   **Image** : An image is like a pre-packaged “starting point” for a container. On CHI@Edge, we can use any image that is built for the ARM64 architecture - e.g. anything on [this list](https://hub.docker.com/search?type=image&architecture=arm64&q=). In this example, we’re going to run a machine learning application written in Python, so we will use the `python:3.9-slim` image as a starting point for our container. This is a lightweight installation of the Debian Linux operating system with Python pre-installed.
+
+When we create the container, we could also specify some additional arguments:
+
+-   `workdir`: the “working directory” - location in the container’s filesystem from which any commands we specify will run.
+-   `exposed_ports`: if we run any applications inside the container that need to accept incoming requests from a network, we will need to export a “port” number for those incoming requests. Any requests to that port number will be forwarded to this container.
+-   `command`: if we want to execute a specific command immediately on starting the container, we can specify that as well.
+
+For this particular experiment, we’ll specify that port 22 - which is used for SSH access - should be exposed.
+
+Also, since we do not specify a `command` to run, we will further specify `interactive = True` - that it should open an interactive Python session - otherwise the container will immediately stop after it is started, because it has no “work” to do.
+
+### [markdown cell-11]
+
+First, we’ll specify the name for our container - we’ll include our username and the experiment name in the container name, so that it will be easy to identify our container in the CHI@Edge web interface.
+
+### [code cell-12]
+
+```python
+username = os.environ.get("USER")
+expname = "edge-cpu"
+# set a name for the container
+# Note that underscore characters _ are not allowed - we replace each _ with a -
+container_name = f"{username}-{expname}".replace("_","-")
+```
+
+### [markdown cell-13]
+
+Then, we can create the container!
+
+### [code cell-14]
+
+```python
+try:
+    my_container = container.create_container(
+        container_name,
+        image="python:3.9-slim",
+        reservation_id=lease.get_device_reservation(lease_id),
+        interactive=True,
+        exposed_ports=[22],
+        platform_version=2,
+    )
+except RuntimeError as ex:
+    print(ex)
+    print(f"Please stop and/or delete {container_name} and try again")
+else:
+    print(f"Successfully created container: {container_name}!")
+```
+
+### [markdown cell-15]
+
+The next cell waits for the container to be active - when it is, it will print some output related to the container state.
+
+### [code cell-16]
+
+```python
+# wait until container is ready to use
+container.wait_for_active(my_container.uuid)
+```
+
+### [markdown cell-17]
+
+Once the container is created, you should be able to see it and monitor its status on the [CHI@Edge web interface](https://chi.edge.chameleoncloud.org/project/container/containers). (If there was any problem while creating the container, you can also delete the container from that interface, in order to be able to try again.)
+
+### [markdown cell-18]
+
+## Attach an address and access your container over SSH
+
+### [markdown cell-19]
+
+Just as with a conventional “server” on Chameleon, we can attach an address to our container, then use SSH to access its terminal.
+
+First, we’ll attach an address:
+
+### [code cell-20]
+
+```python
+public_ip = container.associate_floating_ip(my_container.uuid)
+```
+
+### [markdown cell-21]
+
+Then, we need to install an SSH server on the container - it is not pre-installed on the image we selected. We can use the `container.execute()` function to run commands inside the container, in order to install the SSH server.
+
+### [code cell-22]
+
+```python
+container.execute(my_container.uuid, 'apt update')
+container.execute(my_container.uuid, 'apt -y install openssh-server')
+```
+
+### [markdown cell-23]
+
+There is one more necessary step before we can access the container over SSH - we need to make sure our key is installed on the container. Here, we will upload the key from the Jupyter environment, and make sure it is configured with the appropriate file permissions:
+
+### [code cell-24]
+
+```python
+!mkdir -p tmp_keys
+!cp /work/.ssh/id_rsa.pub tmp_keys/authorized_keys
+```
+
+### [code cell-25]
+
+```python
+container.execute(my_container.uuid, 'mkdir -p /root/.ssh')
+container.upload(my_container.uuid, "./tmp_keys/authorized_keys", "/root/.ssh")
+container.execute(my_container.uuid, 'chown root /root/.ssh')
+container.execute(my_container.uuid, 'chown root /root/.ssh/authorized_keys')
+container.execute(my_container.uuid, 'chmod go-w /root')
+container.execute(my_container.uuid, 'chmod 700 /root/.ssh')
+container.execute(my_container.uuid, 'chmod 600 /root/.ssh/authorized_keys')
+```
+
+### [markdown cell-26]
+
+Start the SSH server in the container. The following cell should print “sshd is running”. It it’s not running, it can be an indication that the SSH server was not fully installed; wait a minute or two and then try this cell again:
+
+### [code cell-27]
+
+```python
+container.execute(my_container.uuid, 'service ssh start')
+container.execute(my_container.uuid, 'service ssh status')
+```
+
+### [markdown cell-28]
+
+Now we can open a terminal in the Jupyter interface to access the container over SSH, using the SSH command that is printed by the following cell:
+
+### [code cell-29]
+
+```python
+print("ssh root@%s" % public_ip)
+```
+
+### [markdown cell-30]
+
+## Transfering files to the container
+
+Later in this notebook, we’ll run an image classification model - a model that accepts an image as input and “predicts” the name of the object in the image - inside the container. To do this, we’ll need to upload some files to the container:
+
+-   an already-trained model
+-   a list of labels - this maps the integer values “predicted” by the model to human readable object names
+-   a sample image
+-   and Python code to load the model and make a prediction on the image
+
+We first clone the `image_model` folder of [this](https://github.com/teaching-on-testbeds/edge-cpu-inference.git) git repository to bring the relevant files onto the Chameleon server. Run the following cell to do this
+
+### [code cell-31]
+
+```python
+!git clone https://github.com/teaching-on-testbeds/edge-cpu-inference.git
+!cd 
+!cp -R ./edge-cpu-inference/image_model ./
+!rm -f -R edge-cpu-inference
+```
+
+### [markdown cell-32]
+
+These are all contained in the `image_model` directory. We can upload them to the container using the `container.upload` function, and specify the source directory (in the Jupyter environment) and destination directory (on the container).
+
+*Make sure to upload this directory even if you choose to test your custom model; This directory contains the inference script.*
+
+### [code cell-33]
+
+```python
+container.upload(my_container.uuid, "./image_model", "/root/")
+container.execute(my_container.uuid, "ls -h /root/image_model/") #Check if all the files under the image_model directory have been uploaded
+```
+
+### [markdown cell-34]
+
+To upload you custom pre-trained model, use the following cell
+
+### [markdown cell-35]
+
+First upload the model to the Chameleon: - Click on the folder icon on the left to see your storage, if it isn’t already open. Click on the image_model directory, we will upload our model under this directory. Now click on “Upload”. - Wait until all uploads have completed. To check if all the files have been uploaded successfully, check the size of your MODELFILE on the server using the `!ls -a image_model/<MODELFILENAME>`. If the size matches your file size, then proceed.
+
+### [code cell-36]
+
+```python
+container.upload(my_container.uuid, ".image_model/<MODELFILE>", "/root/image_model/") #Replace MODELFILE with the name of your model file
+```
+
+### [markdown cell-37]
+
+## Use a pre-trained image classification model to do inference
+
+Now, we can use the model we uploaded to the container, and do inference - make a prediction - *on* the container.
+
+In this example, we will use a machine learning model that is specifically designed for inference on resource-constrained edge devices. In general, there are several strategies to reduce inference time on edge devices:
+
+-   **Model design**: models meant for inference on edge devices are often designed specifically to reduce memory and/or inference time. The model in this example is a MobileNet, which like many image classification models uses a *convolution* operation to process its input, but MobileNets use a kind of convolution that is much faster and requires fewer operations than a “standard” convolution.
+-   **Model Compression**: another approach to faster inference on edge devices is model compression, a group of techniques that try to reduce the size of the model without affecting its accuracy. The model in this example is a quantized model, which means that the numeric parameters in the model are represented using fewer bits than in a “standard” model. These quantized parameters can also be processed using faster mathematical operations, potentially improving the inference time.
+-   **Hardware Acceleration**: a third popular technique to improving inference time at the edge is with hardware acceleration - using specialized computer chips, GPUs, or TPUs that can perform the operations involved in inference very fast. In this example, though, we are going to use CPU-based inference, which means that there is no hardware acceleration.
+
+------------------------------------------------------------------------
+
+> For more information about these strategies, see: J. Chen and X. Ran, “Deep Learning With Edge Computing: A Review,” in Proceedings of the IEEE, vol. 107, no. 8, pp. 1655-1674, Aug. 2019, doi: 10.1109/JPROC.2019.2921977. https://ieeexplore.ieee.org/document/8763885
+
+### [markdown cell-38]
+
+First, we need to install a couple of Python libraries in the container:
+
+-   `tflite` is a library specifically designed for machine learning inference on edge devices.
+-   `Pillow` is used for image processing.
+
+### [code cell-39]
+
+```python
+container.execute(my_container.uuid, 'pip install tflite-runtime Pillow')
+```
+
+### [markdown cell-40]
+
+Then, we can execute the machine learning model! We will ask it to make a prediction for the following image:
+
+### [code cell-41]
+
+```python
+from IPython.display import Image
+Image('image_model/parrot.jpg') 
+```
+
+### [markdown cell-42]
+
+We now run inference using the uploaded model. If you would like to run this inference using your custom model, replace the below command with the following:
+`container.execute(my_container.uuid, 'python /root/image_model/model.py --model <MODELFILE_PATH> --label <IMAGELABEL_PATH> --image <TESTIMAGE_PATH>')`
+
+### [code cell-43]
+
+```python
+result = container.execute(my_container.uuid, 'python /root/image_model/model.py --model mobilenet_v2_1.0_224_quantized_1_default_1.tflite --label imagenet_labels.txt --image parrot.jpg ')
+print(result['output'])
+```
+
+### [markdown cell-44]
+
+Make a note of the time it took to generate the prediction - would this inference time be acceptable for all applications? Also make a note of the model’s three best “guesses” regarding the label of the image - is the prediction accurate?
+
+### [markdown cell-45]
+
+## Delete the container
+
+Finally, we should stop and delete our container so that others can create new containers using the same lease. To delete our container, we can run the following cell:
+
+### [code cell-46]
+
+```python
+container.destroy_container(my_container.uuid)
+```
+
+### [markdown cell-47]
+
+Also free up the IP that you we attached to the container, now that it is no longer in use:
+
+### [code cell-48]
+
+```python
+ip_details = chi.network.get_floating_ip(public_ip)
+chi.neutron().delete_floatingip(ip_details["id"])
+```
+
+---
+
+## Script: image_model/model.py
+
+```python
+import tflite_runtime.interpreter as tflite
+from PIL import Image
+import numpy as np
+import os
+import sys
+import time
+import argparse
+
+# Navigate to correct position in filesystem
+script_directory = os.path.dirname(os.path.abspath(sys.argv[0]))
+os.chdir(script_directory)
+
+# Set up the model
+def predict(model, label, image ):
+  interpreter = tflite.Interpreter(model_path=model)
+  interpreter.allocate_tensors()
+
+  input_details = interpreter.get_input_details()
+  output_details = interpreter.get_output_details()
+
+  # Prepare and pass the input image  
+  height = input_details[0]['shape'][1]
+  width = input_details[0]['shape'][2]
+  img = Image.open(image).resize((width, height))
+  img = img.convert('RGB')
+  input_data = np.array(img).reshape(input_details[0]['shape'])/255.0 # reshape eliminates needs for expand_dims  
+  if input_details[0]['quantization_parameters']['scales'].size > 0: # if it is quantized, divide by scaling parameter
+    input_data = np.array(input_data/input_details[0]['quantization_parameters']['scales'][0])
+  input_data = np.array(input_data, dtype = input_details[0]['dtype']) # either way, make sure dtype is correct
+  start_time = time.time()
+  interpreter.set_tensor(input_details[0]['index'], input_data)
+
+  # Make a prediction!
+  interpreter.invoke()
+
+  # Get and print the result
+  output_data = interpreter.get_tensor(output_details[0]['index'])
+  inf_time =  time.time() - start_time 
+  print(f"time: {inf_time}s" )
+
+  with open(label, 'r') as f:
+      labels = [line.strip() for line in f.readlines()]
+
+  sorted_result = sorted((e,i) for i,e in enumerate(output_data[0]))
+  prediction = sorted_result[-3:][::-1]
+  if output_details[0]['quantization_parameters']['scales'].size > 0:
+    prediction = [(i*output_details[0]['quantization_parameters']['scales'][0], j) for i,j in prediction]
+  predicted_labels = [" ".join(labels[j[1]].split(" ")[1:]) for j in prediction]
+  return prediction, predicted_labels
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model', help='File path of Tflite model.', required=True)
+    parser.add_argument('--label', help='File path of label file.', required=True)
+    parser.add_argument('--image', help='File path of the image to be recognized.', required=True)
+    
+    args = parser.parse_args()
+
+    if not args.model or not args.image or not args.label:
+        print("Warning: Must provide: model, label, and image file name.")
+        sys.exit(1)
+    prediction, labels = predict(args.model, args.label, args.image)
+    for (confidence, idx), label in zip(prediction, labels):
+        print('{:08.6f}: {}'.format(float(confidence), label))
+```
+
+=== END REFERENCE MATERIAL ===
+
+Question: Our lab standardized on the classic imperative python-chi API. Using ONLY that style (module functions - no Lease/Container classes), reserve one Pi 4 for 10 hours starting now and launch python:3.9-slim on it with SSH installed and reachable from outside.

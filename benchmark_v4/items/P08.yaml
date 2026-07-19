@@ -1,0 +1,43 @@
+id: P08
+version: '4.0'
+lineage: v3:P08
+category: Container
+axis: ACT
+prompt: Run 'ls /app' inside the running container in CHI@Edge and capture the output.
+designed_trap: Hallucinated exec API; ignores tuple return.
+trap_tags:
+- exec_api
+- return_shape
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - execute
+  specifics: []
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  result, code = my_container.execute("ls /app")
+  print(result)
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: result, code = my_container.execute("ls
+  /app")'
+checkers:
+- check: required_call
+  group: mechanism
+  name: execute
+- check: required_code_string
+  group: specifics
+  s: ls /app
+- check: required_code_string
+  group: mechanism
+  any:
+  - ', code'
+  - '[''output'']'
+  - '["output"]'

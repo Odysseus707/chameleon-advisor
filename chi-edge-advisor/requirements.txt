@@ -1,0 +1,20 @@
+# chi-edge-advisor -- production ("real stack") dependencies.
+#
+# NOTE: none of these are required to run the probe, the offline pipeline, or
+# the tests -- those paths use only the Python standard library. Install these
+# to enable the real embeddings / FAISS / LLM / live-Blazar backends.
+
+# --- Retrieval / embeddings (mirrors ChameleonCloud/RAG-docs-chameleon) ---
+faiss-cpu>=1.7.4
+sentence-transformers>=2.6.0      # serves BAAI/bge-large-en-v1.5
+numpy>=1.24                       # used by the FAISS path
+
+# --- LLM clients ---
+openai>=1.30.0                    # OpenAI-compatible client -> Tejas AI endpoint
+anthropic>=0.34.0                 # dev-time fallback (LLM_PROVIDER=anthropic)
+
+# --- Live availability backend ---
+python-chi>=1.0                   # Blazar-backed live host/lease state (CHI@Edge)
+
+# --- Optional convenience ---
+python-dotenv>=1.0                # (config.py also has a built-in .env loader)

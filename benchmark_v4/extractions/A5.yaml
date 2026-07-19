@@ -1,0 +1,500 @@
+artifact_id: A5
+repo_url: https://github.com/teaching-on-testbeds/serve-edge-chi
+commit_hash: 86555d89a5594fc348bd2dee2ac438aa463b00e6
+api_generation: oo
+# api_generation note: python-chi usage is the object-oriented generation
+# (context.version="1.0"; lease.get_lease() returns a Lease object; container.Container
+# object with .submit()/.associate_floating_ip()/.execute()). It also uses two
+# module-level helper functions (lease.get_lease(...) and chi.container.get_logs(...)),
+# which are the modern OO-API module helpers, NOT the old imperative
+# chi.lease.create_lease / chi.container.create_container style. There are NO
+# imperative python-chi calls and NO raw OpenStack SDK client calls. => purely oo.
+
+summary: >-
+  A teaching-on-testbeds CHI@Edge tutorial ("Serving machine learning models on
+  edge devices") for the GourmetGram food-classification scenario that benchmarks
+  ONNX model inference latency on a Raspberry Pi 5 (Arm Cortex A76) edge device.
+  A first notebook uses the object-oriented python-chi API to consume an
+  already-created device lease and launch a minimal-notebook Zun container on the
+  Pi, copy in three ONNX models, and install onnxruntime; a second notebook, run
+  inside that container, times single-sample inference of a baseline model and two
+  quantized variants. Lease CREATION is done manually in the Horizon GUI (documented
+  in the intro notebook, including a table of the seven nyu-rpi5 device UUIDs), not
+  in code.
+
+workflow_stages:
+  # ============================================================
+  # 0_intro.ipynb  (all markdown — no code; documents GUI lease creation)
+  # ============================================================
+  # NOTE: 0_intro.ipynb contains ZERO code cells. It is entirely markdown
+  # instructing the user to create the edge-device lease in the Horizon GUI
+  # (named serve_edge_<netID>) and to reserve a specific Pi 5 by uid. The
+  # device UUID table lives here (see magic_strings). Transcribed in grounding.
+
+  # ============================================================
+  # 1_create_edge_container.ipynb  (Chameleon Jupyter env — 11 code cells)
+  # ============================================================
+  - stage: site/auth
+    source_ref: 1_create_edge_container.ipynb cell 1 (id cell-1)
+    verbatim_code: |
+      # runs in Chameleon Jupyter environment
+      from chi import container, context, lease
+      import os
+      import chi
+
+      context.version = "1.0"
+      context.choose_project()
+      context.choose_site(default="CHI@Edge")
+
+  - stage: lease
+    source_ref: 1_create_edge_container.ipynb cell 3 (id cell-3)
+    verbatim_code: |
+      # runs in Chameleon Jupyter environment
+      l = lease.get_lease(f"serve_edge_netID")
+      l.show()
+
+  - stage: container
+    source_ref: 1_create_edge_container.ipynb cell 6 (id cell-6)
+    verbatim_code: |
+      # runs in Chameleon Jupyter environment
+      username = os.getenv('USER') # exp resources will have this suffix
+      c = container.Container(
+          name = f"node-serve-edge-{username}".replace('_', '-'),
+          reservation_id = l.device_reservations[0]["id"],
+          image_ref = "quay.io/jupyter/minimal-notebook:latest",
+          exposed_ports = [8888]
+      )
+      c.submit(idempotent=True, wait_timeout=1200)
+
+  - stage: container
+    source_ref: 1_create_edge_container.ipynb cell 8 (id cell-8)
+    verbatim_code: |
+      # runs in Chameleon Jupyter environment
+      c.associate_floating_ip()
+
+  - stage: exec
+    source_ref: 1_create_edge_container.ipynb cell 11 (id cell-11)
+    verbatim_code: |
+      # runs in Chameleon Jupyter environment
+      stdout, code = c.execute("git clone https://github.com/teaching-on-testbeds/serve-edge-chi.git")
+      print(stdout)
+
+  - stage: exec
+    source_ref: 1_create_edge_container.ipynb cell 13 (id cell-13)
+    verbatim_code: |
+      # runs in Chameleon Jupyter environment
+      stdout, code = c.execute("mv serve-edge-chi/workspace/models work/")
+      print(stdout)
+
+  - stage: exec
+    source_ref: 1_create_edge_container.ipynb cell 14 (id cell-14)
+    verbatim_code: |
+      # runs in Chameleon Jupyter environment
+      stdout, code = c.execute("mv serve-edge-chi/workspace/2_measure_pi.ipynb work/")
+      print(stdout)
+
+  - stage: exec
+    source_ref: 1_create_edge_container.ipynb cell 16 (id cell-16)
+    verbatim_code: |
+      # runs in Chameleon Jupyter environment
+      stdout, code = c.execute("python3 -m pip install onnxruntime")
+      print(stdout)
+
+  - stage: exec
+    source_ref: 1_create_edge_container.ipynb cell 17 (id cell-17)
+    verbatim_code: |
+      # runs in Chameleon Jupyter environment
+      stdout, code = c.execute("rm -rf serve-edge-chi")
+      print(stdout)
+
+  - stage: exec
+    source_ref: 1_create_edge_container.ipynb cell 19 (id cell-19)
+    verbatim_code: |
+      # runs in Chameleon Jupyter environment
+      print(chi.container.get_logs(c.id))
+
+  # NOTE: 1_create_edge_container.ipynb has NO teardown cell (no c.delete()/l.delete()).
+
+  # ============================================================
+  # workspace/2_measure_pi.ipynb  (runs INSIDE the edge container — 5 code cells)
+  # ============================================================
+  - stage: exec
+    source_ref: workspace/2_measure_pi.ipynb cell 1 (id cell-1)
+    verbatim_code: |
+      # runs in Jupyter container on edge device
+      import os, time
+      import numpy as np
+      import onnxruntime as ort
+
+  - stage: exec
+    source_ref: workspace/2_measure_pi.ipynb cell 3 (id cell-3)
+    verbatim_code: |
+      # runs in Jupyter container on edge device
+      def benchmark_session(ort_session):
+
+          ## Benchmark inference latency for single sample
+
+          num_trials = 100  # Number of trials
+          input_shape = ort_session.get_inputs()[0].shape  # Get expected input shape
+          input_dtype = np.float32  # Adjust dtype as needed
+          fixed_shape = (1, *input_shape[1:])
+
+          # Generate a single dummy sample with random values
+          single_sample = np.random.rand(*fixed_shape).astype(input_dtype)
+
+          # Warm-up run
+          ort_session.run(None, {ort_session.get_inputs()[0].name: single_sample})
+
+          latencies = []
+          for _ in range(num_trials):
+              start_time = time.time()
+              _ = ort_session.run(None, {ort_session.get_inputs()[0].name: single_sample})
+              latencies.append(time.time() - start_time)
+
+          print(f"Inference Latency (single sample, median): {np.percentile(latencies, 50) * 1000:.2f} ms")
+          print(f"Inference Latency (single sample, 95th percentile): {np.percentile(latencies, 95) * 1000:.2f} ms")
+          print(f"Inference Latency (single sample, 99th percentile): {np.percentile(latencies, 99) * 1000:.2f} ms")
+          print(f"Inference Throughput (single sample): {num_trials/np.sum(latencies):.2f} FPS")
+
+  - stage: exec
+    source_ref: workspace/2_measure_pi.ipynb cell 5 (id cell-5)
+    verbatim_code: |
+      # runs in Jupyter container on edge device
+      onnx_model_path = "models/food11.onnx"
+      ort_session = ort.InferenceSession(onnx_model_path, providers=['CPUExecutionProvider'])
+      benchmark_session(ort_session)
+
+  - stage: exec
+    source_ref: workspace/2_measure_pi.ipynb cell 7 (id cell-7)
+    verbatim_code: |
+      # runs in Jupyter container on edge device
+      onnx_model_path = "models/food11_quantized_dynamic.onnx"
+      ort_session = ort.InferenceSession(onnx_model_path, providers=['CPUExecutionProvider'])
+      benchmark_session(ort_session)
+
+  - stage: exec
+    source_ref: workspace/2_measure_pi.ipynb cell 9 (id cell-9)
+    verbatim_code: |
+      # runs in Jupyter container on edge device
+      onnx_model_path = "models/food11_quantized_aggressive.onnx"
+      ort_session = ort.InferenceSession(onnx_model_path, providers=['CPUExecutionProvider'])
+      benchmark_session(ort_session)
+
+api_calls:
+  # ---------- python-chi (OO + module helpers) ----------
+  - module: chi.context
+    function: version
+    exact_kwargs_as_used: 'context.version = "1.0"  # attribute assignment (note trailing space in source)'
+    source_ref: 1_create_edge_container.ipynb cell 1 (id cell-1)
+
+  - module: chi.context
+    function: choose_project
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: 1_create_edge_container.ipynb cell 1 (id cell-1)
+
+  - module: chi.context
+    function: choose_site
+    exact_kwargs_as_used: 'default="CHI@Edge"'
+    source_ref: 1_create_edge_container.ipynb cell 1 (id cell-1)
+
+  - module: chi.lease
+    function: get_lease
+    exact_kwargs_as_used: 'f"serve_edge_netID"  # positional (f-string with no placeholders)'
+    source_ref: 1_create_edge_container.ipynb cell 3 (id cell-3)
+
+  - module: chi.lease.Lease (instance)
+    function: show
+    exact_kwargs_as_used: '()  # no args; l.show()'
+    source_ref: 1_create_edge_container.ipynb cell 3 (id cell-3)
+
+  - module: chi.lease.Lease (instance)
+    function: device_reservations
+    exact_kwargs_as_used: 'l.device_reservations[0]["id"]  # attribute access, indexed, used as reservation_id'
+    source_ref: 1_create_edge_container.ipynb cell 6 (id cell-6)
+
+  - module: chi.container
+    function: Container
+    exact_kwargs_as_used: >-
+      name = f"node-serve-edge-{username}".replace('_', '-'),
+      reservation_id = l.device_reservations[0]["id"],
+      image_ref = "quay.io/jupyter/minimal-notebook:latest",
+      exposed_ports = [8888]
+    source_ref: 1_create_edge_container.ipynb cell 6 (id cell-6)
+
+  - module: chi.container.Container (instance)
+    function: submit
+    exact_kwargs_as_used: 'idempotent=True, wait_timeout=1200'
+    source_ref: 1_create_edge_container.ipynb cell 6 (id cell-6)
+
+  - module: chi.container.Container (instance)
+    function: associate_floating_ip
+    exact_kwargs_as_used: '()  # no args; c.associate_floating_ip()'
+    source_ref: 1_create_edge_container.ipynb cell 8 (id cell-8)
+
+  - module: chi.container.Container (instance)
+    function: execute
+    exact_kwargs_as_used: >-
+      "git clone https://github.com/teaching-on-testbeds/serve-edge-chi.git"  |
+      "mv serve-edge-chi/workspace/models work/"  |
+      "mv serve-edge-chi/workspace/2_measure_pi.ipynb work/"  |
+      "python3 -m pip install onnxruntime"  |
+      "rm -rf serve-edge-chi"   # each a positional command string; returns (stdout, code)
+    source_ref: 1_create_edge_container.ipynb cells 11, 13, 14, 16, 17
+
+  - module: chi.container
+    function: get_logs
+    exact_kwargs_as_used: 'c.id  # positional; called as chi.container.get_logs(c.id)'
+    source_ref: 1_create_edge_container.ipynb cell 19 (id cell-19)
+
+  # ---------- onnxruntime (runs inside the edge container) ----------
+  - module: onnxruntime (imported as ort)
+    function: InferenceSession
+    exact_kwargs_as_used: "onnx_model_path, providers=['CPUExecutionProvider']  # onnx_model_path positional"
+    source_ref: workspace/2_measure_pi.ipynb cells 5, 7, 9
+
+  - module: onnxruntime.InferenceSession (instance)
+    function: run
+    exact_kwargs_as_used: 'None, {ort_session.get_inputs()[0].name: single_sample}  # (output_names=None, input_feed dict)'
+    source_ref: workspace/2_measure_pi.ipynb cell 3 (id cell-3)
+
+  - module: onnxruntime.InferenceSession (instance)
+    function: get_inputs
+    exact_kwargs_as_used: 'ort_session.get_inputs()[0].shape / ...[0].name  # no args, indexed'
+    source_ref: workspace/2_measure_pi.ipynb cell 3 (id cell-3)
+
+magic_strings:
+  # ---------- 1_create_edge_container.ipynb ----------
+  - value: "1.0"
+    kind: other
+    source_ref: 1_create_edge_container.ipynb cell 1 (id cell-1)
+    note: context.version = "1.0" (selects the OO python-chi API generation)
+
+  - value: "CHI@Edge"
+    kind: machine_type
+    source_ref: 1_create_edge_container.ipynb cell 1 (id cell-1)
+    note: site name; passed as default= to context.choose_site (kind is really "site name")
+
+  - value: "serve_edge_netID"
+    kind: other
+    source_ref: 1_create_edge_container.ipynb cell 3 (id cell-3); 0_intro.ipynb cell 5
+    note: >-
+      lease name looked up via lease.get_lease(f"serve_edge_netID"); user is instructed to
+      substitute their real netID (documented as serve_edge_<netID>). Assumed to pre-exist.
+
+  - value: "node-serve-edge-{username}"
+    kind: device_name
+    source_ref: 1_create_edge_container.ipynb cell 6 (id cell-6)
+    note: >-
+      container name kwarg (not a device); f-string with {username} from os.getenv('USER'),
+      then .replace('_', '-') to make it alphanumeric+'-' only.
+
+  - value: "quay.io/jupyter/minimal-notebook:latest"
+    kind: image_ref
+    source_ref: 1_create_edge_container.ipynb cell 6 (id cell-6)
+    note: image_ref for the edge container (multi-arch upstream Jupyter image; NOT a Chameleon ARM image)
+
+  - value: "8888"
+    kind: port
+    source_ref: 1_create_edge_container.ipynb cell 6 (id cell-6)
+    note: exposed_ports=[8888] (Jupyter). Only one port exposed.
+
+  - value: "USER"
+    kind: env_var
+    source_ref: 1_create_edge_container.ipynb cell 6 (id cell-6)
+    note: read via os.getenv('USER')
+
+  - value: "git clone https://github.com/teaching-on-testbeds/serve-edge-chi.git"
+    kind: other
+    source_ref: 1_create_edge_container.ipynb cell 11 (id cell-11)
+    note: shell command run via c.execute inside the container
+
+  - value: "mv serve-edge-chi/workspace/models work/"
+    kind: other
+    source_ref: 1_create_edge_container.ipynb cell 13 (id cell-13)
+    note: shell command via c.execute; moves ONNX models into the container's work/ dir
+
+  - value: "mv serve-edge-chi/workspace/2_measure_pi.ipynb work/"
+    kind: other
+    source_ref: 1_create_edge_container.ipynb cell 14 (id cell-14)
+    note: shell command via c.execute; moves the benchmark notebook into work/
+
+  - value: "python3 -m pip install onnxruntime"
+    kind: other
+    source_ref: 1_create_edge_container.ipynb cell 16 (id cell-16)
+    note: shell command via c.execute; installs onnxruntime in the container
+
+  - value: "rm -rf serve-edge-chi"
+    kind: other
+    source_ref: 1_create_edge_container.ipynb cell 17 (id cell-17)
+    note: shell command via c.execute; cleans up the cloned repo, leaving only work/
+
+  # ---------- workspace/2_measure_pi.ipynb ----------
+  - value: "models/food11.onnx"
+    kind: other
+    source_ref: workspace/2_measure_pi.ipynb cell 5 (id cell-5)
+    note: baseline ONNX model path (file present in workspace/models/)
+
+  - value: "models/food11_quantized_dynamic.onnx"
+    kind: other
+    source_ref: workspace/2_measure_pi.ipynb cell 7 (id cell-7)
+    note: dynamic-quantization ONNX model path (file present in workspace/models/)
+
+  - value: "models/food11_quantized_aggressive.onnx"
+    kind: other
+    source_ref: workspace/2_measure_pi.ipynb cell 9 (id cell-9)
+    note: static (aggressive) quantization ONNX model path; markdown says up to 0.05 accuracy drop
+
+  - value: "CPUExecutionProvider"
+    kind: other
+    source_ref: workspace/2_measure_pi.ipynb cells 5, 7, 9
+    note: providers=['CPUExecutionProvider'] to ort.InferenceSession
+
+  # ---------- 0_intro.ipynb (Horizon GUI lease-creation instructions) ----------
+  - value: "nyu-rpi5-01 .. nyu-rpi5-07"
+    kind: device_name
+    source_ref: 0_intro.ipynb cell 5 (id cell-5); snippets/intro.md
+    note: >-
+      device-name pattern nyu-rpi5-XX for the reservable Raspberry Pi 5s (07 physical nodes,
+      01 through 07). Reserved in Horizon by uid.
+
+  - value: "c516acb2-4c88-42be-857f-2f9eb4139f99"
+    kind: device_name
+    source_ref: 0_intro.ipynb cell 5 (id cell-5)
+    note: UUID (Resource property 'uid') of nyu-rpi5-01
+
+  - value: "8334d598-d25d-4dbb-a416-d90f8e93ccc4"
+    kind: device_name
+    source_ref: 0_intro.ipynb cell 5 (id cell-5)
+    note: UUID of nyu-rpi5-02
+
+  - value: "a755b236-580e-4040-874c-80501f00f954"
+    kind: device_name
+    source_ref: 0_intro.ipynb cell 5 (id cell-5)
+    note: UUID of nyu-rpi5-03
+
+  - value: "9a7823ea-bf40-4141-b7d7-943bfb389091"
+    kind: device_name
+    source_ref: 0_intro.ipynb cell 5 (id cell-5)
+    note: UUID of nyu-rpi5-04
+
+  - value: "54a6e248-cbb2-472d-bde7-0b4ac3bd911a"
+    kind: device_name
+    source_ref: 0_intro.ipynb cell 5 (id cell-5)
+    note: UUID of nyu-rpi5-05
+
+  - value: "52341ad4-ff91-4516-a3ec-88687a8d984b"
+    kind: device_name
+    source_ref: 0_intro.ipynb cell 5 (id cell-5)
+    note: UUID of nyu-rpi5-06
+
+  - value: "7bfe3fe8-6f1e-41a4-8d9a-aa9668db8805"
+    kind: device_name
+    source_ref: 0_intro.ipynb cell 5 (id cell-5)
+    note: UUID of nyu-rpi5-07
+
+  - value: "a1662022-9017-45b1-9b96-31705ca20358"
+    kind: other
+    source_ref: 0_intro.ipynb cell 6 (id cell-6); snippets/intro.md
+    note: Trovi experiment share ID (chameleoncloud.org/experiment/share/<id>)
+
+  - value: "Raspberry Pi 5"
+    kind: machine_type
+    source_ref: 0_intro.ipynb cells 0,2,3,5; snippets/intro.md
+    note: target edge hardware; reserved via Horizon "Vendor" -> "Raspberry Pi"
+
+preconditions:
+  - "Assumes running inside Chameleon's JupyterHub with python-chi preinstalled; context.choose_project()/choose_site() are interactive dropdown pickers (1_create_edge_container.ipynb)."
+  - "Assumes valid Chameleon credentials / app credentials already sourced in the environment."
+  - "Assumes a USER environment variable is set (used as a container-name suffix, read via os.getenv('USER'))."
+  - >-
+    Assumes an ALREADY-EXISTING, currently-ACTIVE edge-device lease named serve_edge_<netID>
+    with a device reservation — created MANUALLY in the Horizon GUI per 0_intro.ipynb. The code
+    only calls lease.get_lease(...); it never creates the lease or a device reservation.
+  - "The container stage assumes the lease exposes l.device_reservations[0]['id']."
+  - "Assumes the tutorial is run at the START of the reserved 2-hour lease window (lease status ACTIVE); the intro notebook explicitly separates lease creation (advance) from container launch (at lease start)."
+  - "Assumes the reserved hardware is a Raspberry Pi 5 (Arm Cortex A76) at CHI@Edge with internet access to pull quay.io/jupyter/minimal-notebook:latest and to git-clone / pip-install."
+  - "workspace/2_measure_pi.ipynb assumes it runs INSIDE the edge container, with models/ (the three .onnx files) present in the working dir and onnxruntime installed (both set up by 1_create_edge_container.ipynb)."
+  - "The three ONNX models (food11.onnx, food11_quantized_dynamic.onnx, food11_quantized_aggressive.onnx) are assumed to already exist — they are checked into workspace/models/ (produced by the companion serve-model-chi experiment)."
+
+traps_illustrated:
+  - "Container (not server) on CHI@Edge: uses container.Container + c.submit()/c.execute()/c.associate_floating_ip(), never server.Server — the canonical CHI@Edge Zun-container pattern."
+  - "Device reservation (not node/flavor reservation) on edge: reservation_id is read from l.device_reservations[0]['id'] (device_reservations, not flavor reservations)."
+  - "reservation_id wiring: the edge container pulls reservation_id from the lease object's device_reservations list at index [0]['id']."
+  - "Consuming a pre-existing, GUI-created lease: lease.get_lease('serve_edge_netID') instead of creating one in code — lease creation is entirely out-of-band (Horizon)."
+  - "Reserving a SPECIFIC edge device by uid: 0_intro documents putting a Pi 5 UUID in the Blazar 'Resource properties' -> uid field (device-pinning), with a table of the seven nyu-rpi5 UUIDs."
+  - "Container naming constraint: name is f\"node-serve-edge-{username}\".replace('_', '-') to satisfy the alphanumeric+'-' container-name rule (usernames often contain underscores)."
+  - "context.version = \"1.0\" selects the OO python-chi generation — a divergence point vs older imperative chi.lease/chi.server module functions."
+  - "exposed_ports on the edge container + c.associate_floating_ip() on a container object (CHI@Edge container port exposure + floating IP) — vs server-side security groups."
+  - "Running the workload INSIDE the container via c.execute(...) (git clone / mv / pip install) rather than SSHing into a bare-metal node; then a SECOND notebook runs interactively inside the container's own Jupyter."
+  - "Multi-arch/ARM image reality: the edge image quay.io/jupyter/minimal-notebook:latest is a multi-arch upstream image that resolves to arm64 on the Pi 5 — the artifact relies on multi-arch resolution rather than a Chameleon-specific ARM image."
+  - "wait_timeout=1200 on c.submit(idempotent=True, ...): edge container bring-up can be slow, so an explicit long timeout is passed (a CHI@Edge-specific gotcha)."
+  - "c.execute returns a (stdout, code) tuple (unpacked everywhere) — code is captured but never checked."
+
+not_covered:
+  - "No lease CREATION in code — never calls lease.Lease(...) / add_device_reservation(...); the edge lease is created manually in Horizon."
+  - "No teardown anywhere — NO c.delete(), l.delete(), or floating-IP release cell; neither notebook cleans up the container or lease."
+  - "No lease status/wait polling in code (l.show() only prints); relies on the user timing the run to the lease window. No wait_for_active on the lease."
+  - "No error handling / retries / status checks — c.execute return code is ignored; no ERROR-state container handling in code (only a markdown note to delete via Horizon GUI)."
+  - "No device_profiles, runtime=, or environment= kwargs on container.Container (unlike GPU/peripheral edge artifacts) — no GPU runtime requested here (CPU-only benchmarking)."
+  - "No peripheral/device passthrough (no camera, GPIO, USB, /dev mapping, privileged mode, or host device access)."
+  - "No file upload/download via python-chi (no c.upload/c.download); files are moved with in-container shell mv, and the notebook is retrieved by the git clone + browser download, not the API."
+  - "No SSH into the edge device/container from the notebook (port 22 is not exposed; only 8888)."
+  - "No use of imperative python-chi module functions (chi.lease.create_lease / chi.container.create_container, etc.) and no raw OpenStack SDK clients (nova/neutron/cinder/zun)."
+  - "No model TRAINING, quantization, or accuracy evaluation — the three ONNX models are pre-built and only latency/throughput are measured; no real data (random dummy inputs)."
+  - "No batch-throughput or multi-sample benchmarking — only single-sample latency (batch size fixed to 1 via fixed_shape=(1, *input_shape[1:])); the intro's batch/GPU targets are context only, not measured here."
+  - "No GPU / EPYC / A100 benchmarking in this repo — those are the companion serve-model-chi experiment; this artifact is edge-CPU only."
+  - "No networking configuration beyond the single floating IP (no security groups, no reserved networks — intro says 'We won't include any network resources in this lease')."
+
+memorization_probes:
+  - 'name = f"node-serve-edge-{username}".replace(''_'', ''-''),   (with reservation_id=l.device_reservations[0]["id"], image_ref="quay.io/jupyter/minimal-notebook:latest", exposed_ports=[8888]); c.submit(idempotent=True, wait_timeout=1200)'
+  - 'l = lease.get_lease(f"serve_edge_netID")   # then l.show()  (lease name literally contains the placeholder word "netID")'
+  - 'The nyu-rpi5 UUID table, e.g. nyu-rpi5-01 -> c516acb2-4c88-42be-857f-2f9eb4139f99 and nyu-rpi5-07 -> 7bfe3fe8-6f1e-41a4-8d9a-aa9668db8805 (0_intro.ipynb)'
+  - 'Typo "Arm Cortext A76" in 0_intro.ipynb cell 0 / snippets/intro.md (elsewhere written correctly as "ARM Cortex A76")'
+
+uncertainties:
+  - >-
+    api_generation labeled 'oo': all resource handling is object-oriented (Lease/Container objects,
+    context.version="1.0"), with module helpers lease.get_lease(...) and chi.container.get_logs(...)
+    that belong to the same OO generation. There are NO imperative create_* calls and NO raw
+    OpenStack clients, so this is unambiguously 'oo' (unlike A4 which is arguably mixed).
+  - "context.version = \"1.0\" is an attribute assignment, not a function call; listed under api_calls for completeness. Source has a trailing space after \"1.0\"."
+  - "l.device_reservations is accessed as an attribute returning a list of dicts (indexed [0]['id']); whether it is a property or plain attribute is not determinable from the repo."
+  - "f\"serve_edge_netID\" and f\"node-serve-edge-{username}\" are f-strings; the former has no placeholder (the literal word 'netID' is a stand-in the user must edit), the latter interpolates {username}."
+  - "None of the three .ipynb files contain any saved cell outputs (they are un-executed template notebooks), so no printed device inventory / IDs exist to carry into grounding — the device UUID table lives in the 0_intro markdown, which IS transcribed."
+  - "index.md, Makefile, _config.yml, _layouts/default.html, LICENSE and snippets/*.md are website-build sources; the snippet .md files contain byte-identical code to the notebooks (verified by grep counts of 2). The three .onnx binaries in workspace/models/ were not parsed (binary)."
+  - "The exact 8888 port role (Jupyter) is inferred from context; the code only lists the integer in exposed_ports."
+
+# ============================================================================
+# GREP VERIFICATION SUMMARY (run at commit 86555d89a5594fc348bd2dee2ac438aa463b00e6)
+# grep -IF over the 3 notebooks + the 3 code-bearing snippet .md files.
+# Counts = number of lines containing the literal substring (notebook + its snippet
+# mirror => usually 2; onnxruntime/InferenceSession appear on multiple lines).
+# ----------------------------------------------------------------------------
+# workflow_stages / api_calls identifiers — all FOUND:
+#   context.version = "1.0":1  context.choose_project():2  choose_site(default="CHI@Edge"):1
+#   from chi import container, context, lease:2  lease.get_lease(f"serve_edge_netID"):1
+#   container.Container(:2  reservation_id = l.device_reservations[0]["id"]:1
+#   image_ref = "quay.io/jupyter/minimal-notebook:latest":1  exposed_ports = [8888]:2
+#   c.submit(idempotent=True, wait_timeout=1200):2  c.associate_floating_ip():2
+#   c.execute(:10  chi.container.get_logs(c.id):2  node-serve-edge-{username}:2
+#   os.getenv('USER'):2  ort.InferenceSession:6  def benchmark_session(ort_session):2
+#   => all present verbatim. (Counts of 1 vs 2 are just notebook-vs-snippet mirroring;
+#      choose_site shows 1 because only one of {ipynb,md} matched the full arg on one line — both files DO contain it, confirmed by grep -c 'choose_site' => 1 each.)
+#
+# magic_strings — all FOUND:
+#   1.0:1  CHI@Edge:>=1  serve_edge_netID:1  node-serve-edge-{username}:2
+#   quay.io/jupyter/minimal-notebook:latest:1  8888:2  USER:2
+#   git clone ...serve-edge-chi.git:2  mv serve-edge-chi/workspace/models work/:2
+#   mv serve-edge-chi/workspace/2_measure_pi.ipynb work/:2  python3 -m pip install onnxruntime:2
+#   rm -rf serve-edge-chi:2  models/food11.onnx:2  models/food11_quantized_dynamic.onnx:2
+#   models/food11_quantized_aggressive.onnx:2  CPUExecutionProvider:6
+#   nyu-rpi5-01:2  nyu-rpi5-07:2  a1662022-9017-45b1-9b96-31705ca20358:2  Raspberry Pi 5:6
+#   All 7 Pi5 UUIDs (c516acb2.../8334d598.../a755b236.../9a7823ea.../54a6e248.../52341ad4.../7bfe3fe8...):2 each
+#   Arm Cortext A76 (typo):2
+#   => all magic_strings verified present verbatim.
+#
+# memorization_probes — component lines confirmed present in 1_create_edge_container.ipynb
+#   and 0_intro.ipynb (UUID table + "Arm Cortext A76" typo).
+#
+# RESULT: 0 invented identifiers. Every field-level identifier grep-confirmed at HEAD.
+# ============================================================================

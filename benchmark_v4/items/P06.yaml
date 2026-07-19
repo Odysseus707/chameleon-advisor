@@ -1,0 +1,52 @@
+id: P06
+version: '4.0'
+lineage: v3:P06
+category: Container
+axis: VALIDATE
+prompt: My container on CHI@Edge exits immediately. Make it stay running so I can exec into it.
+designed_trap: No long-running command given.
+trap_tags:
+- keepalive_command
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - command=
+  specifics:
+  - sleep
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import container
+
+  my_container = container.Container(
+      "keepalive-fix",
+      image_ref="ubuntu:22.04",
+      exposed_ports=[],
+      reservation_id=my_lease.device_reservations[0]["id"],
+      command=["sleep", "infinity"],
+  )
+  my_container.submit()
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: Add command=["sleep","infinity"]
+  to Container(...)'
+checkers:
+- check: container_call
+  group: mechanism
+- check: kwarg
+  group: mechanism
+  call:
+  - Container
+  - create_container
+  arg:
+  - command
+  present: true
+- check: required_code_string
+  group: specifics
+  s: sleep

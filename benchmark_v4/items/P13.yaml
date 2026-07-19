@@ -1,0 +1,41 @@
+id: P13
+version: '4.0'
+lineage: v3:P13
+category: SSH / Dev
+axis: VALIDATE
+prompt: Which image and exposed port do I need for SSH on CHI@Edge?
+designed_trap: Generic sshd build; misses prebuilt image.
+trap_tags:
+- magic_image
+target_artifact:
+- A1
+fed_sets:
+  blind: []
+  matched:
+  - A1
+  heldout:
+  - A2
+  - A3
+tier_intent_by_condition:
+  matched: T1
+  heldout: T4
+key_tokens:
+  mechanism: []
+  specifics:
+  - ghcr.io/chameleoncloud/edge_ssh_image
+  - '22'
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  # Image: ghcr.io/chameleoncloud/edge_ssh_image:latest
+  # Exposed port: 22  ->  exposed_ports=[22]
+gold_provenance: 'authored from artifact(s) [''A1''] extractions; v3 gold: ghcr.io/chameleoncloud/edge_ssh_image:latest,
+  exposed_ports=[22]'
+checkers:
+- check: required_text_string
+  group: specifics
+  s: ghcr.io/chameleoncloud/edge_ssh_image
+- check: required_text_string
+  group: specifics
+  s: '22'

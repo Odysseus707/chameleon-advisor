@@ -1,0 +1,1 @@
+Show the minimal python-chi setup to target CHI@Edge and select my project.

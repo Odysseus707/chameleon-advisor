@@ -1,0 +1,43 @@
+id: P09
+version: '4.0'
+lineage: v3:P09
+category: Container
+axis: ACT
+prompt: Upload model.pt into the CHI@Edge container, then download results.csv back out.
+designed_trap: Invented up/download names.
+trap_tags:
+- file_transfer_api
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - upload
+  - download
+  specifics: []
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  my_container.upload("model.pt", "/app/")
+  my_container.download("/app/results.csv", ".")
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: my_container.upload("model.pt",
+  "/app/"); my_container.download("/app/results.csv", ".")'
+checkers:
+- check: required_call
+  group: mechanism
+  name: upload
+- check: required_call
+  group: mechanism
+  name: download
+- check: required_code_string
+  group: specifics
+  s: model.pt
+- check: required_code_string
+  group: specifics
+  s: results.csv

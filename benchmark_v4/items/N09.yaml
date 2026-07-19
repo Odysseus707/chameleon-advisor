@@ -1,0 +1,129 @@
+id: N09
+version: '4.0'
+lineage: new
+category: Composition
+axis: ACT
+prompt: Reserve a camera-equipped Pi, start the camera container, and retrofit SSH access into it (port
+  22, my public key, root login) so a teammate can log in and run captures themselves.
+designed_trap: Camera image has no sshd; must be installed at runtime (edge-cpu-inference pattern) while
+  keeping the pi_libcamera profile.
+trap_tags:
+- composition
+- magic_profile
+- key_injection
+target_artifact:
+- A2
+- A6
+fed_sets:
+  blind: []
+  matched:
+  - A2
+  - A6
+tier_intent_by_condition:
+  matched: T3
+key_tokens:
+  mechanism:
+  - device_profiles
+  - associate_floating_ip
+  - upload
+  specifics:
+  - pi_libcamera
+  - openssh-server
+  - authorized_keys
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import hardware, lease, container
+  from datetime import timedelta
+
+  devs = hardware.get_devices(filter_reserved=True, device_type="raspberrypi4-64")
+  picam_devs = [d for d in devs if d.device_name.startswith("iot-rpi4-picam")]
+
+  my_lease = lease.Lease("cam-ssh-lease", duration=timedelta(hours=4))
+  my_lease.add_device_reservation(devices=[picam_devs[0]])
+  my_lease.submit(idempotent=True)
+
+  my_container = container.Container(
+      "cam-ssh-run",
+      image_ref="ghcr.io/chameleoncloud/edge-picamera-image:latest",
+      exposed_ports=[22],
+      reservation_id=my_lease.device_reservations[0]["id"],
+      command=["sleep", "infinity"],
+      device_profiles=["pi_libcamera"],
+  )
+  my_container.submit()
+
+  my_container.execute("apt update")
+  my_container.execute("apt -y install openssh-server")
+  my_container.execute("mkdir -p /root/.ssh")
+  my_container.upload("./tmp_keys/authorized_keys", "/root/.ssh")
+  my_container.execute("chmod 700 /root/.ssh")
+  my_container.execute("chmod 600 /root/.ssh/authorized_keys")
+  my_container.execute("service ssh start")
+
+  ip = my_container.associate_floating_ip()
+  print(f"ssh root@{ip}")
+gold_provenance: authored from artifact(s) ['A2', 'A6']
+checkers:
+- check: availability_query
+  group: mechanism
+  device_type: raspberrypi4-64
+- check: kwarg
+  group: specifics
+  call: &id001
+  - Container
+  - create_container
+  arg:
+  - device_profiles
+  contains: pi_libcamera
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - image_ref
+  - image
+  equals_any:
+  - ghcr.io/chameleoncloud/edge-picamera-image:latest
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - exposed_ports
+  contains: 22
+- check: required_call
+  group: mechanism
+  name: execute
+- check: required_code_string
+  group: specifics
+  s: openssh-server
+- check: required_code_string
+  group: specifics
+  s: authorized_keys
+- check: required_code_string
+  group: specifics
+  s: chmod 600
+- check: required_code_string
+  group: specifics
+  any:
+  - service ssh start
+  - /usr/sbin/sshd
+- check: required_call
+  group: mechanism
+  name: upload
+- check: required_call
+  group: mechanism
+  name: associate_floating_ip
+- check: reservation_wiring
+  group: mechanism
+- check: profiles_known_only
+  group: safety
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance

@@ -1,0 +1,79 @@
+id: P11
+version: '4.0'
+lineage: v3:P11
+category: SSH / Dev
+axis: ACT
+prompt: Launch an SSH-enabled container on a reserved Pi and tell me how to connect.
+designed_trap: Doesn't know edge_ssh_image; wrong port type.
+trap_tags:
+- magic_image
+- port_exposure
+- floating_ip
+target_artifact:
+- A1
+fed_sets:
+  blind: []
+  matched:
+  - A1
+  heldout:
+  - A2
+  - A3
+tier_intent_by_condition:
+  matched: T1
+  heldout: T4
+key_tokens:
+  mechanism:
+  - reservation_id
+  - exposed_ports
+  - associate_floating_ip
+  specifics:
+  - ghcr.io/chameleoncloud/edge_ssh_image
+  - '22'
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import container
+
+  my_container = container.Container(
+      "edge-ssh-box",
+      image_ref="ghcr.io/chameleoncloud/edge_ssh_image:latest",
+      exposed_ports=[22],
+      reservation_id=my_lease.device_reservations[0]["id"],
+  )
+  my_container.submit()
+  ip = my_container.associate_floating_ip()
+  print(f"ssh root@{ip}")
+gold_provenance: 'authored from artifact(s) [''A1''] extractions; v3 gold: Container(image_ref="ghcr.io/chameleoncloud/edge_ssh_image:latest",
+  exposed_ports=[22], ...); associate_floating_ip -> ssh root@<ip>'
+checkers:
+- check: container_call
+  group: mechanism
+- check: reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call: &id001
+  - Container
+  - create_container
+  arg:
+  - image_ref
+  - image
+  equals_any:
+  - ghcr.io/chameleoncloud/edge_ssh_image:latest
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - exposed_ports
+  contains: 22
+- check: required_call
+  group: mechanism
+  name: associate_floating_ip
+- check: required_code_string
+  group: specifics
+  any:
+  - ssh root@
+  - root@
+- check: name_no_underscore
+  group: safety

@@ -1,0 +1,62 @@
+id: P05
+version: '4.0'
+lineage: v3:P05
+category: Container
+axis: ACT
+prompt: Launch a basic Ubuntu container on a reserved Pi on CHI@Edge.
+designed_trap: create_server (VM) instead of a container.
+trap_tags:
+- wrong_container_api
+- k8s_naming
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - container.Container
+  - reservation_id
+  specifics: []
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import container
+
+  # my_lease: the active lease from your reservation step
+  my_container = container.Container(
+      "basic-ubuntu-test",
+      image_ref="ubuntu:22.04",
+      exposed_ports=[],
+      reservation_id=my_lease.device_reservations[0]["id"],
+      command=["sleep", "infinity"],
+  )
+  my_container.submit()
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: container.Container(name, image_ref="ubuntu:22.04",
+  reservation_id=rid).submit()  (name: no underscores — k8s)'
+checkers:
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance
+- check: container_call
+  group: mechanism
+- check: reservation_wiring
+  group: mechanism
+- check: required_code_string
+  group: specifics
+  s: ubuntu
+- check: name_no_underscore
+  group: safety
+- check: required_call
+  group: mechanism
+  name: submit

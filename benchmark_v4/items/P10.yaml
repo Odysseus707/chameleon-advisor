@@ -1,0 +1,33 @@
+id: P10
+version: '4.0'
+lineage: v3:P10
+category: Container
+axis: ACT
+prompt: 'Tear everything down: remove the CHI@Edge container and free the device.'
+designed_trap: Invented teardown; leaves the lease.
+trap_tags:
+- teardown
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - delete
+  specifics: []
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  my_container.delete()
+  my_lease.delete()
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: my_container.delete(); my_lease.delete()'
+checkers:
+- check: teardown
+  group: mechanism
+  container: true
+  lease: true

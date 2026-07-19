@@ -1,0 +1,75 @@
+id: P28
+version: '4.0'
+lineage: v3:P28
+category: Pitfall trap
+axis: VALIDATE
+prompt: Convert my CHI@UC bare-metal script (add_node_reservation, node_type='compute_skylake', create_server)
+  to run on CHI@Edge.
+designed_trap: Keeps node/flavor/server.
+trap_tags:
+- bare_metal_api
+- wrong_container_api
+target_artifact:
+- A1
+fed_sets:
+  blind: []
+  matched:
+  - A1
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - add_device_reservation
+  - reservation_id
+  specifics:
+  - raspberrypi4-64
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import context, lease, container
+  from datetime import timedelta
+
+  context.choose_site(default="CHI@Edge")
+  context.choose_project()
+
+  my_lease = lease.Lease("converted-edge-lease", duration=timedelta(hours=4))
+  my_lease.add_device_reservation(amount=1, machine_type="raspberrypi4-64")
+  my_lease.submit(idempotent=True)
+
+  my_container = container.Container(
+      "converted-edge-run",
+      image_ref="ubuntu:22.04",
+      exposed_ports=[],
+      reservation_id=my_lease.device_reservations[0]["id"],
+      command=["sleep", "infinity"],
+  )
+  my_container.submit()
+gold_provenance: 'authored from artifact(s) [''A1''] extractions; v3 gold: Swap to device reservation
+  (add_device_reservation/machine_type) + container.Container(image_ref, reservation_id).submit(); drop
+  flavor/keypair/network; site CHI@Edge.'
+checkers:
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance
+- check: required_call
+  group: mechanism
+  name: add_device_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_device_reservation
+  arg:
+  - machine_type
+  - machine_name
+  present: true
+- check: container_call
+  group: mechanism
+- check: reservation_wiring
+  group: mechanism

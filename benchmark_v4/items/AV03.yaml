@@ -1,0 +1,40 @@
+id: AV03
+version: '4.0'
+lineage: new
+category: Availability
+axis: READ
+prompt: 'Print a single integer: how many CHI@Edge devices are free to reserve right now, across all device
+  types.'
+designed_trap: Counting all enrolled devices instead of free ones.
+trap_tags:
+- live_state
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - get_devices
+  - filter_reserved
+  specifics: []
+api_anchor: python-chi OO generation (D01)
+verification_level: V1
+expected_answer_type: code
+v1_expect:
+  stdout_contains_all:
+  - '7'
+  stdout_not_contains:
+  - '10'
+gold_spec: |
+  from chi import hardware
+
+  devs = hardware.get_devices(filter_reserved=True)
+  print(len(devs))
+gold_provenance: get_devices pattern from A2; Device fields from the advisor prototype probe
+checkers:
+- check: availability_query
+  group: mechanism

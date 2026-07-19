@@ -1,0 +1,1 @@
+I want to record audio from a USB microphone plugged into a CHI@Edge Raspberry Pi. Which device profile do I use and how do I set up the container?

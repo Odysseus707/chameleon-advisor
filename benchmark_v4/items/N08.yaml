@@ -1,0 +1,90 @@
+id: N08
+version: '4.0'
+lineage: new
+category: Existing lease
+axis: ACT
+prompt: My lease 'serve-edge-vr' is already active on a Raspberry Pi 5. Launch the Jupyter minimal-notebook
+  container on it, give it a public IP, and show me how to find the notebook's token URL from the container
+  logs.
+designed_trap: Re-creating the lease; missing get_logs; wrong image/port.
+trap_tags:
+- existing_lease
+- magic_image
+target_artifact:
+- A5
+fed_sets:
+  blind: []
+  matched:
+  - A5
+  heldout:
+  - A1
+  - A2
+  - A3
+tier_intent_by_condition:
+  matched: T1
+  heldout: T4
+key_tokens:
+  mechanism:
+  - get_lease
+  - reservation_id
+  - get_logs
+  specifics:
+  - quay.io/jupyter/minimal-notebook
+  - '8888'
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import container, context, lease
+  import chi
+
+  context.version = "1.0"
+  context.choose_project()
+  context.choose_site(default="CHI@Edge")
+
+  l = lease.get_lease("serve-edge-vr")
+
+  c = container.Container(
+      name="node-serve-edge-vr",
+      reservation_id=l.device_reservations[0]["id"],
+      image_ref="quay.io/jupyter/minimal-notebook:latest",
+      exposed_ports=[8888],
+  )
+  c.submit(idempotent=True, wait_timeout=1200)
+  c.associate_floating_ip()
+
+  print(chi.container.get_logs(c.id))
+  # Look for http://127.0.0.1:8888/lab?token=... and swap in the floating IP.
+gold_provenance: authored from artifact(s) ['A5']
+checkers:
+- check: required_call
+  group: mechanism
+  name: get_lease
+- check: container_call
+  group: mechanism
+- check: reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call: &id001
+  - Container
+  - create_container
+  arg:
+  - image_ref
+  - image
+  equals_any:
+  - quay.io/jupyter/minimal-notebook:latest
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - exposed_ports
+  contains: 8888
+- check: required_call
+  group: mechanism
+  name: associate_floating_ip
+- check: required_call
+  group: specifics
+  name: get_logs
+- check: name_no_underscore
+  group: safety

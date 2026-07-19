@@ -1,0 +1,5 @@
+# graphify corpus control — merged after .gitignore, last-match-wins.
+# Re-include the fork (root .gitignore excludes it from git, but it must be in the graph).
+!/RAG-docs-chameleon/
+# Generated benchmark answer transcripts: data, not code/docs.
+benchmark_v4/runs/

@@ -1,0 +1,63 @@
+id: P03
+version: '4.0'
+lineage: v3:P03
+category: Reservation
+axis: ACT
+prompt: Reserve a Pi on CHI@Edge and get the reservation_id I'll pass to a container.
+designed_trap: Never retrieves the id; wrong attribute.
+trap_tags:
+- reservation_wiring
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - add_device_reservation
+  - device_reservations
+  specifics:
+  - raspberrypi4-64
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import lease
+  from datetime import timedelta
+
+  my_lease = lease.Lease("rpi4-rid-lease", duration=timedelta(hours=3))
+  my_lease.add_device_reservation(amount=1, machine_type="raspberrypi4-64")
+  my_lease.submit(idempotent=True)
+
+  reservation_id = my_lease.device_reservations[0]["id"]
+  print(reservation_id)
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: After submit: my_lease.device_reservations[0]["id"]'
+checkers:
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance
+- check: required_call
+  group: mechanism
+  name: add_device_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_device_reservation
+  arg:
+  - machine_type
+  - machine_name
+  equals: raspberrypi4-64
+- check: required_code_string
+  group: mechanism
+  any:
+  - device_reservations
+  - get_device_reservation

@@ -1,0 +1,38 @@
+{
+  "created": "2026-07-19T03:13:21Z",
+  "finished": "2026-07-19T03:13:21Z",
+  "host": "integration-testbed",
+  "adapter": "fork",
+  "system": "s5-fork-off",
+  "condition": "blind",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "params": {
+    "endpoint": "http://localhost:11434/v1",
+    "gate": 1.0
+  },
+  "advisor_enabled": false,
+  "fork_git": {
+    "head": null,
+    "dirty": false,
+    "worktree_sha256": null
+  },
+  "hashes": {
+    "item_bank_sha256": "9707a92ccf08097a5e3c4f0df43abd318864cae4a64e09a0bb8b9321a53984a2",
+    "bench_grounding_sha256": "b166d3aefc69c56d8ab09625c9ec83b324d9723a13f0df93012d25d60a775251",
+    "advisor_grounding_sha256": "98ba6bd3e531e1383715a4f7952dc2135543d4ef5238e7600e4c8a6999235d8f",
+    "snapshot_sha256": "42efac5b72fd4ff08c8f969ec59739fcb4a91676f8dc38d480b0a76e62f017e9"
+  },
+  "items": {
+    "P01": "skipped_existing_nonempty",
+    "P16": "skipped_existing_nonempty",
+    "N01": "skipped_existing_nonempty",
+    "N06": "skipped_existing_nonempty",
+    "AV01": "skipped_existing_nonempty"
+  },
+  "argv": [
+    "tools/run_bench.py",
+    "--adapter",
+    "fork",
+    "--pilot"
+  ]
+}

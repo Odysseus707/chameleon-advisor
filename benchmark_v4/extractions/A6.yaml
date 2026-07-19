@@ -1,0 +1,554 @@
+artifact_id: A6
+repo_url: https://github.com/teaching-on-testbeds/edge-cpu-inference
+commit_hash: 825fc32139dfd1e9f55ca43e68084e3dec41e575
+api_generation: imperative
+
+summary: >
+  A CHI@Edge tutorial artifact that reserves a Raspberry Pi 4 edge device via a
+  Blazar device reservation, launches a python:3.9-slim ARM64 container against
+  that lease, attaches a floating IP and enables SSH, then uploads a quantized
+  MobileNet TFLite model and runs CPU-based image-classification inference inside
+  the container. It uses the imperative python-chi module-function API
+  (chi.lease.* and chi.container.* free functions), not the object-oriented
+  lease.Lease / container.Container classes. Leasing lives in reserve.ipynb while
+  container launch, inference, and teardown live in edge_cpu_inference.ipynb.
+
+workflow_stages:
+  - stage: site/auth
+    verbatim_code: |
+      import chi, os, time
+      from chi import lease
+      from chi import server
+      from chi import container
+
+      PROJECT_NAME = os.getenv('OS_PROJECT_NAME') # change this if you need to
+      chi.use_site("CHI@Edge")
+      chi.set("project_name", PROJECT_NAME)
+      username = os.getenv('USER') # all exp resources will have this prefix
+    source_ref: reserve.ipynb, cell-2
+
+  - stage: site/auth
+    verbatim_code: |
+      PROJECT_NAME = os.getenv('OS_PROJECT_NAME') #"CHI-XXXXXX" format; Change this if needed
+      chi.use_site("CHI@Edge")
+      chi.set("project_name", PROJECT_NAME)
+    source_ref: edge_cpu_inference.ipynb, cell-7
+
+  - stage: lease
+    verbatim_code: |
+      NODE_TYPE = 'raspberrypi4-64'
+      expname = "edge-cpu"
+    source_ref: reserve.ipynb, cell-4
+
+  - stage: lease
+    verbatim_code: |
+      res = []
+      lease.add_device_reservation(res, machine_name=NODE_TYPE, count=1)
+
+      start_date, end_date = lease.lease_duration(days=0, hours=10)
+      # if you won't start right now - comment the line above, uncomment two lines below
+      # start_date = '2024-04-02 15:24' # manually define to desired start time
+      # end_date = '2024-04-03 01:00' # manually define to desired start time
+
+      l = lease.create_lease(f"{username}-{NODE_TYPE}", res, start_date=start_date, end_date=end_date)
+      l = lease.wait_for_active(l["id"])  #Comment this line if the lease starts in the future
+    source_ref: reserve.ipynb, cell-5
+
+  - stage: lease
+    verbatim_code: |
+      # continue here, whether using a lease created just now or one created earlier
+      l = lease.get_lease(f"{username}-{NODE_TYPE}")
+      l['id']
+    source_ref: reserve.ipynb, cell-6
+
+  - stage: lease
+    verbatim_code: |
+      lease_id ="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    source_ref: edge_cpu_inference.ipynb, cell-9
+
+  - stage: container
+    verbatim_code: |
+      username = os.environ.get("USER")
+      expname = "edge-cpu"
+      # set a name for the container
+      # Note that underscore characters _ are not allowed - we replace each _ with a -
+      container_name = f"{username}-{expname}".replace("_","-")
+    source_ref: edge_cpu_inference.ipynb, cell-12
+
+  - stage: container
+    verbatim_code: |
+      try:
+          my_container = container.create_container(
+              container_name,
+              image="python:3.9-slim",
+              reservation_id=lease.get_device_reservation(lease_id),
+              interactive=True,
+              exposed_ports=[22],
+              platform_version=2,
+          )
+      except RuntimeError as ex:
+          print(ex)
+          print(f"Please stop and/or delete {container_name} and try again")
+      else:
+          print(f"Successfully created container: {container_name}!")
+    source_ref: edge_cpu_inference.ipynb, cell-14
+
+  - stage: container
+    verbatim_code: |
+      # wait until container is ready to use
+      container.wait_for_active(my_container.uuid)
+    source_ref: edge_cpu_inference.ipynb, cell-16
+
+  - stage: exec
+    verbatim_code: |
+      public_ip = container.associate_floating_ip(my_container.uuid)
+    source_ref: edge_cpu_inference.ipynb, cell-20
+
+  - stage: exec
+    verbatim_code: |
+      container.execute(my_container.uuid, 'apt update')
+      container.execute(my_container.uuid, 'apt -y install openssh-server')
+    source_ref: edge_cpu_inference.ipynb, cell-22
+
+  - stage: exec
+    verbatim_code: |
+      !mkdir -p tmp_keys
+      !cp /work/.ssh/id_rsa.pub tmp_keys/authorized_keys
+    source_ref: edge_cpu_inference.ipynb, cell-24
+
+  - stage: exec
+    verbatim_code: |
+      container.execute(my_container.uuid, 'mkdir -p /root/.ssh')
+      container.upload(my_container.uuid, "./tmp_keys/authorized_keys", "/root/.ssh")
+      container.execute(my_container.uuid, 'chown root /root/.ssh')
+      container.execute(my_container.uuid, 'chown root /root/.ssh/authorized_keys')
+      container.execute(my_container.uuid, 'chmod go-w /root')
+      container.execute(my_container.uuid, 'chmod 700 /root/.ssh')
+      container.execute(my_container.uuid, 'chmod 600 /root/.ssh/authorized_keys')
+    source_ref: edge_cpu_inference.ipynb, cell-25
+
+  - stage: exec
+    verbatim_code: |
+      container.execute(my_container.uuid, 'service ssh start')
+      container.execute(my_container.uuid, 'service ssh status')
+    source_ref: edge_cpu_inference.ipynb, cell-27
+
+  - stage: exec
+    verbatim_code: |
+      print("ssh root@%s" % public_ip)
+    source_ref: edge_cpu_inference.ipynb, cell-29
+
+  - stage: exec
+    verbatim_code: |
+      !git clone https://github.com/teaching-on-testbeds/edge-cpu-inference.git
+      !cd
+      !cp -R ./edge-cpu-inference/image_model ./
+      !rm -f -R edge-cpu-inference
+    source_ref: edge_cpu_inference.ipynb, cell-31
+
+  - stage: exec
+    verbatim_code: |
+      container.upload(my_container.uuid, "./image_model", "/root/")
+      container.execute(my_container.uuid, "ls -h /root/image_model/") #Check if all the files under the image_model directory have been uploaded
+    source_ref: edge_cpu_inference.ipynb, cell-33
+
+  - stage: exec
+    verbatim_code: |
+      container.upload(my_container.uuid, ".image_model/<MODELFILE>", "/root/image_model/") #Replace MODELFILE with the name of your model file
+    source_ref: edge_cpu_inference.ipynb, cell-36
+
+  - stage: exec
+    verbatim_code: |
+      container.execute(my_container.uuid, 'pip install tflite-runtime Pillow')
+    source_ref: edge_cpu_inference.ipynb, cell-39
+
+  - stage: exec
+    verbatim_code: |
+      from IPython.display import Image
+      Image('image_model/parrot.jpg')
+    source_ref: edge_cpu_inference.ipynb, cell-41
+
+  - stage: exec
+    verbatim_code: |
+      result = container.execute(my_container.uuid, 'python /root/image_model/model.py --model mobilenet_v2_1.0_224_quantized_1_default_1.tflite --label imagenet_labels.txt --image parrot.jpg ')
+      print(result['output'])
+    source_ref: edge_cpu_inference.ipynb, cell-43
+
+  - stage: teardown
+    verbatim_code: |
+      container.destroy_container(my_container.uuid)
+    source_ref: edge_cpu_inference.ipynb, cell-46
+
+  - stage: teardown
+    verbatim_code: |
+      ip_details = chi.network.get_floating_ip(public_ip)
+      chi.neutron().delete_floatingip(ip_details["id"])
+    source_ref: edge_cpu_inference.ipynb, cell-48
+
+  - stage: teardown
+    verbatim_code: |
+      # setup environment - if you made any changes in the top part, make the same changes here
+      import chi, os
+      from chi import lease
+
+      PROJECT_NAME = os.getenv('OS_PROJECT_NAME') # change this if you need to
+      chi.use_site("CHI@Edge")
+      chi.set("project_name", PROJECT_NAME)
+      username = os.getenv('USER')
+
+      lease = chi.lease.get_lease(f"{username}-{NODE_TYPE}")
+    source_ref: reserve.ipynb, cell-8
+
+  - stage: teardown
+    verbatim_code: |
+      DELETE = False #Default value is False to prevent any accidental deletes. Change it to True for deleting the resources
+
+      if DELETE:
+
+          # delete lease
+          chi.lease.delete_lease(lease["id"])
+    source_ref: reserve.ipynb, cell-9
+
+api_calls:
+  - module: chi
+    function: use_site
+    exact_kwargs_as_used: '"CHI@Edge"  (positional)'
+    source_ref: reserve.ipynb cell-2; edge_cpu_inference.ipynb cell-7; reserve.ipynb cell-8
+
+  - module: chi
+    function: set
+    exact_kwargs_as_used: '"project_name", PROJECT_NAME  (positional)'
+    source_ref: reserve.ipynb cell-2; edge_cpu_inference.ipynb cell-7; reserve.ipynb cell-8
+
+  - module: chi.lease  (imported as `from chi import lease`)
+    function: add_device_reservation
+    exact_kwargs_as_used: 'res (positional), machine_name=NODE_TYPE, count=1'
+    source_ref: reserve.ipynb cell-5
+
+  - module: chi.lease
+    function: lease_duration
+    exact_kwargs_as_used: 'days=0, hours=10'
+    source_ref: reserve.ipynb cell-5
+
+  - module: chi.lease
+    function: create_lease
+    exact_kwargs_as_used: 'f"{username}-{NODE_TYPE}" (positional), res (positional), start_date=start_date, end_date=end_date'
+    source_ref: reserve.ipynb cell-5
+
+  - module: chi.lease
+    function: wait_for_active
+    exact_kwargs_as_used: 'l["id"]  (positional)'
+    source_ref: reserve.ipynb cell-5
+
+  - module: chi.lease
+    function: get_lease
+    exact_kwargs_as_used: 'f"{username}-{NODE_TYPE}"  (positional)'
+    source_ref: reserve.ipynb cell-6; reserve.ipynb cell-8 (as chi.lease.get_lease)
+
+  - module: chi.lease
+    function: get_device_reservation
+    exact_kwargs_as_used: 'lease_id  (positional)'
+    source_ref: edge_cpu_inference.ipynb cell-14
+
+  - module: chi.lease
+    function: delete_lease
+    exact_kwargs_as_used: 'lease["id"]  (positional)'
+    source_ref: reserve.ipynb cell-9
+
+  - module: chi.container  (imported as `from chi import container`)
+    function: create_container
+    exact_kwargs_as_used: 'container_name (positional), image="python:3.9-slim", reservation_id=lease.get_device_reservation(lease_id), interactive=True, exposed_ports=[22], platform_version=2'
+    source_ref: edge_cpu_inference.ipynb cell-14
+
+  - module: chi.container
+    function: wait_for_active
+    exact_kwargs_as_used: 'my_container.uuid  (positional)'
+    source_ref: edge_cpu_inference.ipynb cell-16
+
+  - module: chi.container
+    function: associate_floating_ip
+    exact_kwargs_as_used: 'my_container.uuid  (positional)'
+    source_ref: edge_cpu_inference.ipynb cell-20
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: "my_container.uuid, 'apt update'  (positional)"
+    source_ref: edge_cpu_inference.ipynb cell-22
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: "my_container.uuid, 'apt -y install openssh-server'  (positional)"
+    source_ref: edge_cpu_inference.ipynb cell-22
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: "my_container.uuid, 'mkdir -p /root/.ssh'  (positional)"
+    source_ref: edge_cpu_inference.ipynb cell-25
+
+  - module: chi.container
+    function: upload
+    exact_kwargs_as_used: 'my_container.uuid, "./tmp_keys/authorized_keys", "/root/.ssh"  (positional)'
+    source_ref: edge_cpu_inference.ipynb cell-25
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: "my_container.uuid, 'chown root /root/.ssh'  (positional)"
+    source_ref: edge_cpu_inference.ipynb cell-25
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: "my_container.uuid, 'chown root /root/.ssh/authorized_keys'  (positional)"
+    source_ref: edge_cpu_inference.ipynb cell-25
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: "my_container.uuid, 'chmod go-w /root'  (positional)"
+    source_ref: edge_cpu_inference.ipynb cell-25
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: "my_container.uuid, 'chmod 700 /root/.ssh'  (positional)"
+    source_ref: edge_cpu_inference.ipynb cell-25
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: "my_container.uuid, 'chmod 600 /root/.ssh/authorized_keys'  (positional)"
+    source_ref: edge_cpu_inference.ipynb cell-25
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: "my_container.uuid, 'service ssh start'  (positional)"
+    source_ref: edge_cpu_inference.ipynb cell-27
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: "my_container.uuid, 'service ssh status'  (positional)"
+    source_ref: edge_cpu_inference.ipynb cell-27
+
+  - module: chi.container
+    function: upload
+    exact_kwargs_as_used: 'my_container.uuid, "./image_model", "/root/"  (positional)'
+    source_ref: edge_cpu_inference.ipynb cell-33
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: 'my_container.uuid, "ls -h /root/image_model/"  (positional)'
+    source_ref: edge_cpu_inference.ipynb cell-33
+
+  - module: chi.container
+    function: upload
+    exact_kwargs_as_used: 'my_container.uuid, ".image_model/<MODELFILE>", "/root/image_model/"  (positional)'
+    source_ref: edge_cpu_inference.ipynb cell-36
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: "my_container.uuid, 'pip install tflite-runtime Pillow'  (positional)"
+    source_ref: edge_cpu_inference.ipynb cell-39
+
+  - module: chi.container
+    function: execute
+    exact_kwargs_as_used: "my_container.uuid, 'python /root/image_model/model.py --model mobilenet_v2_1.0_224_quantized_1_default_1.tflite --label imagenet_labels.txt --image parrot.jpg '  (positional)"
+    source_ref: edge_cpu_inference.ipynb cell-43
+
+  - module: chi.container
+    function: destroy_container
+    exact_kwargs_as_used: 'my_container.uuid  (positional)'
+    source_ref: edge_cpu_inference.ipynb cell-46
+
+  - module: chi.network
+    function: get_floating_ip
+    exact_kwargs_as_used: 'public_ip  (positional)'
+    source_ref: edge_cpu_inference.ipynb cell-48
+
+  - module: chi
+    function: neutron
+    exact_kwargs_as_used: '() (no args); chained .delete_floatingip(ip_details["id"])'
+    source_ref: edge_cpu_inference.ipynb cell-48
+
+magic_strings:
+  - value: "CHI@Edge"
+    kind: other
+    source_ref: reserve.ipynb cell-2; edge_cpu_inference.ipynb cell-7; reserve.ipynb cell-8
+
+  - value: "OS_PROJECT_NAME"
+    kind: env_var
+    source_ref: reserve.ipynb cell-2; edge_cpu_inference.ipynb cell-7; reserve.ipynb cell-8
+
+  - value: "USER"
+    kind: env_var
+    source_ref: reserve.ipynb cell-2; edge_cpu_inference.ipynb cell-12; reserve.ipynb cell-8
+
+  - value: "project_name"
+    kind: other
+    source_ref: reserve.ipynb cell-2; edge_cpu_inference.ipynb cell-7
+
+  - value: 'raspberrypi4-64'
+    kind: machine_type
+    source_ref: reserve.ipynb cell-4 (NODE_TYPE)
+
+  - value: "edge-cpu"
+    kind: other
+    source_ref: reserve.ipynb cell-4; edge_cpu_inference.ipynb cell-12 (expname)
+
+  - value: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    kind: other
+    source_ref: edge_cpu_inference.ipynb cell-9 (lease_id placeholder)
+
+  - value: "python:3.9-slim"
+    kind: image_ref
+    source_ref: edge_cpu_inference.ipynb cell-14
+
+  - value: 22
+    kind: port
+    source_ref: edge_cpu_inference.ipynb cell-14 (exposed_ports=[22])
+
+  - value: 2
+    kind: other
+    source_ref: edge_cpu_inference.ipynb cell-14 (platform_version=2)
+
+  - value: "/work/.ssh/id_rsa.pub"
+    kind: other
+    source_ref: edge_cpu_inference.ipynb cell-24
+
+  - value: "tmp_keys/authorized_keys"
+    kind: other
+    source_ref: edge_cpu_inference.ipynb cell-24, cell-25
+
+  - value: "/root/.ssh"
+    kind: other
+    source_ref: edge_cpu_inference.ipynb cell-25
+
+  - value: "mobilenet_v2_1.0_224_quantized_1_default_1.tflite"
+    kind: other
+    source_ref: edge_cpu_inference.ipynb cell-43 (also image_model/ file)
+
+  - value: "imagenet_labels.txt"
+    kind: other
+    source_ref: edge_cpu_inference.ipynb cell-43 (also image_model/ file)
+
+  - value: "parrot.jpg"
+    kind: other
+    source_ref: edge_cpu_inference.ipynb cell-41, cell-43 (also image_model/ file)
+
+  - value: "python /root/image_model/model.py --model mobilenet_v2_1.0_224_quantized_1_default_1.tflite --label imagenet_labels.txt --image parrot.jpg "
+    kind: other
+    source_ref: edge_cpu_inference.ipynb cell-43
+
+  - value: "tflite-runtime Pillow"
+    kind: other
+    source_ref: edge_cpu_inference.ipynb cell-39 (pip install target)
+
+preconditions:
+  - Running inside the Chameleon JupyterHub / Jupyter environment (relies on
+    os.getenv('OS_PROJECT_NAME') and os.getenv('USER') being pre-populated, and
+    on a pre-generated SSH keypair at /work/.ssh/id_rsa.pub).
+  - App credentials / project auth already sourced by the JupyterHub environment
+    (no explicit credential loading, no clouds.yaml, no app-cred cell in the repo).
+  - edge_cpu_inference.ipynb assumes an ACTIVE lease for an edge device already
+    exists on CHI@Edge (README and cell-8/cell-9 state this explicitly); the user
+    must paste the existing lease_id. reserve.ipynb is the companion notebook that
+    creates that lease.
+  - A CHI@Edge project (format "CHI-XXXXXX") with quota/access to reserve a
+    raspberrypi4-64 device.
+  - Availability of a raspberrypi4-64 device on CHI@Edge at reservation time.
+
+traps_illustrated:
+  - Device reservation (not node/host reservation): uses
+    lease.add_device_reservation(res, machine_name=..., count=1), the CHI@Edge
+    device-specific reservation call, rather than add_node_reservation.
+  - Container (not server/instance): launches workload via
+    container.create_container(...) + container.wait_for_active(...), the
+    CHI@Edge Zun-container path, not chi.server.Server / bare-metal instances.
+  - reservation_id wiring: the container is bound to the lease via
+    reservation_id=lease.get_device_reservation(lease_id) — the device
+    reservation id must be extracted from the lease, not the lease id itself.
+  - ARM64 image requirement: explicitly uses python:3.9-slim and notes only
+    ARM64-built images run on CHI@Edge edge devices.
+  - platform_version=2 required kwarg on create_container for CHI@Edge.
+  - Floating IP lifecycle for containers: associate via
+    container.associate_floating_ip, and teardown must separately release it via
+    chi.network.get_floating_ip + chi.neutron().delete_floatingip.
+  - Machine/profile string: 'raspberrypi4-64' as the device machine_name.
+  - Container-name constraint: underscores are not allowed, so
+    f"{username}-{expname}".replace("_","-").
+
+not_covered:
+  - No GPU / hardware-accelerated inference (Coral TPU, Nvidia Jetson) — CPU-only,
+    despite reserve.ipynb mentioning Coral and Nvidia in prose.
+  - No add_node_reservation / bare-metal (CHI@TACC, CHI@UC) server workflow.
+  - No network creation/management beyond a single floating IP (no
+    reserve_floating_ip, no subnet/router/network creation, no security groups).
+  - No use of the `server` module despite `from chi import server` being imported
+    in reserve.ipynb cell-2 (imported but never called).
+  - No object-oriented python-chi API (no lease.Lease(...), no
+    container.Container(...), no .submit()/.wait() object methods).
+  - No application credential file handling (clouds.yaml, openrc,
+    chi.set with app-cred id/secret) — relies entirely on the JupyterHub context.
+  - No model training; model is pre-trained and pre-shipped in image_model/.
+  - No advanced container options actually used: workdir and command are described
+    in prose but never passed; no environment/mounts/device passthrough,
+    no GPIO/camera/sensor peripherals.
+  - No error handling around the SSH/exec steps or inference beyond the single
+    try/except RuntimeError on create_container.
+  - No Docker registry auth / private images; no image build step.
+  - No snapshot/imaging of the container, no volume/block-storage attachment.
+
+memorization_probes:
+  - "python /root/image_model/model.py --model mobilenet_v2_1.0_224_quantized_1_default_1.tflite --label imagenet_labels.txt --image parrot.jpg "
+  - 'container.upload(my_container.uuid, ".image_model/<MODELFILE>", "/root/image_model/")'
+  - 'input_data = np.array(img).reshape(input_details[0][''shape''])/255.0 # reshape eliminates needs for expand_dims'
+
+uncertainties:
+  - Notebook "cell numbers" are 0-based positional indices as rendered from the
+    .ipynb JSON (cell-0 = first cell); the source .ipynb files contain no
+    execution_count / persisted numbering, so cell-N refers to document position.
+  - reserve.ipynb cell-2 imports `time` and `server` but neither is used anywhere
+    in the repo; recorded as imports only, not as api_calls.
+  - cell-31 line `!cd` (bare `cd`) appears to be a no-op / likely intended
+    `!cd ~` but is transcribed verbatim as it appears in the artifact.
+  - cell-36 path ".image_model/<MODELFILE>" (single leading dot, not "./") is a
+    literal template placeholder in the artifact, transcribed verbatim; it is
+    likely a typo in the source but is preserved intentionally.
+  - "expname" is defined in both reserve.ipynb cell-4 and edge_cpu_inference.ipynb
+    cell-12 with the same value "edge-cpu"; the two notebooks are separate.
+
+# ============================================================================
+# STEP 3 — GREP VERIFICATION SUMMARY (run against the repo @ 825fc32)
+# Command form: grep -RF "<literal>" *.ipynb *.md image_model/  (+ grep -R for
+# python identifiers). All items below returned >=1 match unless noted.
+#
+# api_generation: imperative — VERIFIED. grep for "create_lease"/"add_device_
+#   reservation"/"create_container" all hit; grep for "Lease(" / "Container(" /
+#   ".submit(" returned 0 matches (confirms NOT oo/mixed).
+#
+# api_calls (function names, all found verbatim; counts = grep -rF line-matches
+# across edge_cpu_inference.{ipynb,md} + reserve.{ipynb,md}):
+#   use_site .............. 6 hits   add_device_reservation  2 hits
+#   lease_duration ........ 2 hits   create_lease .......... 2 hits
+#   wait_for_active ....... 4 hits (lease+container)   get_lease ....... 4 hits
+#   get_device_reservation  2 hits   delete_lease .......... 2 hits
+#   create_container ...... 2 hits   associate_floating_ip . 2 hits
+#   destroy_container ..... 2 hits   get_floating_ip ....... 2 hits
+#   delete_floatingip ..... 2 hits
+#   (execute / upload / set / neutron also grep-confirmed present.)
+#   ALL api_call function names: FOUND verbatim; NONE missing.
+#
+# magic_strings (all found verbatim; counts as above):
+#   "CHI@Edge" 23 | OS_PROJECT_NAME 8 | 'raspberrypi4-64' 2 | "python:3.9-slim" 4
+#   platform_version=2 2 | id_rsa.pub 2
+#   mobilenet_v2_1.0_224_quantized_1_default_1.tflite 2 (+file in image_model/)
+#   imagenet_labels.txt 2 (+file) | parrot.jpg 4 (+file)
+#   "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 2 | "edge-cpu" 14 (substring of
+#   container names/prose too) | "tflite-runtime Pillow" 2 | ".image_model/<MODELFILE>" 2
+#   ALL magic_strings: FOUND verbatim; NONE missing.
+#
+# workflow_stages verbatim_code: each block re-grepped by a distinctive line
+#   (e.g. 'replace("_","-")', 'chmod go-w /root', 'delete_floatingip') — all FOUND.
+#
+# memorization_probes: all 3 grepped verbatim — FOUND (probe 1 & 2 in
+#   edge_cpu_inference; probe 3 in image_model/model.py).
+#
+# NOTE: .ipynb and .md are duplicate representations (pandoc-generated), so
+# most string counts are ~2x (once per .md, once per .ipynb). Counts above are
+# combined across both files.
+# ============================================================================

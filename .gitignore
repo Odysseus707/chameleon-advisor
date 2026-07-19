@@ -1,0 +1,25 @@
+# --- Secrets: never commit ---
+vivek.pem
+*.pem
+.env
+
+# --- Nested git repo (own history + remote; see README) ---
+/RAG-docs-chameleon/
+
+# --- Virtualenvs (also self-ignored; belt and braces) ---
+.venv/
+venv/
+rag_env/
+
+# --- Python caches / build ---
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+
+# --- macOS cruft ---
+.DS_Store
+
+# --- Claude Code machine-local settings ---
+**/.claude/settings.local.json

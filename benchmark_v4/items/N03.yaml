@@ -1,0 +1,100 @@
+id: N03
+version: '4.0'
+lineage: new
+category: Peripherals · Camera
+axis: ACT
+prompt: Give me a 12-hour lease on a camera-equipped Pi and capture a 640x480 still from it.
+designed_trap: Duration and resolution adapted; peripheral discovery still required.
+trap_tags:
+- magic_profile
+- live_state
+- magic_command
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T2
+key_tokens:
+  mechanism:
+  - get_devices
+  - device_profiles
+  specifics:
+  - pi_libcamera
+  - iot-rpi4-picam
+  adapted:
+  - hours=12
+  - --width 640
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import hardware, lease, container
+  from datetime import timedelta
+
+  devs = hardware.get_devices(filter_reserved=True, device_type="raspberrypi4-64")
+  picam_devs = [d for d in devs if d.device_name.startswith("iot-rpi4-picam")]
+
+  my_lease = lease.Lease("picam-12h-lease", duration=timedelta(hours=12))
+  my_lease.add_device_reservation(devices=[picam_devs[0]])
+  my_lease.submit(idempotent=True)
+
+  my_container = container.Container(
+      "picam-12h-run",
+      image_ref="ghcr.io/chameleoncloud/edge-picamera-image:latest",
+      exposed_ports=[],
+      reservation_id=my_lease.device_reservations[0]["id"],
+      command=["sleep", "infinity"],
+      device_profiles=["pi_libcamera"],
+  )
+  my_container.submit()
+
+  result, code = my_container.execute(
+      "rpicam-still --nopreview --output /app/small.png --width 640 --height 480"
+  )
+  my_container.download("/app/small.png", ".")
+gold_provenance: authored from artifact(s) ['A2']
+checkers:
+- check: availability_query
+  group: mechanism
+  device_type: raspberrypi4-64
+- check: required_code_string
+  group: specifics
+  s: iot-rpi4-picam
+- check: lease_hours
+  group: specifics
+  hours: 12
+- check: kwarg
+  group: specifics
+  call: &id001
+  - Container
+  - create_container
+  arg:
+  - device_profiles
+  contains: pi_libcamera
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - image_ref
+  - image
+  equals_any:
+  - ghcr.io/chameleoncloud/edge-picamera-image:latest
+- check: required_code_string
+  group: specifics
+  s: rpicam-still
+- check: required_code_string
+  group: specifics
+  s: --width 640
+- check: required_code_string
+  group: specifics
+  s: --height 480
+- check: required_call
+  group: mechanism
+  name: download
+- check: profiles_known_only
+  group: safety
+- check: reservation_wiring
+  group: mechanism

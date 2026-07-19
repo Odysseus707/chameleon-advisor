@@ -1,0 +1,60 @@
+id: P15
+version: '4.0'
+lineage: v3:P15
+category: Peripherals · Camera
+axis: READ
+prompt: Find which Pis have a camera attached and reserve one.
+designed_trap: Can't filter by peripheral; guesses device.
+trap_tags:
+- live_state
+- peripheral_discovery
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - get_devices
+  - filter_reserved
+  - add_device_reservation
+  specifics:
+  - iot-rpi4-picam
+  - raspberrypi4-64
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import hardware, lease
+  from datetime import timedelta
+
+  devs = hardware.get_devices(filter_reserved=True, device_type="raspberrypi4-64")
+  picam_devs = [d for d in devs if d.device_name.startswith("iot-rpi4-picam")]
+
+  my_lease = lease.Lease("picam-lease", duration=timedelta(hours=3))
+  my_lease.add_device_reservation(devices=[picam_devs[0]])
+  my_lease.submit(idempotent=True)
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: hardware.get_devices(filter_reserved=True,
+  device_type="raspberrypi4-64"); pick device_name starting "iot-rpi4-picam"; add_device_reservation(devices=[dev])'
+checkers:
+- check: availability_query
+  group: mechanism
+  device_type: raspberrypi4-64
+- check: required_code_string
+  group: specifics
+  s: iot-rpi4-picam
+- check: required_call
+  group: mechanism
+  name: add_device_reservation
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance

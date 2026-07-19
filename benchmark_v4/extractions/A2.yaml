@@ -1,0 +1,376 @@
+artifact_id: A2
+repo_url: https://github.com/ChameleonCloud/edge-picamera-image
+commit_hash: 5b7db715823c48013b405a83668ddc940d23766b
+api_generation: oo   # python-chi object-oriented generation: lease.Lease / container.Container objects, plus chi.context and chi.hardware helpers
+
+summary: >-
+  Trovi artifact demonstrating how to use the libcamera / picamera2 camera
+  stack on a Raspberry Pi 4 in CHI@Edge. A Jupyter notebook selects the
+  CHI@Edge site, discovers a picamera-equipped rpi4 device, leases it, launches
+  a prebuilt container with the "pi_libcamera" device profile, and captures a
+  still PNG (via rpicam-still and via the picamera2 Python library) and an H264
+  video (via rpicam-vid), then tears everything down. It ships a Dockerfile that
+  installs libcamera/picamera2/rpicam-apps from the Raspberry Pi apt repo and a
+  camera_test.py helper script.
+
+workflow_stages:
+  - stage: site/auth
+    source_ref: picamera_tutorial.ipynb cell 1 (id ad4bcf2d-b458-4436-95ab-4cd99e6321f0)
+    verbatim_code: |
+      from chi import context
+
+      context.choose_site(default="CHI@Edge")
+      context.choose_project()
+
+  - stage: other   # device discovery / inventory
+    source_ref: picamera_tutorial.ipynb cell 3 (id 5d19779e-e688-45e0-90f0-8b336411ec4a)
+    verbatim_code: |
+      from chi import hardware
+
+      device_type = "raspberrypi4-64"
+      available_devices = hardware.get_devices(filter_reserved=True, device_type=device_type)
+
+      picamera_devs = [d for d in available_devices if d.device_name.startswith("iot-rpi4-picam")]
+      display([d.device_name for d in picamera_devs])
+
+  - stage: lease
+    source_ref: picamera_tutorial.ipynb cell 5 (id 3adb24c1)
+    verbatim_code: |
+      from chi import lease
+      from datetime import timedelta
+
+      my_lease = lease.Lease("rpi4-camera-lease", duration=timedelta(hours=3))
+
+      my_lease.add_device_reservation(devices=[picamera_devs[0]])  # we're just getting a list of 1 device
+      # my_lease.add_device_reservation(device_name='iot-rpi4-picam2',amount=1) # or a specific one!
+      my_lease.submit(idempotent=True)
+
+  - stage: container
+    source_ref: picamera_tutorial.ipynb cell 7 (id 77feeef9-9f69-440e-a1b9-d392d9b5db33)
+    verbatim_code: |
+      from chi import container
+
+      my_container = container.Container(
+          "rpi4-camera-test-01",
+          image_ref="ghcr.io/chameleoncloud/edge-picamera-image:latest",
+          exposed_ports=[],
+          reservation_id=my_lease.device_reservations[0]["id"],
+          command=["sleep", "infinity"],
+          device_profiles=["pi_libcamera"],
+      )
+      my_container.submit()
+
+  - stage: exec   # verify camera / list cameras
+    source_ref: picamera_tutorial.ipynb cell 9 (id 28aba244)
+    verbatim_code: |
+      cmd = "rpicam-hello --nopreview --list-cameras"
+      result,code = my_container.execute(cmd)
+      print(result)
+
+  - stage: exec   # capture still PNG via rpicam-still
+    source_ref: picamera_tutorial.ipynb cell 11 (id 28caaf2e-afc2-497a-b1f4-795c6a84b2c7)
+    verbatim_code: |
+      cmd = "rpicam-still  --nopreview  --output /app/test1.png --width 1920 --height 1080"
+      result,code = my_container.execute(cmd)
+      print(result)
+
+  - stage: exec   # download still + display
+    source_ref: picamera_tutorial.ipynb cell 13 (id f446130b-ab84-4542-9759-6495c6d1e40d)
+    verbatim_code: |
+      my_container.download("/app/test1.png", ".")
+      from IPython.display import Image
+      Image("test1.png", height=640,width=480)
+
+  - stage: exec   # upload camera_test.py and run picamera2 script
+    source_ref: picamera_tutorial.ipynb cell 15 (id cad98b7f)
+    verbatim_code: |
+      # Need to get the path for the python script in jupyter
+      import os
+      cwd = os.getcwd()
+      my_container.upload(f"{cwd}/camera_test.py", "/app/")
+
+      # execute it
+      result,code = my_container.execute("python3 camera_test.py")
+      print(result)
+
+  - stage: exec   # download picamera2 output + display
+    source_ref: picamera_tutorial.ipynb cell 16 (id f1ec4c91-a3a8-4d0d-ad51-489488065b42)
+    verbatim_code: |
+      # copy the output image back
+      my_container.download("/app/test2.png", ".")
+      from IPython.display import Image
+      Image("test2.png", height=640,width=480)
+
+  - stage: exec   # capture H264 video via rpicam-vid
+    source_ref: picamera_tutorial.ipynb cell 18 (id bb9c1495-734d-4023-9147-61a65b83b148)
+    verbatim_code: |
+      cmd = "rpicam-vid --nopreview -t 5000 --output /app/video1.mp4 --width 1920 --height 1080 --framerate 24"
+      result,code = my_container.execute(cmd)
+      print(result)
+
+  - stage: exec   # download video
+    source_ref: picamera_tutorial.ipynb cell 19 (id db003019-2f2d-4ea6-af23-1f7580800c80)
+    verbatim_code: |
+      # and copy it back
+      my_container.download("/app/video1.h264", ".")
+
+  - stage: teardown   # delete container
+    source_ref: picamera_tutorial.ipynb cell 21 (id e0d72918)
+    verbatim_code: |
+      my_container.delete()
+
+  - stage: teardown   # delete lease
+    source_ref: picamera_tutorial.ipynb cell 22 (id a3f88ebc)
+    verbatim_code: |
+      my_lease.delete()
+
+api_calls:
+  - module: chi.context
+    function: choose_site
+    exact_kwargs_as_used: 'default="CHI@Edge"'
+    source_ref: picamera_tutorial.ipynb cell 1
+
+  - module: chi.context
+    function: choose_project
+    exact_kwargs_as_used: '(none)'
+    source_ref: picamera_tutorial.ipynb cell 1
+
+  - module: chi.hardware
+    function: get_devices
+    exact_kwargs_as_used: 'filter_reserved=True, device_type=device_type   # device_type = "raspberrypi4-64"'
+    source_ref: picamera_tutorial.ipynb cell 3
+
+  - module: chi.lease
+    function: Lease
+    exact_kwargs_as_used: '"rpi4-camera-lease", duration=timedelta(hours=3)'
+    source_ref: picamera_tutorial.ipynb cell 5
+
+  - module: chi.lease.Lease (instance my_lease)
+    function: add_device_reservation
+    exact_kwargs_as_used: 'devices=[picamera_devs[0]]   # commented alt: device_name='"'"'iot-rpi4-picam2'"'"',amount=1'
+    source_ref: picamera_tutorial.ipynb cell 5
+
+  - module: chi.lease.Lease (instance my_lease)
+    function: submit
+    exact_kwargs_as_used: 'idempotent=True'
+    source_ref: picamera_tutorial.ipynb cell 5
+
+  - module: chi.container
+    function: Container
+    exact_kwargs_as_used: >-
+      "rpi4-camera-test-01", image_ref="ghcr.io/chameleoncloud/edge-picamera-image:latest",
+      exposed_ports=[], reservation_id=my_lease.device_reservations[0]["id"],
+      command=["sleep", "infinity"], device_profiles=["pi_libcamera"]
+    source_ref: picamera_tutorial.ipynb cell 7
+
+  - module: chi.container.Container (instance my_container)
+    function: submit
+    exact_kwargs_as_used: '(none)'
+    source_ref: picamera_tutorial.ipynb cell 7
+
+  - module: chi.container.Container (instance my_container)
+    function: execute
+    exact_kwargs_as_used: 'cmd   # "rpicam-hello --nopreview --list-cameras"'
+    source_ref: picamera_tutorial.ipynb cell 9
+
+  - module: chi.container.Container (instance my_container)
+    function: execute
+    exact_kwargs_as_used: 'cmd   # "rpicam-still  --nopreview  --output /app/test1.png --width 1920 --height 1080"'
+    source_ref: picamera_tutorial.ipynb cell 11
+
+  - module: chi.container.Container (instance my_container)
+    function: download
+    exact_kwargs_as_used: '"/app/test1.png", "."'
+    source_ref: picamera_tutorial.ipynb cell 13
+
+  - module: chi.container.Container (instance my_container)
+    function: upload
+    exact_kwargs_as_used: 'f"{cwd}/camera_test.py", "/app/"'
+    source_ref: picamera_tutorial.ipynb cell 15
+
+  - module: chi.container.Container (instance my_container)
+    function: execute
+    exact_kwargs_as_used: '"python3 camera_test.py"'
+    source_ref: picamera_tutorial.ipynb cell 15
+
+  - module: chi.container.Container (instance my_container)
+    function: download
+    exact_kwargs_as_used: '"/app/test2.png", "."'
+    source_ref: picamera_tutorial.ipynb cell 16
+
+  - module: chi.container.Container (instance my_container)
+    function: execute
+    exact_kwargs_as_used: 'cmd   # "rpicam-vid --nopreview -t 5000 --output /app/video1.mp4 --width 1920 --height 1080 --framerate 24"'
+    source_ref: picamera_tutorial.ipynb cell 18
+
+  - module: chi.container.Container (instance my_container)
+    function: download
+    exact_kwargs_as_used: '"/app/video1.h264", "."'
+    source_ref: picamera_tutorial.ipynb cell 19
+
+  - module: chi.container.Container (instance my_container)
+    function: delete
+    exact_kwargs_as_used: '(none)'
+    source_ref: picamera_tutorial.ipynb cell 21
+
+  - module: chi.lease.Lease (instance my_lease)
+    function: delete
+    exact_kwargs_as_used: '(none)'
+    source_ref: picamera_tutorial.ipynb cell 22
+
+magic_strings:
+  - value: "CHI@Edge"
+    kind: other   # site name passed to choose_site default
+    source_ref: picamera_tutorial.ipynb cell 1
+  - value: "raspberrypi4-64"
+    kind: machine_type   # device_type filter for get_devices
+    source_ref: picamera_tutorial.ipynb cell 3
+  - value: "iot-rpi4-picam"
+    kind: device_name   # prefix used to filter picamera-attached devices
+    source_ref: picamera_tutorial.ipynb cell 3
+  - value: "iot-rpi4-picam2"
+    kind: device_name   # specific device in commented-out alternate reservation
+    source_ref: picamera_tutorial.ipynb cell 5
+  - value: "rpi4-camera-lease"
+    kind: other   # lease name
+    source_ref: picamera_tutorial.ipynb cell 5
+  - value: "rpi4-camera-test-01"
+    kind: other   # container name
+    source_ref: picamera_tutorial.ipynb cell 7
+  - value: "ghcr.io/chameleoncloud/edge-picamera-image:latest"
+    kind: image_ref
+    source_ref: picamera_tutorial.ipynb cell 7 (also README/notebook prose)
+  - value: "pi_libcamera"
+    kind: device_profile
+    source_ref: picamera_tutorial.ipynb cell 7 (also README lines 16, 41-ish prose)
+  - value: "/app/test1.png"
+    kind: other   # rpicam-still output path in container
+    source_ref: picamera_tutorial.ipynb cell 11
+  - value: "/app/test2.png"
+    kind: other   # picamera2 capture_file output path
+    source_ref: picamera_tutorial.ipynb cell 16 / camera_test.py line 13
+  - value: "/app/video1.mp4"
+    kind: other   # rpicam-vid --output path (note: downloaded as video1.h264)
+    source_ref: picamera_tutorial.ipynb cell 18
+  - value: "/app/video1.h264"
+    kind: other   # download source path for the video
+    source_ref: picamera_tutorial.ipynb cell 19
+  - value: "camera_test.py"
+    kind: other   # helper script uploaded to /app/
+    source_ref: picamera_tutorial.ipynb cell 15
+  - value: "rpicam-hello --nopreview --list-cameras"
+    kind: other   # cli command string
+    source_ref: picamera_tutorial.ipynb cell 9
+  - value: "rpicam-still  --nopreview  --output /app/test1.png --width 1920 --height 1080"
+    kind: other   # cli command string (note double spaces, verbatim)
+    source_ref: picamera_tutorial.ipynb cell 11
+  - value: "rpicam-vid --nopreview -t 5000 --output /app/video1.mp4 --width 1920 --height 1080 --framerate 24"
+    kind: other   # cli command string
+    source_ref: picamera_tutorial.ipynb cell 18
+  - value: "python3 camera_test.py"
+    kind: other   # exec command
+    source_ref: picamera_tutorial.ipynb cell 15
+  - value: 'main={"size": (1920, 1080)}'
+    kind: other   # picamera2 still config
+    source_ref: camera_test.py line 7
+  - value: "/app/test2.png"
+    kind: other   # picamera2 capture_file target
+    source_ref: camera_test.py line 13
+  - value: "debian:bookworm-20250630-slim"
+    kind: image_ref   # Dockerfile base image
+    source_ref: Dockerfile line 1
+  - value: "deb http://archive.raspberrypi.org/debian/ bookworm main"
+    kind: other   # apt source line added in Dockerfile
+    source_ref: Dockerfile line 4
+  - value: "82B129927FA3303E"
+    kind: other   # apt-key recv-keys for raspberrypi repo
+    source_ref: Dockerfile line 5
+  - value: "python3-libcamera"
+    kind: other   # apt package
+    source_ref: Dockerfile line 9
+  - value: "python3-picamera2"
+    kind: other   # apt package
+    source_ref: Dockerfile line 10
+  - value: "libcamera-apps-lite"
+    kind: other   # apt package
+    source_ref: Dockerfile line 11
+  - value: "/run/udev"
+    kind: other   # bind mount libcamera needs for camera enumeration
+    source_ref: README lines 41-45
+  - value: "BalenaOS version 6.5.42+rev2 with kernel 6.12.32-v8"
+    kind: other   # known-good OS/kernel for imx708 autodetect
+    source_ref: README line 39
+
+preconditions:
+  - Assumes app credentials / OpenStack auth are already sourced for python-chi (the notebook calls context.choose_site / context.choose_project interactively but does not itself authenticate).
+  - Assumes the user has a CHI@Edge project available for context.choose_project().
+  - Assumes at least one raspberrypi4-64 device whose device_name starts with "iot-rpi4-picam" is available and unreserved (filter_reserved=True); the code indexes picamera_devs[0] with no empty-list guard.
+  - Assumes a physical Pi Camera Module (e.g. Module 3 / imx708) is physically attached to the leased device and the device is configured for the libcamera driver stack.
+  - Assumes the prebuilt image ghcr.io/chameleoncloud/edge-picamera-image:latest is pullable and that the "pi_libcamera" device profile exists on CHI@Edge.
+  - Assumes the notebook's working directory contains camera_test.py (uploaded via cwd).
+
+traps_illustrated:
+  - Device reservation (not node reservation): uses lease.add_device_reservation over hardware devices, not a bare-metal node/compute reservation.
+  - Container (not server): workload runs as a chi.container.Container (Kubernetes/edge container), never a Nova server/instance.
+  - reservation_id wiring: container reservation_id is pulled from my_lease.device_reservations[0]["id"] — the exact plumbing between lease object and container.
+  - device_profiles: requires device_profiles=["pi_libcamera"] to expose /dev camera nodes into the container; central trap of CHI@Edge peripheral access.
+  - ARM image: the container/image target is a Raspberry Pi (arm64); Dockerfile base is debian bookworm with raspberrypi apt repo, and machine_type filter is "raspberrypi4-64".
+  - Device-name filtering: selecting a peripheral-equipped device by device_name prefix ("iot-rpi4-picam") rather than assuming any node of the type has the camera.
+  - Two reservation styles shown: devices=[obj] vs commented device_name='iot-rpi4-picam2',amount=1.
+  - exec/upload/download container file-transfer utilities (execute returns (result, code) tuple; download meant for small files only).
+  - CMA / dma_heap 64MB limitation caveat affecting capture buffer sizing (README + notebook prose).
+
+not_covered:
+  - No GPU/inference, no ML frameworks, no accelerator (Coral/Jetson/GPU) usage.
+  - No exposed_ports usage / no network services, no reserved floating IP, no port mapping (exposed_ports=[] is empty).
+  - No other peripherals: no GPIO, I2C/SPI sensors, USB devices, microphones, serial, or non-camera hardware.
+  - No non-picamera camera paths (USB/UVC webcams, legacy raspistill/raspivid, OpenCV VideoCapture).
+  - No imperative python-chi API (chi.lease.create_lease / chi.server) — object API only.
+  - No blazarclient direct calls, no python-openstackclient, no Keystone/Glance/Neutron/Nova API usage.
+  - No lease renewal/extension, no waiting-for-active polling helper shown explicitly, no error handling / retries.
+  - No multi-device or multi-container orchestration, no Kubernetes manifests.
+  - No streaming (RTSP/HLS), no live preview, no timelapse, no autofocus/HDR/tuning-file configuration beyond default.
+  - No image/video post-processing, no upload to object store / Swift / cloud storage (only container.download).
+  - No custom container build/push flow in the notebook (Dockerfile exists but building/pushing to ghcr is not demonstrated in code).
+  - No app-credential creation steps shown (auth assumed sourced).
+
+memorization_probes:
+  - "picamera_devs = [d for d in available_devices if d.device_name.startswith(\"iot-rpi4-picam\")]"
+  - "rpicam-vid --nopreview -t 5000 --output /app/video1.mp4 --width 1920 --height 1080 --framerate 24"
+  - "my_lease.add_device_reservation(device_name='iot-rpi4-picam2',amount=1) # or a specific one!"   # commented-out line
+
+uncertainties:
+  - The rpicam-vid command writes to /app/video1.mp4 but the subsequent download pulls /app/video1.h264 (mismatched extension); this is verbatim from the artifact, not a transcription error, but whether the file actually exists at download time is a runtime concern I cannot confirm.
+  - Cell numbers are the 0-based position of each cell in the notebook's cell array (markdown cells included) as read; I also cite each cell's notebook id for disambiguation. The notebook has no persisted execution_count outputs to cross-check ordering against.
+  - api_generation classified as "oo": the artifact mixes object classes (lease.Lease, container.Container) with module-level helper functions (context.choose_site, hardware.get_devices) — both belong to the current python-chi OO generation, so I label it "oo" rather than "mixed", but noting the module-function helpers here for transparency.
+  - camera_test.py writes /app/test2.png via capture_file, but the notebook's rpicam-still targets /app/test1.png; there is no test2.png produced by rpicam — it is produced only by the picamera2 script. (Consistent across files; noted for clarity.)
+
+# ============================================================================
+# GREP VERIFICATION SUMMARY (run against commit 5b7db715 at repo root)
+# All identifiers, function names, kwargs, and magic strings below were
+# confirmed to appear verbatim in the repo. Notebook double-quotes are stored
+# JSON-escaped (\"), so bracket/quote literals were verified with -F on
+# quote-free substrings.
+#
+# api_generation imports (from chi import ...): context, hardware, lease,
+#   container  -> all 4 found (1 each).
+# api_calls function names verified present:
+#   choose_site=1  choose_project=1  get_devices=1  filter_reserved=1
+#   lease.Lease=1  add_device_reservation=2  submit(idempotent=True)=1
+#   container.Container=1  image_ref=1  exposed_ports(=[])=1  reservation_id=1
+#   device_reservations[0][=1  command=[=1  device_profiles=1
+#   my_container.execute=4  my_container.download=3  my_container.upload=1
+#   my_container.delete=1  my_lease.delete=1
+#   Picamera2=2  create_still_configuration=1  capture_file=1
+# magic_strings verified present (counts = occurrences in repo):
+#   CHI@Edge (context/prose), raspberrypi4-64=1, iot-rpi4-picam=2,
+#   iot-rpi4-picam2=1, rpi4-camera-lease=1, rpi4-camera-test-01=1,
+#   ghcr.io/chameleoncloud/edge-picamera-image:latest=2, pi_libcamera=4,
+#   /app/test1.png=2, /app/test2.png=2, video1.mp4=1, video1.h264=1,
+#   camera_test.py=2, rpicam-hello --nopreview --list-cameras=1,
+#   rpicam-still=2, rpicam-vid=2, --framerate 24=1, timedelta(hours=3)=1.
+#   Dockerfile: debian:bookworm-20250630-slim, raspberrypi apt line,
+#   82B129927FA3303E, python3-libcamera, python3-picamera2,
+#   libcamera-apps-lite -> all confirmed by direct read of Dockerfile.
+# Every field's identifiers cross-checked; no invented identifiers remain.
+# ============================================================================

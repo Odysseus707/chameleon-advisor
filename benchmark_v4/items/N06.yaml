@@ -1,0 +1,114 @@
+id: N06
+version: '4.0'
+lineage: new
+category: API translation
+axis: VALIDATE
+prompt: |-
+  Our old tutorial script below uses the deprecated imperative python-chi style. Rewrite it using the current object-oriented API (lease.Lease / container.Container), keeping the behavior identical.
+
+  ```python
+  import chi
+  from chi import lease, container
+  chi.use_site("CHI@Edge")
+  chi.set("project_name", "CHI-000000")
+  res = []
+  lease.add_device_reservation(res, machine_name="raspberrypi4-64", count=1)
+  start_date, end_date = lease.lease_duration(days=0, hours=10)
+  l = lease.create_lease("demo-lease", res, start_date=start_date, end_date=end_date)
+  lease.wait_for_active(l["id"])
+  my_container = container.create_container(
+      "demo-app", image="python:3.9-slim",
+      reservation_id=lease.get_device_reservation(l["id"]),
+      exposed_ports=[22], platform_version=2,
+  )
+  ```
+designed_trap: Keeping create_lease/create_container; losing the 10-hour duration or reservation wiring
+  in translation.
+trap_tags:
+- api_generation
+- reservation_wiring
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - lease.Lease
+  - container.Container
+  - device_reservations
+  specifics: []
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import lease, container
+  from datetime import timedelta
+
+  my_lease = lease.Lease("demo-lease", duration=timedelta(hours=10))
+  my_lease.add_device_reservation(amount=1, machine_type="raspberrypi4-64")
+  my_lease.submit(idempotent=True)
+
+  my_container = container.Container(
+      "demo-app",
+      image_ref="python:3.9-slim",
+      exposed_ports=[22],
+      reservation_id=my_lease.device_reservations[0]["id"],
+  )
+  my_container.submit()
+gold_provenance: authored from artifact(s) ['A2']
+checkers:
+- check: required_call
+  group: mechanism
+  name: Lease
+- check: required_call
+  group: mechanism
+  name: Container
+- check: forbidden_calls
+  group: specifics
+  names:
+  - create_lease
+  - create_container
+- check: lease_hours
+  group: specifics
+  hours: 10
+- check: kwarg
+  group: specifics
+  call: &id001
+  - add_device_reservation
+  arg:
+  - machine_type
+  - machine_name
+  equals: raspberrypi4-64
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - amount
+  - count
+  equals: 1
+- check: kwarg
+  group: specifics
+  call:
+  - Container
+  - create_container
+  arg:
+  - exposed_ports
+  contains: 22
+- check: reservation_wiring
+  group: mechanism
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance
+- check: required_call
+  group: mechanism
+  name: submit

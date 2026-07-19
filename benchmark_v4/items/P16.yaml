@@ -1,0 +1,81 @@
+id: P16
+version: '4.0'
+lineage: v3:P16
+category: Peripherals · Camera
+axis: VALIDATE
+prompt: Launch a container with the Pi camera enabled.
+designed_trap: Omits device_profiles; guesses the profile name.
+trap_tags:
+- magic_profile
+- magic_image
+- keepalive_command
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+  heldout:
+  - A1
+  - A3
+tier_intent_by_condition:
+  matched: T1
+  heldout: T4
+key_tokens:
+  mechanism:
+  - device_profiles
+  - reservation_id
+  specifics:
+  - pi_libcamera
+  - ghcr.io/chameleoncloud/edge-picamera-image
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import container
+
+  my_container = container.Container(
+      "picam-run-01",
+      image_ref="ghcr.io/chameleoncloud/edge-picamera-image:latest",
+      exposed_ports=[],
+      reservation_id=my_lease.device_reservations[0]["id"],
+      command=["sleep", "infinity"],
+      device_profiles=["pi_libcamera"],
+  )
+  my_container.submit()
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: Container(image_ref="ghcr.io/chameleoncloud/edge-picamera-image:latest",
+  device_profiles=["pi_libcamera"], command=["sleep","infinity"])'
+checkers:
+- check: container_call
+  group: mechanism
+- check: reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call: &id001
+  - Container
+  - create_container
+  arg:
+  - device_profiles
+  contains: pi_libcamera
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - image_ref
+  - image
+  equals_any:
+  - ghcr.io/chameleoncloud/edge-picamera-image:latest
+- check: kwarg
+  group: mechanism
+  call: *id001
+  arg:
+  - command
+  present: true
+- check: required_code_string
+  group: specifics
+  s: sleep
+- check: profiles_known_only
+  group: safety
+- check: name_no_underscore
+  group: safety

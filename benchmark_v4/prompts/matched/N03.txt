@@ -1,0 +1,301 @@
+Here is reference material about CHI@Edge on Chameleon Cloud that may be relevant to my question.
+=== REFERENCE MATERIAL ===
+# edge-picamera-image
+Trovi artifact detailing how to use the libcamera driver stack
+on CHI@Edge.
+
+Provides a Jupyter Notebook, Dockerfile, and example python code.
+
+The Dockerfile packages minimal dependencies for libcamera libraries, picamera2
+libcamera bindings, and libcamera cli applications. Due to installing from the 
+raspberry pi maintained apt repo, we no longer need manual compilation of these deps.
+
+For further details, please refer to the Raspberry Pi Camera documentation:
+https://www.raspberrypi.com/documentation/computers/camera_software.html
+
+For proper functionality, libcamera requires access to the following devices
+under /dev inside the container. In CHI@Edge, this is provided by the 
+"pi_libcamera" device profile.
+
+video* device nodes are  documented here: https://www.raspberrypi.com/documentation/computers/camera_software.html#device-nodes-when-using-libcamera
+
+- `dma_heap`: required for contiguous memory allocation used for capture buffers
+- `media[0:4]`
+- `v4l-subdev0`
+- `vchiq`
+- `vcsm-cma`
+- `video[10:16]`
+- `video[18:23]`
+- `video31`
+
+In order for all of these devices to appear, the following /boot/config.txt
+options must be specified.
+
+- camera_auto_detect=1  # enables automatic loading of correct dtoverlay
+- start_x=0             # default, ensures legacy camera stack does not load
+
+And, `gpu_mem` must *not* be set, or if set, be at least 128 or the camera
+stack will not start.
+
+For the picamera3 (imx708) to be auto-detected, a relatively recent OS version
+is needed. BalenaOS version 6.5.42+rev2 with kernel 6.12.32-v8 is known to work.
+
+Finally, libcamera requires read-only access to `/run/udev` to enumerate 
+available cameras. This is also provided by CHI@Edge, but can be accomplished 
+manually via 
+
+`docker run -v /run/udev:/run/udev:ro`
+
+---
+
+# picamera_tutorial.ipynb
+
+## [markdown]
+
+# Peripheral showcase: Pi Camera Module 3 in CHI@Edge
+
+Welcome to this Jupyter notebook guide on using the Camera on Raspberry Pis in CHI@Edge. This artifact will walk you through the steps to access and utilize the camera for your edge computing experiments.
+
+**Important Note:** This notebook will work with any camera module, but only for devices that are set up to use the "libcamera" drivers. As of July 2025, all devices in CHI@Edge are configured this way.
+
+In the following example we'll show how to use the Pi Camera Module 3 on a Raspberry Pi 4 to capture both a png image and an h264 30 fps video.
+
+## [code]
+
+```python
+from chi import context
+
+context.choose_site(default="CHI@Edge")
+context.choose_project()
+```
+
+## [markdown]
+
+## Creating the Lease
+
+To access the camera, we need to make a lease for the specific device that the camera is currently attached to. As of July 2025, we're still implementing the autodetection of this, but the below devices will have it attached.
+
+## [code]
+
+```python
+from chi import hardware
+
+device_type = "raspberrypi4-64"
+available_devices = hardware.get_devices(filter_reserved=True, device_type=device_type)
+
+picamera_devs = [d for d in available_devices if d.device_name.startswith("iot-rpi4-picam")]
+display([d.device_name for d in picamera_devs])
+```
+
+## [markdown]
+
+And then make a lease for one of them.
+
+## [code]
+
+```python
+from chi import lease
+from datetime import timedelta
+
+my_lease = lease.Lease("rpi4-camera-lease", duration=timedelta(hours=3))
+
+my_lease.add_device_reservation(devices=[picamera_devs[0]])  # we're just getting a list of 1 device
+# my_lease.add_device_reservation(device_name='iot-rpi4-picam2',amount=1) # or a specific one!
+my_lease.submit(idempotent=True)
+```
+
+## [markdown]
+
+## Launching a container with libcamera and the rpicam apps
+
+To take pictures and videos with the camera, we need to launch a container image with all the following pre-requisites:
+
+- pi_libcamera device profile: a flag to expose all the necessary /dev devices required for the camera support
+- libcamera: A complex camera stack designed to support all kinds of cameras on Linux.
+- rpicam-apps: A set of example applications demonstrating how to use libcamera on Raspberry Pi.
+
+We provide a prebuilt container image with these dependencies: ```ghcr.io/chameleoncloud/edge-picamera-image:latest```. For reprodcibility and customization, the Dockerfile for the image can be found in the same repo as this notebook.
+
+Below, we will launch a long-running container doing more or less "nothing" so that it stays running, and then execute commands interactively.
+
+## [code]
+
+```python
+from chi import container
+
+my_container = container.Container(
+    "rpi4-camera-test-01",
+    image_ref="ghcr.io/chameleoncloud/edge-picamera-image:latest",
+    exposed_ports=[],
+    reservation_id=my_lease.device_reservations[0]["id"],
+    command=["sleep", "infinity"],
+    device_profiles=["pi_libcamera"],
+)
+my_container.submit()
+```
+
+## [markdown]
+
+## Verifying that the camera and drivers work
+
+First, lets run a simple command to see if libcamera finds our camera. If the container started with the pi_libcamera device profile, this *should* work, but there are always some edge cases.
+This will also help identify the capabilities of the attached camera.
+
+Note: We specify `--nopreview` since there's no display attached to the device.
+
+## [code]
+
+```python
+cmd = "rpicam-hello --nopreview --list-cameras"
+result,code = my_container.execute(cmd)
+print(result)
+```
+
+## [markdown]
+
+## Capturing a still 1920x1080 picture with the camera
+
+To capture pictures, we use the rpicam applications ([code](https://github.com/raspberrypi/rpicam-apps)). We use ```rpicam-still```[(docs)](https://www.raspberrypi.com/documentation/computers/camera_software.html#rpicam-still) to capture a 1920x1080 still png using the camera. Please visit the rpicam-apps [documentation](https://www.raspberrypi.com/documentation/computers/camera_software.html#rpicam-apps) to learn how to use other utilities.
+
+**Important notes**: 
+
+- Capturing frames can take some time. It is not instant.
+- If you run into dma_heap allocation issues/failure to allocate capture buffers, please lower the quality/size of your image or use the png format. The error occurs because the device to which the camera is attached currently only allocates a very limited amount of 64MB of contiguous memory blocks (cma). Each still capture requires a cma buffer amount that is proportional to the size of the target picture. Development efforts are currently ongoing to allow the allocation of more CMA on boot time to allow for larger frames.
+
+## [code]
+
+```python
+cmd = "rpicam-still  --nopreview  --output /app/test1.png --width 1920 --height 1080"
+result,code = my_container.execute(cmd)
+print(result)
+```
+
+## [markdown]
+
+Download the captured image from the running container using our ```container.download()``` utility. (**Note**: it takes a slight moment for the jupyter directory navigation pane to refresh and show the downloaded file)
+
+## [code]
+
+```python
+my_container.download("/app/test1.png", ".")
+from IPython.display import Image
+Image("test1.png", height=640,width=480)
+```
+
+## [markdown]
+
+## Using the picamera2 library instead of cli
+
+Now, insted of running the command interactively, we'll instead use the picamera2 library to do the same task. 
+
+The snippet below will copy a script into the container, execute it, then copy the captured image image back.
+
+## [code]
+
+```python
+# Need to get the path for the python script in jupyter
+import os
+cwd = os.getcwd()
+my_container.upload(f"{cwd}/camera_test.py", "/app/")
+
+# execute it
+result,code = my_container.execute("python3 camera_test.py")
+print(result)
+```
+
+## [code]
+
+```python
+# copy the output image back
+my_container.download("/app/test2.png", ".")
+from IPython.display import Image
+Image("test2.png", height=640,width=480)
+```
+
+## [markdown]
+
+## Capturing a 5 second 1080p 30fps H264 video with the camera
+
+To capture an h264 video we use the ```rpicam-vid```[(docs)](https://www.raspberrypi.com/documentation/computers/camera_software.html#rpicam-vid) utility to capture a 5 second 1080p video at a framerate of 30 fps. To playback the video, please download the file through the jupyter interface and use a video playback utility such as ```vlc```.
+
+**Note**: the ```container.download()``` utility is primarily meant for smaller size files. Please resort to other methods such as cloud storage or scp to download larger files.
+
+## [code]
+
+```python
+cmd = "rpicam-vid --nopreview -t 5000 --output /app/video1.mp4 --width 1920 --height 1080 --framerate 24"
+result,code = my_container.execute(cmd)
+print(result)
+```
+
+## [code]
+
+```python
+# and copy it back
+my_container.download("/app/video1.h264", ".")
+```
+
+## [markdown]
+
+## Cleanup :)
+
+## [code]
+
+```python
+my_container.delete()
+```
+
+## [code]
+
+```python
+my_lease.delete()
+```
+
+---
+
+# camera_test.py
+
+```python
+import time
+
+from picamera2 import Picamera2
+
+picam2 = Picamera2()
+
+camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)})
+picam2.configure(camera_config)
+
+picam2.start()
+time.sleep(2)
+
+metadata = picam2.capture_file("/app/test2.png")
+print(metadata)
+
+picam2.close()
+```
+
+---
+
+# Dockerfile
+
+```dockerfile
+FROM debian:bookworm-20250630-slim AS base
+
+RUN apt-get update && apt-get install -y --no-install-recommends gnupg
+RUN echo "deb http://archive.raspberrypi.org/debian/ bookworm main" > /etc/apt/sources.list.d/raspi.list \
+  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    python3-libcamera \
+    python3-picamera2 \
+    libcamera-apps-lite
+
+WORKDIR /app
+
+CMD ["sleep", "infinity"]
+```
+
+=== END REFERENCE MATERIAL ===
+
+Question: Give me a 12-hour lease on a camera-equipped Pi and capture a 640x480 still from it.

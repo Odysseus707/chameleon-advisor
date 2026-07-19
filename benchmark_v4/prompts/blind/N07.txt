@@ -1,0 +1,1 @@
+Reserve two Raspberry Pi 4s in one CHI@Edge lease and start an SSH-enabled container on each of them.

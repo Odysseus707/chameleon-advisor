@@ -1,0 +1,1 @@
+Capture a photo with the Pi camera, then classify it with the quantized MobileNet TFLite model inside the same container.

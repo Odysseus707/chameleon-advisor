@@ -1,0 +1,42 @@
+id: P24
+version: '4.0'
+lineage: v3:P24
+category: Peripherals · Sense HAT
+axis: VALIDATE
+prompt: Which device profile and image do I use for Sense HAT / GPIO work?
+designed_trap: Guesses the profile string.
+trap_tags:
+- magic_profile
+- magic_image
+target_artifact:
+- A3
+fed_sets:
+  blind: []
+  matched:
+  - A3
+  heldout:
+  - A1
+  - A2
+tier_intent_by_condition:
+  matched: T1
+  heldout: T4
+key_tokens:
+  mechanism: []
+  specifics:
+  - pi_sensehat
+  - ghcr.io/chameleoncloud/edge_sensehat_image
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  # Device profile: device_profiles=["pi_sensehat"]  (Waveshare HAT (B): "pi_gpio")
+  # Image: ghcr.io/chameleoncloud/edge_sensehat_image:latest
+gold_provenance: 'authored from artifact(s) [''A3''] extractions; v3 gold: device_profiles=["pi_sensehat"],
+  image ghcr.io/chameleoncloud/edge_sensehat_image:latest'
+checkers:
+- check: required_text_string
+  group: specifics
+  s: pi_sensehat
+- check: required_text_string
+  group: specifics
+  s: ghcr.io/chameleoncloud/edge_sensehat_image

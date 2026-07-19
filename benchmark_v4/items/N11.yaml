@@ -1,0 +1,102 @@
+id: N11
+version: '4.0'
+lineage: new
+category: Composition
+axis: ACT
+prompt: Reserve the Pi 5 named nyu-rpi5-03 for exactly 2 hours using python-chi (no Horizon GUI), then
+  launch the Jupyter minimal-notebook container on it with port 8888 and a public IP.
+designed_trap: The Pi-5 tutorial only shows GUI leasing; the python-chi device_name lease pattern must
+  come from the camera artifact.
+trap_tags:
+- composition
+- device_pinning
+target_artifact:
+- A2
+- A5
+fed_sets:
+  blind: []
+  matched:
+  - A2
+  - A5
+tier_intent_by_condition:
+  matched: T3
+key_tokens:
+  mechanism:
+  - add_device_reservation
+  - device_name
+  - reservation_id
+  specifics:
+  - nyu-rpi5-03
+  - quay.io/jupyter/minimal-notebook
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import context, lease, container
+  from datetime import timedelta
+
+  context.version = "1.0"
+  context.choose_project()
+  context.choose_site(default="CHI@Edge")
+
+  my_lease = lease.Lease("rpi5-jupyter-lease", duration=timedelta(hours=2))
+  my_lease.add_device_reservation(device_name="nyu-rpi5-03", amount=1)
+  my_lease.submit(idempotent=True)
+
+  c = container.Container(
+      name="rpi5-jupyter",
+      reservation_id=my_lease.device_reservations[0]["id"],
+      image_ref="quay.io/jupyter/minimal-notebook:latest",
+      exposed_ports=[8888],
+  )
+  c.submit(idempotent=True)
+  c.associate_floating_ip()
+gold_provenance: authored from artifact(s) ['A2', 'A5']
+checkers:
+- check: required_call
+  group: mechanism
+  name: add_device_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_device_reservation
+  arg:
+  - device_name
+  equals: nyu-rpi5-03
+- check: lease_hours
+  group: specifics
+  hours: 2
+- check: container_call
+  group: mechanism
+- check: reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call: &id001
+  - Container
+  - create_container
+  arg:
+  - image_ref
+  - image
+  equals_any:
+  - quay.io/jupyter/minimal-notebook:latest
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - exposed_ports
+  contains: 8888
+- check: required_call
+  group: mechanism
+  name: associate_floating_ip
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - Server
+  - add_flavor_reservation
+  - get_flavor_id
+  - create_instance
+- check: name_no_underscore
+  group: safety

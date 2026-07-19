@@ -1,0 +1,97 @@
+id: N12
+version: '4.0'
+lineage: new
+category: Composition
+axis: ACT
+prompt: Capture a photo with the Pi camera, then classify it with the quantized MobileNet TFLite model
+  inside the same container.
+designed_trap: Combining the camera stack (profile/image) with the inference tooling (tflite-runtime,
+  model file) from a different artifact.
+trap_tags:
+- composition
+- magic_profile
+- magic_command
+target_artifact:
+- A2
+- A6
+fed_sets:
+  blind: []
+  matched:
+  - A2
+  - A6
+tier_intent_by_condition:
+  matched: T3
+key_tokens:
+  mechanism:
+  - device_profiles
+  - upload
+  - execute
+  specifics:
+  - pi_libcamera
+  - rpicam-still
+  - tflite-runtime
+  - mobilenet_v2_1.0_224_quantized_1_default_1.tflite
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import container
+
+  my_container = container.Container(
+      "cam-infer-run",
+      image_ref="ghcr.io/chameleoncloud/edge-picamera-image:latest",
+      exposed_ports=[],
+      reservation_id=my_lease.device_reservations[0]["id"],
+      command=["sleep", "infinity"],
+      device_profiles=["pi_libcamera"],
+  )
+  my_container.submit()
+
+  my_container.execute(
+      "rpicam-still --nopreview --output /root/photo.jpg --width 1920 --height 1080"
+  )
+  my_container.upload("./image_model", "/root/")
+  my_container.execute("pip install tflite-runtime Pillow")
+  result, code = my_container.execute(
+      "python /root/image_model/model.py "
+      "--model mobilenet_v2_1.0_224_quantized_1_default_1.tflite "
+      "--label imagenet_labels.txt --image /root/photo.jpg"
+  )
+  print(result)
+gold_provenance: authored from artifact(s) ['A2', 'A6']
+checkers:
+- check: kwarg
+  group: specifics
+  call: &id001
+  - Container
+  - create_container
+  arg:
+  - device_profiles
+  contains: pi_libcamera
+- check: kwarg
+  group: specifics
+  call: *id001
+  arg:
+  - image_ref
+  - image
+  equals_any:
+  - ghcr.io/chameleoncloud/edge-picamera-image:latest
+- check: required_code_string
+  group: specifics
+  s: rpicam-still
+- check: required_call
+  group: mechanism
+  name: upload
+- check: required_call
+  group: mechanism
+  name: execute
+- check: required_code_string
+  group: specifics
+  s: tflite-runtime
+- check: required_code_string
+  group: specifics
+  s: mobilenet_v2_1.0_224_quantized_1_default_1.tflite
+- check: profiles_known_only
+  group: safety
+- check: reservation_wiring
+  group: mechanism

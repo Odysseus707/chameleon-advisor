@@ -1,0 +1,53 @@
+id: P07
+version: '4.0'
+lineage: v3:P07
+category: Container
+axis: ACT
+prompt: Expose port 8080 on my CHI@edge container and give it a public IP.
+designed_trap: exposed_ports string format; FIP omitted; nova idioms.
+trap_tags:
+- port_exposure
+- floating_ip
+target_artifact:
+- A1
+fed_sets:
+  blind: []
+  matched:
+  - A1
+tier_intent_by_condition:
+  matched: T2
+key_tokens:
+  mechanism:
+  - exposed_ports
+  - associate_floating_ip
+  specifics: []
+  adapted:
+  - '8080'
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import container
+
+  my_container = container.Container(
+      "web-svc",
+      image_ref="ubuntu:22.04",
+      exposed_ports=[8080],
+      reservation_id=my_lease.device_reservations[0]["id"],
+      command=["sleep", "infinity"],
+  )
+  my_container.submit()
+  ip = my_container.associate_floating_ip()
+  print(ip)
+gold_provenance: 'authored from artifact(s) [''A1''] extractions; v3 gold: exposed_ports=[8080] in the
+  container; then chi.container.associate_floating_ip(c.uuid)'
+checkers:
+- check: required_code_string
+  group: mechanism
+  s: exposed_ports
+- check: required_code_string
+  group: specifics
+  s: '8080'
+- check: required_call
+  group: mechanism
+  name: associate_floating_ip

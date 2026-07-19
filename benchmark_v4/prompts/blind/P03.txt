@@ -1,0 +1,1 @@
+Reserve a Pi on CHI@Edge and get the reservation_id I'll pass to a container.

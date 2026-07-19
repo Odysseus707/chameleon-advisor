@@ -1,0 +1,41 @@
+id: P25
+version: '4.0'
+lineage: v3:P25
+category: Availability
+axis: READ
+prompt: List which CHI@Edge device types currently exist and are reservable.
+designed_trap: Lists bare-metal flavors; invents an endpoint.
+trap_tags:
+- live_state
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - get_devices
+  - filter_reserved
+  specifics: []
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import hardware
+
+  devs = hardware.get_devices(filter_reserved=True)
+  for d in devs:
+      print(d.device_name, d.device_type)
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: hardware.get_devices(filter_reserved=True);
+  inspect device_type / device_name (Blazar-backed).'
+checkers:
+- check: availability_query
+  group: mechanism
+- check: required_code_string
+  group: mechanism
+  any:
+  - device_type
+  - device_name

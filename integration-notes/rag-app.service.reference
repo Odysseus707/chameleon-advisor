@@ -1,0 +1,13 @@
+[Unit]
+Description=Chameleon Docs Assistant (streamlit + advisor room)
+After=network.target ollama.service
+
+[Service]
+User=cc
+WorkingDirectory=/home/cc/RAG-docs-chameleon
+ExecStart=/home/cc/RAG-docs-chameleon/.venv/bin/streamlit run web_rag.py --server.port=8501 --server.address=0.0.0.0 --server.headless=true --browser.gatherUsageStats=false
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

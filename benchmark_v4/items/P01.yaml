@@ -1,0 +1,47 @@
+id: P01
+version: '4.0'
+lineage: v3:P01
+category: Setup
+axis: ACT
+prompt: Show the minimal python-chi setup to target CHI@Edge and select my project.
+designed_trap: chi.use_site vs context; wrong site string; forgets project.
+trap_tags:
+- site_setup
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - choose_site
+  - choose_project
+  specifics:
+  - CHI@Edge
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+expected_answer_type: code
+gold_spec: |
+  from chi import context
+
+  context.choose_site(default="CHI@Edge")
+  context.choose_project()
+gold_provenance: 'authored from artifact(s) [''A2''] extractions; v3 gold: context.choose_site(default="CHI@Edge");
+  context.choose_project()  — or chi.use_site("CHI@Edge") + chi.set("project_name", ...)'
+checkers:
+- check: required_call
+  group: mechanism
+  any:
+  - choose_site
+  - use_site
+- check: required_code_string
+  group: specifics
+  s: CHI@Edge
+- check: required_call
+  group: mechanism
+  any:
+  - choose_project
+  - set

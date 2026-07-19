@@ -1,0 +1,1 @@
+Reserve the specific device that has the Sense HAT attached.

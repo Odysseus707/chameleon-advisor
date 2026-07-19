@@ -1,0 +1,814 @@
+artifact_id: A4
+repo_url: https://github.com/AguLeon/MCP_SLM_Project
+commit_hash: bc93e84805b32e5e46e9d9c4aa13681f847a2fca
+api_generation: oo
+# api_generation note: python-chi usage is the object-oriented generation
+# (lease.Lease / server.Server / container.Container, context.version="1.0").
+# There is NO imperative python-chi (no chi.lease.create_lease-style calls).
+# HOWEVER start_run_instance_from_volume.ipynb additionally drops down to the
+# raw OpenStack SDK clients (nova(), neutron(), cinder()) and drives them
+# imperatively. So at the OpenStack layer the repo is mixed; at the python-chi
+# layer it is purely oo. See uncertainties.
+
+summary: >-
+  A Chameleon research artifact (the "OpenMCP" resource-provisioning notebooks
+  for an MCP/SLM paper) containing three Jupyter notebooks: one CHI@Edge
+  notebook that leases an edge device, launches an Ollama container, and runs
+  a model, plus two KVM@TACC/CHI notebooks that reserve a flavor and boot a
+  server either directly from an image or from a cinder volume. Only
+  start_edge_llm.ipynb targets CHI@Edge; it uses the object-oriented python-chi
+  API (lease.get_lease + container.Container) and expects a lease named
+  "MCPWorld_Edge_1" to already exist. The server notebooks use OO python-chi
+  plus, in the volume case, raw nova/neutron/cinder OpenStack clients.
+
+workflow_stages:
+  # ============================================================
+  # start_edge_llm.ipynb  (the CHI@Edge notebook — 6 code cells)
+  # ============================================================
+  - stage: site/auth
+    source_ref: start_edge_llm.ipynb cell 0 (id 4332fc43-4be6-4457-828f-f3d17a008408)
+    verbatim_code: |
+      from chi import container, context, lease
+      import os
+      import chi
+
+      context.version = "1.0"
+      context.choose_project()
+      context.choose_site(default="CHI@Edge")
+
+  - stage: lease
+    source_ref: start_edge_llm.ipynb cell 1 (id 1bb276ef-cdb6-44a4-89eb-d98cf502c3bc)
+    verbatim_code: |
+      # Use the lease name that was specified
+      l = lease.get_lease(f"MCPWorld_Edge_1")  # Specify the lease name
+      l.show()
+
+  - stage: container
+    source_ref: start_edge_llm.ipynb cell 2 (id a50b676a-28f0-4b75-8dc5-73264fdad972)
+    verbatim_code: |
+      username = os.getenv('USER') # exp resources will have this suffix
+      c = container.Container(
+          name = f"mcpworld-node-serve-edge",  # The container name can only have alphanumeric and '-' in it!
+          reservation_id = l.device_reservations[0]["id"],
+          image_ref = "docker.io/ollama/ollama:latest",
+          runtime="nvidia",
+          exposed_ports = [8888, 11434, 22],
+      )
+      c.submit(idempotent=True)
+
+  - stage: container
+    source_ref: start_edge_llm.ipynb cell 3 (id 7198f536-c0a6-4ccc-9b82-cfc2454716f6)
+    verbatim_code: |
+      c.associate_floating_ip()
+
+  - stage: exec
+    source_ref: start_edge_llm.ipynb cell 4 (id 5f15c529-b563-4482-b9ce-6a5360258ea6)
+    verbatim_code: |
+      model_name = "" # Add the model you wanna run in the edge device
+
+  - stage: exec
+    source_ref: start_edge_llm.ipynb cell 5 (id 5af079eb-a314-43ba-9207-638032a4c252)
+    verbatim_code: |
+      stdout, code = c.execute(f"ollama run {model_name} --keepalive=-1h")
+      print(stdout)
+
+  # NOTE: start_edge_llm.ipynb has NO teardown cell (no c.delete()/l.delete()).
+
+  # ============================================================
+  # start_run_instance_directly.ipynb  (KVM@TACC/CHI, image boot)
+  # ============================================================
+  - stage: site/auth
+    source_ref: start_run_instance_directly.ipynb cell 4 (id e1461e23-884d-43c4-bd41-9b2a8141fa72)
+    verbatim_code: |
+      import chi, os, time, datetime
+      from chi import lease
+      from chi import server
+      from chi import context
+      from chi import hardware
+      from chi import network
+      from chi import storage
+      from chi.clients import cinder, nova, neutron
+      from chi.image import get_image
+
+
+      context.version = "1.0"
+      context.choose_project()
+      context.choose_site(default="KVM@TACC")
+      username = os.getenv('USER') # all exp resources will have this suffix
+
+  - stage: other
+    source_ref: start_run_instance_directly.ipynb cell 6 (id ad7819ee-c241-4516-9e44-6d54aca9fd5f)
+    verbatim_code: |
+      exp_name = "OpenMCP"  # Resource Prefix
+
+      server_name = f"{exp_name}-{username}"
+      lease_name = f"{exp_name}-{username}"
+
+      key_name = "id_rsa"  # Specify your Key-Pair that's in the selected chameleon project (to SSH to the instance)
+
+  - stage: other
+    source_ref: start_run_instance_directly.ipynb cell 9 (id 013d0691-aa9f-4bb3-8df0-e1494498002b)
+    verbatim_code: |
+      flavor_name = "m1.xxlarge"  # Choose the resource you want to reserve (e.g. m1.xxlarge, gpu_p100, etc.)
+      hours = 5 * 24  # As much time as you need
+
+  - stage: lease
+    source_ref: start_run_instance_directly.ipynb cell 10 (id 7e97796e-55d9-4f89-9978-bccae2628640)
+    verbatim_code: |
+      l = lease.Lease(lease_name, duration=datetime.timedelta(hours=hours))
+      l.add_flavor_reservation(id=chi.server.get_flavor_id(flavor_name), amount=1)
+      l.submit(idempotent=True)
+
+  - stage: lease
+    source_ref: start_run_instance_directly.ipynb cell 11 (id 14f6d7a2-be50-4bfe-993c-db096df04a20)
+    verbatim_code: |
+      l.show()
+
+  - stage: container
+    source_ref: start_run_instance_directly.ipynb cell 13 (id 885426f3-eeca-492c-82b2-71eeb2a3c2d5)
+    verbatim_code: |
+      image_name = "CC-Ubuntu24.04-CUDA"  # CC-Ubuntu24.04 if you only need CPU
+      s = server.Server(
+          name=server_name,
+          image_name=image_name,
+          flavor_name=l.get_reserved_flavors()[0].name,
+          key_name=key_name,
+      )
+      s.submit(idempotent=True)
+
+  - stage: container
+    source_ref: start_run_instance_directly.ipynb cell 15 (id 77c4f947-a499-40f5-a3ff-1593a109c8fe)
+    verbatim_code: |
+      s.associate_floating_ip()
+
+  - stage: container
+    source_ref: start_run_instance_directly.ipynb cell 16 (id 32d37e79-cb31-46a6-8a3d-3ead28a15bfc)
+    verbatim_code: |
+      reserved_fip = s.get_floating_ip()
+      print(reserved_fip)
+
+  - stage: other
+    source_ref: start_run_instance_directly.ipynb cell 18 (id 03838aee-3f91-4cef-9250-e4e3303b611e)
+    verbatim_code: |
+      sg_list = network.list_security_groups(name_filter="allow-ssh")
+      if sg_list: # allow-ssh already exists
+          sg = sg_list[0]
+      else:       # create allow-ssh
+          sg = network.SecurityGroup({"name": "allow-ssh", "description": "Enable SSH traffic on TCP port 22"})
+          sg.add_rule("ingress", "tcp", 22)
+          sg.submit()
+      s.add_security_group(sg.id)
+
+  - stage: other
+    source_ref: start_run_instance_directly.ipynb cell 19 (id 7b6e29a4-a48a-447f-9532-ed34f9c7eae6)
+    verbatim_code: |
+      # Add the other security groups that will be needed for the experiments
+
+      PORTS = [8080, 5900, 8501, 6080]
+      for PORT in PORTS:
+          sg_extra_name = f"allow-{str(PORT)}"
+          sg_list = network.list_security_groups(name_filter=sg_extra_name)
+          if sg_list: # allow-{PORT} already exists
+              sg = sg_list[0]
+          else:       # create allow-{PORT}
+              sg = network.SecurityGroup({"name": sg_extra_name, "description": f"Enable traffic on TCP port {str(PORT)}"})
+              sg.add_rule("ingress", "tcp", PORT)
+              sg.submit()
+          s.add_security_group(sg.id)
+
+  - stage: exec
+    source_ref: start_run_instance_directly.ipynb cell 21 (id 182389b4-d310-40a9-8a83-4dfed9ac04e2)
+    verbatim_code: |
+      s.check_connectivity()
+
+  - stage: exec
+    source_ref: start_run_instance_directly.ipynb cell 23 (id db5772dd-ba35-459a-8b59-9e3f469421a2)
+    verbatim_code: |
+      print(f"ssh -i ~/.ssh/{key_name} cc@{floating_ip.get("floating_ip_address")}")
+
+  - stage: teardown
+    source_ref: start_run_instance_directly.ipynb cell 33 (id b99d467f-e506-4c99-b908-fc5c55546036)
+    verbatim_code: |
+      # s.delete()
+      # l.delete()
+
+  # ============================================================
+  # start_run_instance_from_volume.ipynb  (KVM@TACC, volume boot)
+  # ============================================================
+  - stage: site/auth
+    source_ref: start_run_instance_from_volume.ipynb cell 4 (id cell-4)
+    verbatim_code: |
+      import chi, os, time, datetime
+      from chi import lease
+      from chi import server
+      from chi import context
+      from chi import hardware
+      from chi import network
+      from chi import storage
+      from chi.clients import cinder, nova, neutron
+      from chi.image import get_image
+
+
+      context.version = "1.0"
+      context.choose_project()
+      context.choose_site(default="KVM@TACC")
+      username = os.getenv('USER') # all exp resources will have this suffix
+
+  - stage: other
+    source_ref: start_run_instance_from_volume.ipynb cell 6 (id cell-6)
+    verbatim_code: |
+      exp_name = "OpenMCP"  # Resource Prefix
+
+      server_name = f"{exp_name}-{username}"
+      lease_name = f"{exp_name}-{username}"
+
+      key_name = "id_rsa"  # Specify your Key-Pair that's in the selected chameleon project (to SSH to the instance)
+
+  - stage: other
+    source_ref: start_run_instance_from_volume.ipynb cell 8 (id cell-8)
+    verbatim_code: |
+      # Get the Ubuntu 24.04 image ID
+      image = get_image("CC-Ubuntu24.04-CUDA")  # You can use "CC-Ubuntu24.04" if you're just trying to use CPU
+      image_id = image.uuid
+
+  - stage: other
+    source_ref: start_run_instance_from_volume.ipynb cell 9 (id cell-9)
+    verbatim_code: |
+      # Create a volume from the image using the cinder client directly
+      volume = cinder().volumes.create(
+          size=250,
+          name=lease_name,
+          description="OpenMCP bootable volume. Used for large models that won't fit in default instance volume.",
+          imageRef=image_id,
+          volume_type="ceph-ssd",
+      )
+
+      # If you already have an existing volume, you can simply get it!
+      # volume = cinder().volumes.get("<volume-uuid>")
+
+  - stage: other
+    source_ref: start_run_instance_from_volume.ipynb cell 13 (id cell-13)
+    verbatim_code: |
+      flavor_name = "g1.h100.pci.1"  # Choose the resource you want to reserve (e.g. m1.xxlarge, p100, etc.)
+      hours = 5 * 24  # As much time as you need
+
+  - stage: lease
+    source_ref: start_run_instance_from_volume.ipynb cell 14 (id cell-14)
+    verbatim_code: |
+      l = lease.Lease(lease_name, duration=datetime.timedelta(hours=hours))
+      l.add_flavor_reservation(id=chi.server.get_flavor_id(flavor_name), amount=1)
+      l.submit(idempotent=True)
+
+  - stage: lease
+    source_ref: start_run_instance_from_volume.ipynb cell 15 (id cell-15)
+    verbatim_code: |
+      l.show()
+
+  - stage: other
+    source_ref: start_run_instance_from_volume.ipynb cell 18 (id cell-18)
+    verbatim_code: |
+      help(nova().servers.create)
+
+  - stage: container
+    source_ref: start_run_instance_from_volume.ipynb cell 19 (id cell-19)
+    verbatim_code: |
+      # Get network
+      networks = neutron().list_networks(name='sharednet1')['networks']
+      network_id = networks[0]['id']
+
+      # Block device mapping
+      block_device_mapping_v2 = [{
+          'boot_index': 0,
+          'uuid': volume.id,  # You can replace this id with a pre-existing Volume ID as well!
+          'source_type': 'volume',
+          'destination_type': 'volume',
+          'delete_on_termination': False,
+          'volume_size': volume.size,  # Optional
+      }]
+
+      # Get the reserved flavor - use the baremetal flavor name from the reservation
+      reserved_flavor = l.get_reserved_flavors()[0]
+      reservation_id = reserved_flavor.id
+
+      s = nova().servers.create(
+          name=server_name,
+          # image=image.uuid,  # Empty string when booting from volume,
+          image="",  # Empty string when booting from volume,
+          flavor=reserved_flavor.name,  # e.g: reservation:<reservation_id>
+          nics=[{"net-id": network_id}],
+          key_name=key_name,  # The Key Pairs name you have in your server
+          block_device_mapping_v2=block_device_mapping_v2,
+      )
+
+      print(f"Server created: {s.id}")
+
+  - stage: other
+    source_ref: start_run_instance_from_volume.ipynb cell 22 (id cell-22)
+    verbatim_code: |
+      nova_client = nova()
+      attached_sgs = [sg["name"] for sg in nova_client.servers.get(s.id).security_groups]  # Get all existing security groups
+
+  - stage: other
+    source_ref: start_run_instance_from_volume.ipynb cell 23 (id cell-23)
+    verbatim_code: |
+      sg_list = network.list_security_groups(name_filter="allow-ssh")
+      if sg_list: # allow-ssh already exists
+          sg = sg_list[0]
+      else:       # create allow-ssh
+          sg = network.SecurityGroup({"name": "allow-ssh", "description": "Enable SSH traffic on TCP port 22"})
+          sg.add_rule("ingress", "tcp", 22)
+          sg.submit()
+      if sg.name not in attached_sgs:
+          nova_client.servers.add_security_group(s.id, sg.name)
+
+  - stage: other
+    source_ref: start_run_instance_from_volume.ipynb cell 24 (id cell-24)
+    verbatim_code: |
+      # Add HTTP
+      sg_http = network.list_security_groups(name_filter="allow-http")[0]
+      if sg_http and sg_http.name not in attached_sgs:
+          nova_client.servers.add_security_group(s.id, sg_http.name)
+
+  - stage: other
+    source_ref: start_run_instance_from_volume.ipynb cell 25 (id cell-25)
+    verbatim_code: |
+      # Extra Ports that are needed
+      PORTS = [8080, 5900, 8501, 6080]
+      for PORT in PORTS:
+          sg_extra_name = f"allow-{str(PORT)}"
+          sg_list = network.list_security_groups(name_filter=sg_extra_name)
+          if sg_list: # allow-{PORT} already exists
+              sg = sg_list[0]
+          else:       # create allow-{PORT}
+              sg = network.SecurityGroup({"name": sg_extra_name, "description": f"Enable traffic on TCP port {str(PORT)}"})
+              sg.add_rule("ingress", "tcp", PORT)
+              sg.submit()
+          if sg.name not in attached_sgs:
+              nova_client.servers.add_security_group(s.id, sg.name)
+
+  - stage: container
+    source_ref: start_run_instance_from_volume.ipynb cell 26 (id cell-26)
+    verbatim_code: |
+      # Get free floating ip
+      neutron_client = neutron()
+      floating_ips = neutron_client.list_floatingips()['floatingips']
+      available = [fip for fip in floating_ips if fip['port_id'] is None]
+      floating_ip = available[0]
+      floating_ip
+
+  - stage: container
+    source_ref: start_run_instance_from_volume.ipynb cell 27 (id cell-27)
+    verbatim_code: |
+      # Bind associated floating ip
+      port_id = s.interface_list()[0].port_id
+      neutron_client.update_floatingip(floating_ip['id'], {
+          'floatingip': {
+              'port_id': port_id,
+          }
+      })
+
+  - stage: exec
+    source_ref: start_run_instance_from_volume.ipynb cell 30 (id cell-30)
+    verbatim_code: |
+      print(f"ssh -i ~/.ssh/{key_name} cc@{floating_ip.get("floating_ip_address")}")
+
+  - stage: teardown
+    source_ref: start_run_instance_from_volume.ipynb cell 40 (id cell-40)
+    verbatim_code: |
+      # s.delete()
+      # l.delete()
+
+api_calls:
+  # ---------- python-chi (OO + module helpers) ----------
+  - module: chi.context
+    function: version
+    exact_kwargs_as_used: 'context.version = "1.0"  # attribute assignment'
+    source_ref: start_edge_llm.ipynb cell 0; start_run_instance_directly.ipynb cell 4; start_run_instance_from_volume.ipynb cell 4
+
+  - module: chi.context
+    function: choose_project
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: start_edge_llm.ipynb cell 0; start_run_instance_directly.ipynb cell 4; start_run_instance_from_volume.ipynb cell 4
+
+  - module: chi.context
+    function: choose_site
+    exact_kwargs_as_used: 'default="CHI@Edge"  (edge);  default="KVM@TACC"  (both server notebooks)'
+    source_ref: start_edge_llm.ipynb cell 0; start_run_instance_directly.ipynb cell 4; start_run_instance_from_volume.ipynb cell 4
+
+  - module: chi.lease
+    function: get_lease
+    exact_kwargs_as_used: 'f"MCPWorld_Edge_1"  # positional (f-string with no placeholders)'
+    source_ref: start_edge_llm.ipynb cell 1 (id 1bb276ef)
+
+  - module: chi.lease.Lease (instance)
+    function: show
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: start_edge_llm.ipynb cell 1; start_run_instance_directly.ipynb cell 11; start_run_instance_from_volume.ipynb cell 15
+
+  - module: chi.lease.Lease (instance)
+    function: device_reservations
+    exact_kwargs_as_used: 'l.device_reservations[0]["id"]  # attribute access, indexed'
+    source_ref: start_edge_llm.ipynb cell 2 (id a50b676a)
+
+  - module: chi.container
+    function: Container
+    exact_kwargs_as_used: >-
+      name = f"mcpworld-node-serve-edge",
+      reservation_id = l.device_reservations[0]["id"],
+      image_ref = "docker.io/ollama/ollama:latest",
+      runtime="nvidia",
+      exposed_ports = [8888, 11434, 22]
+    source_ref: start_edge_llm.ipynb cell 2 (id a50b676a)
+
+  - module: chi.container.Container (instance)
+    function: submit
+    exact_kwargs_as_used: 'idempotent=True'
+    source_ref: start_edge_llm.ipynb cell 2 (id a50b676a)
+
+  - module: chi.container.Container (instance)
+    function: associate_floating_ip
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: start_edge_llm.ipynb cell 3 (id 7198f536)
+
+  - module: chi.container.Container (instance)
+    function: execute
+    exact_kwargs_as_used: 'f"ollama run {model_name} --keepalive=-1h"  # positional command string'
+    source_ref: start_edge_llm.ipynb cell 5 (id 5af079eb)
+
+  - module: chi.lease
+    function: Lease
+    exact_kwargs_as_used: 'lease_name, duration=datetime.timedelta(hours=hours)  # name positional'
+    source_ref: start_run_instance_directly.ipynb cell 10; start_run_instance_from_volume.ipynb cell 14
+
+  - module: chi.lease.Lease (instance)
+    function: add_flavor_reservation
+    exact_kwargs_as_used: 'id=chi.server.get_flavor_id(flavor_name), amount=1'
+    source_ref: start_run_instance_directly.ipynb cell 10; start_run_instance_from_volume.ipynb cell 14
+
+  - module: chi.lease.Lease (instance)
+    function: submit
+    exact_kwargs_as_used: 'idempotent=True'
+    source_ref: start_run_instance_directly.ipynb cell 10; start_run_instance_from_volume.ipynb cell 14
+
+  - module: chi.lease.Lease (instance)
+    function: get_reserved_flavors
+    exact_kwargs_as_used: 'l.get_reserved_flavors()[0].name  (directly cell 13); l.get_reserved_flavors()[0] (volume cell 19)'
+    source_ref: start_run_instance_directly.ipynb cell 13; start_run_instance_from_volume.ipynb cell 19
+
+  - module: chi.server
+    function: get_flavor_id
+    exact_kwargs_as_used: 'flavor_name  # positional'
+    source_ref: start_run_instance_directly.ipynb cell 10; start_run_instance_from_volume.ipynb cell 14
+
+  - module: chi.server
+    function: Server
+    exact_kwargs_as_used: >-
+      name=server_name, image_name=image_name,
+      flavor_name=l.get_reserved_flavors()[0].name, key_name=key_name
+    source_ref: start_run_instance_directly.ipynb cell 13 (id 885426f3)
+
+  - module: chi.server.Server (instance)
+    function: submit
+    exact_kwargs_as_used: 'idempotent=True'
+    source_ref: start_run_instance_directly.ipynb cell 13 (id 885426f3)
+
+  - module: chi.server.Server (instance)
+    function: associate_floating_ip
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: start_run_instance_directly.ipynb cell 15 (id 77c4f947)
+
+  - module: chi.server.Server (instance)
+    function: get_floating_ip
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: start_run_instance_directly.ipynb cell 16 (id 32d37e79)
+
+  - module: chi.server.Server (instance)
+    function: add_security_group
+    exact_kwargs_as_used: 'sg.id  # positional'
+    source_ref: start_run_instance_directly.ipynb cell 18, cell 19
+
+  - module: chi.server.Server (instance)
+    function: check_connectivity
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: start_run_instance_directly.ipynb cell 21 (id 182389b4)
+
+  - module: chi.network
+    function: list_security_groups
+    exact_kwargs_as_used: >-
+      name_filter="allow-ssh" | name_filter=sg_extra_name | name_filter="allow-http"
+    source_ref: start_run_instance_directly.ipynb cells 18,19; start_run_instance_from_volume.ipynb cells 23,24,25
+
+  - module: chi.network
+    function: SecurityGroup
+    exact_kwargs_as_used: >-
+      {"name": "allow-ssh", "description": "Enable SSH traffic on TCP port 22"}
+      | {"name": sg_extra_name, "description": f"Enable traffic on TCP port {str(PORT)}"}  # positional dict
+    source_ref: start_run_instance_directly.ipynb cells 18,19; start_run_instance_from_volume.ipynb cells 23,25
+
+  - module: chi.network.SecurityGroup (instance)
+    function: add_rule
+    exact_kwargs_as_used: '"ingress", "tcp", 22  |  "ingress", "tcp", PORT  # positional'
+    source_ref: start_run_instance_directly.ipynb cells 18,19; start_run_instance_from_volume.ipynb cells 23,25
+
+  - module: chi.network.SecurityGroup (instance)
+    function: submit
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: start_run_instance_directly.ipynb cells 18,19; start_run_instance_from_volume.ipynb cells 23,25
+
+  - module: chi.image
+    function: get_image
+    exact_kwargs_as_used: '"CC-Ubuntu24.04-CUDA"  # positional'
+    source_ref: start_run_instance_from_volume.ipynb cell 8 (id cell-8)
+
+  # ---------- raw OpenStack SDK clients (from chi.clients) ----------
+  - module: chi.clients.cinder
+    function: cinder().volumes.create
+    exact_kwargs_as_used: >-
+      size=250, name=lease_name,
+      description="OpenMCP bootable volume. Used for large models that won't fit in default instance volume.",
+      imageRef=image_id, volume_type="ceph-ssd"
+    source_ref: start_run_instance_from_volume.ipynb cell 9 (id cell-9)
+
+  - module: chi.clients.cinder
+    function: cinder().volumes.get
+    exact_kwargs_as_used: '"<volume-uuid>"  # positional — COMMENTED OUT'
+    source_ref: start_run_instance_from_volume.ipynb cell 9 (id cell-9)
+
+  - module: chi.clients.nova
+    function: nova().servers.create
+    exact_kwargs_as_used: >-
+      name=server_name, image="", flavor=reserved_flavor.name,
+      nics=[{"net-id": network_id}], key_name=key_name,
+      block_device_mapping_v2=block_device_mapping_v2
+    source_ref: start_run_instance_from_volume.ipynb cell 19 (id cell-19)
+
+  - module: chi.clients.nova
+    function: help(nova().servers.create)
+    exact_kwargs_as_used: 'nova().servers.create  # passed to help()'
+    source_ref: start_run_instance_from_volume.ipynb cell 18 (id cell-18)
+
+  - module: chi.clients.nova
+    function: nova_client.servers.get
+    exact_kwargs_as_used: 's.id  # positional; nova_client = nova()'
+    source_ref: start_run_instance_from_volume.ipynb cell 22 (id cell-22)
+
+  - module: chi.clients.nova
+    function: nova_client.servers.add_security_group
+    exact_kwargs_as_used: 's.id, sg.name  |  s.id, sg_http.name  # positional (server_id, sg_name)'
+    source_ref: start_run_instance_from_volume.ipynb cells 23,24,25
+
+  - module: chi.clients.neutron
+    function: neutron().list_networks
+    exact_kwargs_as_used: "name='sharednet1'"
+    source_ref: start_run_instance_from_volume.ipynb cell 19 (id cell-19)
+
+  - module: chi.clients.neutron
+    function: neutron_client.list_floatingips
+    exact_kwargs_as_used: '()  # no args'
+    source_ref: start_run_instance_from_volume.ipynb cell 26 (id cell-26)
+
+  - module: chi.clients.neutron
+    function: neutron_client.update_floatingip
+    exact_kwargs_as_used: "floating_ip['id'], {'floatingip': {'port_id': port_id}}  # positional (id, body)"
+    source_ref: start_run_instance_from_volume.ipynb cell 27 (id cell-27)
+
+magic_strings:
+  # ---------- start_edge_llm.ipynb (CHI@Edge) ----------
+  - value: "CHI@Edge"
+    kind: machine_type
+    source_ref: start_edge_llm.ipynb cell 0 (id 4332fc43)
+    note: site name; passed as default= to context.choose_site (kind is really "site name")
+
+  - value: "MCPWorld_Edge_1"
+    kind: other
+    source_ref: start_edge_llm.ipynb cell 1 (id 1bb276ef)
+    note: lease name looked up via lease.get_lease(f"MCPWorld_Edge_1"); assumed to pre-exist
+
+  - value: "mcpworld-node-serve-edge"
+    kind: device_name
+    source_ref: start_edge_llm.ipynb cell 2 (id a50b676a)
+    note: container name kwarg (not a device); wrapped in f"" with no placeholders. Alphanumeric+'-' only.
+
+  - value: "docker.io/ollama/ollama:latest"
+    kind: image_ref
+    source_ref: start_edge_llm.ipynb cell 2 (id a50b676a)
+    note: image_ref for the edge container
+
+  - value: "nvidia"
+    kind: other
+    source_ref: start_edge_llm.ipynb cell 2 (id a50b676a)
+    note: runtime="nvidia" kwarg to container.Container
+
+  - value: "8888, 11434, 22"
+    kind: port
+    source_ref: start_edge_llm.ipynb cell 2 (id a50b676a)
+    note: exposed_ports=[8888, 11434, 22]; 11434 = Ollama API, 22 = SSH, 8888 = Jupyter
+
+  - value: "ollama run {model_name} --keepalive=-1h"
+    kind: other
+    source_ref: start_edge_llm.ipynb cell 5 (id 5af079eb)
+    note: shell command run via c.execute; model_name defaults to "" (empty) in cell 4
+
+  - value: "USER"
+    kind: env_var
+    source_ref: start_edge_llm.ipynb cell 2; start_run_instance_directly.ipynb cell 4; start_run_instance_from_volume.ipynb cell 4
+    note: read via os.getenv('USER')
+
+  # ---------- server notebooks (KVM@TACC / CHI) ----------
+  - value: "KVM@TACC"
+    kind: machine_type
+    source_ref: start_run_instance_directly.ipynb cell 4; start_run_instance_from_volume.ipynb cell 4
+    note: site name; default= to context.choose_site
+
+  - value: "OpenMCP"
+    kind: other
+    source_ref: start_run_instance_directly.ipynb cell 6; start_run_instance_from_volume.ipynb cell 6
+    note: exp_name resource prefix; builds server_name / lease_name
+
+  - value: "id_rsa"
+    kind: other
+    source_ref: start_run_instance_directly.ipynb cell 6; start_run_instance_from_volume.ipynb cell 6
+    note: key_name (SSH keypair name in the Chameleon project)
+
+  - value: "m1.xxlarge"
+    kind: machine_type
+    source_ref: start_run_instance_directly.ipynb cell 9 (id 013d0691)
+    note: flavor_name (active in "directly" notebook)
+
+  - value: "gpu_p100"
+    kind: machine_type
+    source_ref: start_run_instance_directly.ipynb cell 9 (comment); README table
+    note: mentioned as alternative flavor in inline comment; not assigned
+
+  - value: "g1.h100.pci.1"
+    kind: machine_type
+    source_ref: start_run_instance_from_volume.ipynb cell 13 (id cell-13)
+    note: flavor_name (active in "from_volume" notebook)
+
+  - value: "CC-Ubuntu24.04-CUDA"
+    kind: image_ref
+    source_ref: start_run_instance_directly.ipynb cell 13; start_run_instance_from_volume.ipynb cell 8
+    note: image_name (directly) / get_image arg (volume); CUDA image
+
+  - value: "CC-Ubuntu24.04"
+    kind: image_ref
+    source_ref: start_run_instance_directly.ipynb cell 13 (comment); start_run_instance_from_volume.ipynb cell 8 (comment); README
+    note: CPU-only alternative image, mentioned in comments
+
+  - value: "allow-ssh"
+    kind: other
+    source_ref: start_run_instance_directly.ipynb cell 18; start_run_instance_from_volume.ipynb cell 23
+    note: security group name filter/name
+
+  - value: "allow-http"
+    kind: other
+    source_ref: start_run_instance_from_volume.ipynb cell 24 (id cell-24)
+    note: security group name filter (volume notebook only)
+
+  - value: "Enable SSH traffic on TCP port 22"
+    kind: other
+    source_ref: start_run_instance_directly.ipynb cell 18; start_run_instance_from_volume.ipynb cell 23
+    note: SecurityGroup description for allow-ssh
+
+  - value: "ingress"
+    kind: other
+    source_ref: start_run_instance_directly.ipynb cells 18,19; start_run_instance_from_volume.ipynb cells 23,25
+    note: direction arg to SecurityGroup.add_rule
+
+  - value: "tcp"
+    kind: other
+    source_ref: start_run_instance_directly.ipynb cells 18,19; start_run_instance_from_volume.ipynb cells 23,25
+    note: protocol arg to SecurityGroup.add_rule
+
+  - value: "8080, 5900, 8501, 6080"
+    kind: port
+    source_ref: start_run_instance_directly.ipynb cell 19; start_run_instance_from_volume.ipynb cell 25
+    note: PORTS list for extra security groups (8080 HTTP, 5900 VNC, 8501 Streamlit, 6080 noVNC)
+
+  - value: "sharednet1"
+    kind: other
+    source_ref: start_run_instance_from_volume.ipynb cell 19 (id cell-19)
+    note: neutron().list_networks(name='sharednet1')
+
+  - value: "ceph-ssd"
+    kind: other
+    source_ref: start_run_instance_from_volume.ipynb cell 9 (id cell-9)
+    note: volume_type for cinder().volumes.create
+
+  - value: "250"
+    kind: other
+    source_ref: start_run_instance_from_volume.ipynb cell 9 (id cell-9)
+    note: size=250 (GB) for the cinder volume
+
+  - value: "OpenMCP bootable volume. Used for large models that won't fit in default instance volume."
+    kind: other
+    source_ref: start_run_instance_from_volume.ipynb cell 9 (id cell-9)
+    note: description kwarg to cinder().volumes.create
+
+  - value: "cc@"
+    kind: other
+    source_ref: start_run_instance_directly.ipynb cell 23; start_run_instance_from_volume.ipynb cell 30
+    note: default Chameleon SSH login user in printed ssh command
+
+  - value: "floating_ip_address"
+    kind: other
+    source_ref: start_run_instance_directly.ipynb cell 23; start_run_instance_from_volume.ipynb cell 30
+    note: dict key read via floating_ip.get("floating_ip_address")
+
+preconditions:
+  - "Assumes running inside Chameleon's JupyterHub with python-chi preinstalled; context.choose_project()/choose_site() are interactive dropdown pickers."
+  - "Assumes valid Chameleon credentials / app credentials already sourced in the environment."
+  - "Assumes a USER environment variable is set (used as a resource-name suffix, read via os.getenv('USER'))."
+  - "start_edge_llm.ipynb assumes an ALREADY-EXISTING active lease named 'MCPWorld_Edge_1' with a device reservation — the notebook does NOT create the lease; it only calls lease.get_lease(...)."
+  - "start_edge_llm.ipynb container stage assumes the lease exposes l.device_reservations[0]['id']."
+  - "start_edge_llm.ipynb assumes CHI@Edge hardware with an NVIDIA GPU runtime available (runtime='nvidia') and internet access to pull docker.io/ollama/ollama:latest."
+  - "start_edge_llm.ipynb assumes the user fills in model_name (defaults to \"\") before the c.execute ollama-run cell would work."
+  - "Assumes an SSH keypair named 'id_rsa' exists in the selected Chameleon project (server notebooks)."
+  - "start_run_instance_from_volume.ipynb assumes KVM@TACC (volume/cinder ceph-ssd, sharednet1 network, floating IP pool) and available H100 flavor g1.h100.pci.1; assumes at least one free (unbound) floating IP exists in the project."
+  - "start_run_instance_from_volume.ipynb assumes the cinder volume reaches 'available' status before the server create (noted in prose, not enforced in code)."
+
+traps_illustrated:
+  - "Container (not server) on CHI@Edge: start_edge_llm.ipynb uses container.Container + c.submit()/c.execute(), never server.Server — contrasts directly with the two server notebooks that use server.Server / nova().servers.create."
+  - "Device reservation (not node/flavor reservation) on edge: reservation_id is read from l.device_reservations[0]['id']; the server notebooks instead use add_flavor_reservation + get_reserved_flavors (flavor reservations)."
+  - "reservation_id wiring: edge container pulls reservation_id from the lease's device_reservations list index [0]['id']."
+  - "Consuming a pre-existing lease: edge notebook uses lease.get_lease('MCPWorld_Edge_1') instead of creating one — a divergence from the create-lease pattern in the server notebooks."
+  - "Container naming constraint: comment states the container name 'can only have alphanumeric and -'; name is 'mcpworld-node-serve-edge' (Kubernetes-safe)."
+  - "GPU runtime on edge: runtime='nvidia' kwarg on container.Container (edge-specific way to request GPU, vs NVIDIA Container Toolkit install on the server side)."
+  - "exposed_ports on the edge container (CHI@Edge container port exposure) = [8888, 11434, 22], and c.associate_floating_ip() on a container — vs server-side security groups + floating IP."
+  - "Executing workload via c.execute('ollama run ...') inside the container rather than SSHing into a bare-metal server."
+  - "ARM/edge image is NOT used here: the edge image is docker.io/ollama/ollama:latest (multi-arch upstream), not a Chameleon ghcr ARM image — worth flagging as a contrast to typical CHI@Edge ARM examples."
+  - "Boot-from-volume trap (server notebook): nova().servers.create with image=\"\" and block_device_mapping_v2 (boot_index 0, source/destination 'volume'), and reserved_flavor.name used as the flavor for a Blazar reservation."
+
+not_covered:
+  - "No lease CREATION on CHI@Edge — start_edge_llm.ipynb never calls lease.Lease(...) / add_device_reservation for edge; it assumes 'MCPWorld_Edge_1' already exists."
+  - "No teardown in start_edge_llm.ipynb — there is NO c.delete() or l.delete() cell for the edge container/lease (the two server notebooks have commented-out '# s.delete()' / '# l.delete()' cells; the edge notebook has none at all)."
+  - "No lease status/wait polling or wait_for_active logic in start_edge_llm.ipynb; no error handling/retries anywhere."
+  - "No device_profiles / environment kwargs on the edge container (unlike peripheral artifacts); no device_name/machine_type reservation shown for edge."
+  - "No CHI@Edge add_device_reservation call in the repo (the edge lease is external)."
+  - "No file upload/download to the edge container, no get_logs; only c.execute stdout is captured."
+  - "model_name is left empty ('') — the actual model to run is not specified in the artifact."
+  - "No SSH into the edge container is performed in the notebook (port 22 is exposed but not used from the notebook)."
+  - "No use of imperative python-chi module functions (chi.lease.create_lease / chi.server.create_server etc.)."
+  - "The two server notebooks do not run any experiment payload from Python (post-provision Docker/NVIDIA/MCPWorld setup is documentation-only in markdown, executed manually over SSH)."
+  - "No volume attach/detach or persistence demonstration beyond delete_on_termination=False; no snapshot/image creation."
+  - "No blazar hardware discovery/query (hardware module imported but unused for discovery); flavor/device names are hardcoded."
+
+memorization_probes:
+  - 'l = lease.get_lease(f"MCPWorld_Edge_1")  # Specify the lease name'
+  - 'name = f"mcpworld-node-serve-edge",  # The container name can only have alphanumeric and ''-'' in it!  (with reservation_id=l.device_reservations[0]["id"], image_ref="docker.io/ollama/ollama:latest", runtime="nvidia", exposed_ports=[8888, 11434, 22])'
+  - 'stdout, code = c.execute(f"ollama run {model_name} --keepalive=-1h")'
+
+uncertainties:
+  - "api_generation: labeled 'oo' because all python-chi resource handling is object-oriented (Lease/Server/Container) with NO imperative chi.lease.create_lease-style calls. But start_run_instance_from_volume.ipynb also uses raw OpenStack SDK clients (nova()/neutron()/cinder()) imperatively, so at the OpenStack layer the repo is genuinely mixed. If the taxonomy counts raw-client usage as imperative, this artifact is 'mixed'."
+  - "context.version = \"1.0\" is an attribute assignment, not a function call; listed under api_calls for completeness."
+  - "l.device_reservations is accessed as an attribute returning a list of dicts (indexed [0]['id']); whether it is a property or plain attribute is not determinable from the repo."
+  - "In start_run_instance_directly.ipynb cell 23 the printed ssh command references `floating_ip`, which is never defined in that notebook (the floating IP was stored in `reserved_fip` in cell 16). This appears to be a copy/paste bug from the volume notebook (where `floating_ip` IS defined). Transcribed verbatim regardless."
+  - "The nested-quote f-strings `f\"...{floating_ip.get(\"floating_ip_address\")}\"` (cells 23/30) require Python 3.12+ to parse; transcribed exactly as written."
+  - "exposed_ports 8888 is inferred to be Jupyter and 11434 Ollama from context/README; the code itself only lists the integers."
+  - "Whether container.Container on CHI@Edge additionally accepts the shown kwargs positionally vs keyword is taken from the source as-written (all keyword here)."
+  - "The repo's .ipynb outputs contain real-looking IDs (project ID 13a1ac1..., lease id 804a994b..., floating IP 129.114.25.14, lease name MCPWorld_AP_Project_single_gpu-arn8147_nyu_edu). These are execution artifacts, not code literals, so they are not listed as magic_strings; the executed lease name differs from the hardcoded lease_name f-string in the code."
+
+# ============================================================================
+# GREP VERIFICATION SUMMARY (run at commit bc93e84805b32e5e46e9d9c4aa13681f847a2fca)
+# grep -rF over *.ipynb (raw JSON) and *.md. Counts = literal-substring hits.
+# ----------------------------------------------------------------------------
+# api_calls identifiers — all FOUND:
+#   context.version:3  choose_project:3  choose_site:3  lease.get_lease:1
+#   .device_reservations:1  container.Container:1  .submit(idempotent=True):3
+#   associate_floating_ip:2  c.execute / .execute(:1(edge)
+#   lease.Lease(:2  add_flavor_reservation:2  chi.server.get_flavor_id:2
+#   get_reserved_flavors:3  server.Server(:1  s.get_floating_ip:1
+#   check_connectivity:1  network.list_security_groups:6  network.SecurityGroup:4
+#   add_rule:4  add_security_group:6  get_image(:1
+#   cinder().volumes.create:1  cinder().volumes.get:1  nova().servers.create:2
+#   nova_client.servers.get:1  servers.add_security_group:3  neutron().list_networks:1
+#   runtime="nvidia":1 (JSON-escaped as runtime=\"nvidia\")
+#   list_floatingips:1  update_floatingip:1
+#   => all api_call identifiers verified present verbatim.
+#
+# api_calls kwargs — spot-verified FOUND:
+#   default="CHI@Edge":1  default="KVM@TACC":2  runtime="nvidia":1
+#   exposed_ports = [8888, 11434, 22]:1  idempotent=True:3  amount=1:2
+#   image="":1  volume_type="ceph-ssd":1  size=250:1  imageRef=image_id:1
+#   name='sharednet1':1  block_device_mapping_v2=block_device_mapping_v2:1
+#   name_filter="allow-ssh":2  name_filter="allow-http":1
+#   => all kwargs verified.
+#
+# magic_strings — all FOUND (counts):
+#   CHI@Edge:1  MCPWorld_Edge_1:1  mcpworld-node-serve-edge:1
+#   docker.io/ollama/ollama:latest:1  "nvidia":1  8888:1 11434:1
+#   ollama run {model_name} --keepalive=-1h:1  USER:3  KVM@TACC:2
+#   OpenMCP:4(prefix incl. volume desc)  id_rsa:2  m1.xxlarge:2(incl README)
+#   gpu_p100:2(comment+README)  g1.h100.pci.1:2(incl README)
+#   CC-Ubuntu24.04-CUDA:4  CC-Ubuntu24.04:multiple(substring)  allow-ssh:4
+#   allow-http:1  "Enable SSH traffic on TCP port 22":2  ingress:4  "tcp":4
+#   8080:2 5900:2 8501:2 6080:2  sharednet1:1  ceph-ssd:1  250:1
+#   "OpenMCP bootable volume...":1  cc@:2  floating_ip_address:2
+#   => all magic_strings verified present verbatim.
+#
+# memorization_probes — full lines confirmed present in start_edge_llm.ipynb.
+#
+# RESULT: 0 invented identifiers. Every field-level identifier grep-confirmed.
+# (See uncertainties for the one transcribed source bug: undefined `floating_ip`
+#  in start_run_instance_directly.ipynb cell 23.)
+# ============================================================================

@@ -1,0 +1,1 @@
+List which CHI@Edge device types currently exist and are reservable.
