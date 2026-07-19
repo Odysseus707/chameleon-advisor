@@ -14,7 +14,7 @@ All commands below were verified against the code and the live node on 2026-07-1
 | `chi-edge-advisor/` | The edge advisor engine: routes a workload description to grounded artifacts, checks device availability, and emits a CHI@Edge resource recommendation. |
 | `benchmark_v4/` | The evaluation benchmark: 50 items, deterministic checkers, a scoring harness, and `tools/run_bench.py` to run models against it automatically. |
 | `grounding/` | The advisor's grounding corpus (one folder of `.md` per artifact). |
-| `integration-notes/` | Design docs: `harness-plan.md` (benchmark harness), `router-refactor-plan.md` (RouterTree), `node.env.reference` (the node's env). |
+| `docs/` | All project docs: `usage/` (runbook, testing guide), `architecture/` (integration, harness, router designs), `reference/` (node env + systemd templates), `archive/` (historical plans and logs). |
 | `vivek.pem` | SSH key for the Chameleon node. |
 
 **The node** — everything heavy runs on a Chameleon bare-metal node:
@@ -295,8 +295,8 @@ cd benchmark_v4 && python3 tools/make_run_prompts.py
 
 ## 6. Where to read more
 
-- `integration-notes/harness-plan.md` — the benchmark harness design + scorer contract
-- `integration-notes/router-refactor-plan.md` — RouterTree design + ablation results
+- `docs/architecture/harness-plan.md` — the benchmark harness design + scorer contract
+- `docs/architecture/router-refactor-plan.md` — RouterTree design + ablation results
 - `benchmark_v4/BENCHMARK_REPORT.md` — the benchmark's own report
 - `benchmark_v4/exports/ablation_A7.md` — tree-vs-flat routing table
-- `chi-edge-advisor_prototype-state.md` — advisor prototype state of the world
+- `docs/archive/chi-edge-advisor_prototype-state.md` — advisor prototype state of the world (historical snapshot, 2026-07-01)

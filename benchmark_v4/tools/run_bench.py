@@ -8,7 +8,7 @@ Adapters:
                    (code-only for now: no keys configured; use --dry-run)
   production-stub  reserved for a future production deployment; refuses to run
 
-Invariants (see integration-notes/harness-plan.md):
+Invariants (see docs/architecture/harness-plan.md):
   * responses are written VERBATIM to runs/<condition>/<system>/<ITEM>.md —
     fences intact, prose intact; existing non-empty files are never touched
   * telemetry sidecars (<ITEM>.telemetry.json) and manifest.json are invisible
