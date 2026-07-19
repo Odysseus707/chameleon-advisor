@@ -1,5 +1,10 @@
 # graphify corpus control — merged after .gitignore, last-match-wins.
 # Re-include the fork (root .gitignore excludes it from git, but it must be in the graph).
 !/RAG-docs-chameleon/
-# Generated benchmark answer transcripts: data, not code/docs.
+# Generated benchmark data: transcripts, run prompts, item bank (sources of
+# truth are tools/build_items.py and tools/make_run_prompts.py, which stay in).
 benchmark_v4/runs/
+benchmark_v4/prompts/
+benchmark_v4/items/
+# graphify's own output must not feed back into the graph.
+graphify-out/
