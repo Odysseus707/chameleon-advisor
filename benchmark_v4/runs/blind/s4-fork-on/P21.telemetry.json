@@ -1,0 +1,24 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 1.5,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge_sensehat_image'], produced_by=tejas):\n- machine_type: raspberrypi4-64\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge_sensehat_image:latest\n- device_profiles: ['pi_gpio', 'pi_sensehat']\n- lease: count=1 duration_hours=1 platform_version=2 runtime=None exposed_ports=[]\n- reasoning: The raspberrypi4-64 has the necessary device profiles (pi_gpio, pi_sensehat) for Sense HAT support and matches the arm64 architecture required by the container image.",
+  "grounded_by": [
+    "edge_sensehat_image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.37,
+  "retrieval_sources": [],
+  "advisor_s": 27.7,
+  "llm_s": 38.38,
+  "item": "P21",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T04:04:47Z",
+  "total_s": 66.44,
+  "response_chars": 1275,
+  "n_code_fences": 1
+}

@@ -1,0 +1,25 @@
+{
+  "advisor_enabled": false,
+  "gate": 1.0,
+  "gate_score": null,
+  "fired": false,
+  "advisory": null,
+  "grounded_by": null,
+  "produced_by": null,
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.98,
+  "retrieval_sources": [
+    "https://python-chi.readthedocs.io/en/latest/modules/container.html",
+    "https://blog.chameleoncloud.org/posts/all-about-traces/",
+    "https://blog.chameleoncloud.org/posts/chi-in-a-box-update/"
+  ],
+  "llm_s": 27.24,
+  "item": "P27",
+  "condition": "blind",
+  "system": "s5-fork-off",
+  "adapter": "fork",
+  "created": "2026-07-19T04:32:36Z",
+  "total_s": 28.22,
+  "response_chars": 866,
+  "n_code_fences": 0
+}

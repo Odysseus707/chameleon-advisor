@@ -1,0 +1,24 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 2.25,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge-picamera-image'], produced_by=tejas):\n- machine_type: raspberrypi4-64\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge-picamera-image:latest\n- device_profiles: ['pi_libcamera']\n- lease: count=1 duration_hours=1 platform_version=2 runtime=None exposed_ports=[]\n- reasoning: The Raspberry Pi 4 (64-bit) is chosen because it supports the required arm64 architecture and has the 'pi_libcamera' profile, which is necessary for camera operations. It does not have a GPU, but this is sufficient for capturing video from the camera.",
+  "grounded_by": [
+    "edge-picamera-image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.37,
+  "retrieval_sources": [],
+  "advisor_s": 32.15,
+  "llm_s": 46.9,
+  "item": "P18",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T04:01:31Z",
+  "total_s": 79.43,
+  "response_chars": 1417,
+  "n_code_fences": 3
+}

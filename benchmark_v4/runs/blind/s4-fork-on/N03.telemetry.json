@@ -1,0 +1,26 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 3.25,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge-picamera-image', 'edge_ssh_image', 'edge_sensehat_image'], produced_by=tejas):\n- machine_type: raspberrypi4-64\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge-picamera-image:latest\n- device_profiles: ['pi_libcamera']\n- lease: count=1 duration_hours=12 platform_version=2 runtime=None exposed_ports=[]\n- reasoning: The Raspberry Pi 4 (raspberrypi4-64) is chosen because it supports the arm64 architecture, has a camera module attached as per the artifact context, and includes the necessary pi_libcamera profile for capturing images using picamera2. The lease duration of 12 hours matches the user's request.",
+  "grounded_by": [
+    "edge-picamera-image",
+    "edge_ssh_image",
+    "edge_sensehat_image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.7,
+  "retrieval_sources": [],
+  "advisor_s": 31.75,
+  "llm_s": 48.64,
+  "item": "N03",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T03:21:41Z",
+  "total_s": 81.1,
+  "response_chars": 1515,
+  "n_code_fences": 2
+}

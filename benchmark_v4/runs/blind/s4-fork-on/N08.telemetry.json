@@ -1,0 +1,31 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 1.0,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge_ssh_image', 'edge-cpu-inference', 'edge-picamera-image'], produced_by=tejas):\n- machine_type: raspberrypi4-64\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge_ssh_image:latest\n- device_profiles: ['pi_libcamera']\n- lease: count=1 duration_hours=3 platform_version=2 runtime=None exposed_ports=[8888]\n- reasoning: The Raspberry Pi 4 (raspberrypi4-64) is chosen because it matches the arm64 architecture and has the necessary 'pi_libcamera' profile for camera support. The Jupyter minimal-notebook container can be launched on this device with a public IP, and the notebook's token URL can be found from the container logs.",
+  "grounded_by": [
+    "edge_ssh_image",
+    "edge-cpu-inference",
+    "edge-picamera-image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.86,
+  "retrieval_sources": [
+    "https://blog.chameleoncloud.org/posts/tips-and-tricks-packaging-experiments-reproducibility/",
+    "https://blog.chameleoncloud.org/posts/chameleon-experiments-using-direct-network-connections-public-clouds-aws/",
+    "https://blog.chameleoncloud.org/posts/accessing-multiple-nodes-private-network-without-dns-using-jupyter-notebook/",
+    "https://chameleoncloud.readthedocs.io/en/latest/getting-started/jupyter-python-chi.html"
+  ],
+  "advisor_s": 37.65,
+  "llm_s": 68.73,
+  "item": "N08",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T03:28:13Z",
+  "total_s": 107.24,
+  "response_chars": 1706,
+  "n_code_fences": 4
+}

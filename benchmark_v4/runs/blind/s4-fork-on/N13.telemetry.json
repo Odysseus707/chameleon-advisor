@@ -1,0 +1,26 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 1.75,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge_sensehat_image', 'edge-picamera-image', 'edge_ssh_image'], produced_by=tejas):\n- machine_type: raspberrypi4-64\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge_ssh_image:latest\n- device_profiles: []\n- lease: count=1 duration_hours=10 platform_version=2 runtime=None exposed_ports=[22]\n- reasoning: The raspberrypi4-64 is chosen for its availability and compatibility with the arm64 architecture. The edge_ssh_image:latest provides SSH access, which aligns with the user's requirement to launch a container with Python 3.9-slim and enable external SSH connectivity.",
+  "grounded_by": [
+    "edge_sensehat_image",
+    "edge-picamera-image",
+    "edge_ssh_image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.91,
+  "retrieval_sources": [],
+  "advisor_s": 36.7,
+  "llm_s": 37.3,
+  "item": "N13",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T03:36:09Z",
+  "total_s": 74.91,
+  "response_chars": 1177,
+  "n_code_fences": 1
+}

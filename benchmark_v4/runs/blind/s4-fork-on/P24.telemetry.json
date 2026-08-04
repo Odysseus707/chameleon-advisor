@@ -1,0 +1,28 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 2.5,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge_sensehat_image', 'edge-picamera-image', 'edge-cpu-inference'], produced_by=tejas):\n- machine_type: raspberrypi4-64\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge_sensehat_image:latest\n- device_profiles: ['pi_libcamera', 'pi_sensehat', 'pi_gpio']\n- lease: count=1 duration_hours=24 platform_version=2 runtime=None exposed_ports=[]\n- reasoning: The raspberrypi4-64 device supports the required arm64 architecture and has the necessary profiles for Sense HAT and GPIO work. The selected image is specifically designed for Sense HAT usage.",
+  "grounded_by": [
+    "edge_sensehat_image",
+    "edge-picamera-image",
+    "edge-cpu-inference"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.71,
+  "retrieval_sources": [
+    "https://chameleoncloud.readthedocs.io/en/latest/technical/gui/index.html"
+  ],
+  "advisor_s": 29.48,
+  "llm_s": 19.57,
+  "item": "P24",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T04:07:52Z",
+  "total_s": 49.76,
+  "response_chars": 427,
+  "n_code_fences": 0
+}

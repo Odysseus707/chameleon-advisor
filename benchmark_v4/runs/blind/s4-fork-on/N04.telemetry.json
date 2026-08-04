@@ -1,0 +1,26 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 5.75,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge_sensehat_image', 'edge-picamera-image', 'edge_ssh_image'], produced_by=tejas):\n- machine_type: raspberrypi4-64 [iot-rpi-cm4-02]\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge_sensehat_image:latest\n- device_profiles: ['pi_gpio']\n- lease: count=1 duration_hours=4 platform_version=2 runtime=None exposed_ports=[]\n- reasoning: iot-rpi-cm4-02 is reserved for the Waveshare Sense HAT (B) and requires the pi_gpio device profile to expose necessary /dev devices. The raspberrypi4-64 machine type matches the arm64 architecture required by the image.",
+  "grounded_by": [
+    "edge_sensehat_image",
+    "edge-picamera-image",
+    "edge_ssh_image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 1.09,
+  "retrieval_sources": [],
+  "advisor_s": 35.2,
+  "llm_s": 61.23,
+  "item": "N04",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T03:23:18Z",
+  "total_s": 97.52,
+  "response_chars": 1952,
+  "n_code_fences": 2
+}

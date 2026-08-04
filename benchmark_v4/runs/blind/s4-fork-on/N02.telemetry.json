@@ -1,0 +1,25 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 2.5,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge-picamera-image', 'edge-cpu-inference'], produced_by=tejas):\n- machine_type: raspberrypi4-64\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge-picamera-image:latest\n- device_profiles: ['pi_libcamera']\n- lease: count=1 duration_hours=3 platform_version=2 runtime=None exposed_ports=[]\n- reasoning: The Raspberry Pi 4 with the pi_libcamera device profile is suitable for capturing video from a Pi camera module, matching the workload requirements. The provided image includes the necessary tools to capture and download the video.",
+  "grounded_by": [
+    "edge-picamera-image",
+    "edge-cpu-inference"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.58,
+  "retrieval_sources": [],
+  "advisor_s": 28.99,
+  "llm_s": 49.31,
+  "item": "N02",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T03:20:19Z",
+  "total_s": 78.88,
+  "response_chars": 1343,
+  "n_code_fences": 3
+}

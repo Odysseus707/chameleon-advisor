@@ -1,0 +1,28 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 1.25,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge-cpu-inference', 'edge-picamera-image', 'edge_ssh_image'], produced_by=tejas):\n- machine_type: raspberrypi4-64\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge-picamera-image:latest\n- device_profiles: ['pi_libcamera']\n- lease: count=3 duration_hours=3 platform_version=2 runtime=None exposed_ports=[]\n- reasoning: Raspberry Pi 4 (64-bit) is chosen as it supports the required device profiles and is suitable for CPU inference and picamera workloads. The count of 3 ensures multiple devices are reserved in one lease, aligning with the user's request.",
+  "grounded_by": [
+    "edge-cpu-inference",
+    "edge-picamera-image",
+    "edge_ssh_image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.48,
+  "retrieval_sources": [
+    "https://chameleoncloud.readthedocs.io/en/latest/technical/reservations/index.html"
+  ],
+  "advisor_s": 31.91,
+  "llm_s": 47.55,
+  "item": "P04",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T03:46:31Z",
+  "total_s": 79.93,
+  "response_chars": 1390,
+  "n_code_fences": 1
+}

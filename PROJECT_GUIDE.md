@@ -39,11 +39,25 @@ ssh -i vivek.pem cc@129.114.109.224
 
 ### Open it
 
-The service is already running. Two ways in:
+The service is already running. Easiest way in — the helper script (run from
+`chameleon-work/`, keep the terminal open):
 
 ```bash
-# From chameleon-work/ (so vivek.pem resolves). Keep this terminal open —
-# the tunnel only lives while the SSH session does:
+./connect_chatbot.sh          # cleans up stale tunnels, opens a keepalive tunnel,
+                              # then prints  http://localhost:8501  when ready
+```
+
+It auto-reconnects through brief Wi-Fi/network blips. After a full laptop sleep
+or reboot, just run it again. Other subcommands:
+
+```bash
+./connect_chatbot.sh status   # is the REMOTE rag-app service up? (no tunnel; 5s check)
+./connect_chatbot.sh stop     # kill our tunnel and free local port 8501
+```
+
+Under the hood it is just this SSH local-forward (you can run it by hand too):
+
+```bash
 ssh -i vivek.pem -L 8501:localhost:8501 cc@129.114.109.224
 # then open  http://localhost:8501   (NOT the node's IP)
 ```
@@ -52,6 +66,15 @@ Notes:
 - Direct access (`http://129.114.109.224:8501`) does **not** work — the
   security group blocks port 8501 from outside (verified 2026-07-18); the
   browser shows "took too long to respond". Always use the tunnel.
+- **"Port in use" but the page won't load** = a leftover tunnel from a previous
+  session is squatting on local :8501. `./connect_chatbot.sh` clears it
+  automatically (or run `./connect_chatbot.sh stop`).
+- **"Server not found" after a while** = the SSH tunnel dropped (laptop slept,
+  network changed). The remote service stays up on its own (`Restart=always`);
+  just re-run `./connect_chatbot.sh`. Confirm the server side any time with
+  `./connect_chatbot.sh status`.
+- If the floating IP changed (new lease), pass it through:
+  `NODE=cc@<new-ip> ./connect_chatbot.sh`.
 - If SSH asks "The authenticity of host ... can't be established. Are you sure
   you want to continue connecting?" — that's the normal first-connection
   prompt, not an error. Type `yes` and press Enter.

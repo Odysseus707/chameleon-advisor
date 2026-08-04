@@ -1,0 +1,29 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 1.25,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge-picamera-image', 'edge-cpu-inference', 'edge_ssh_image'], produced_by=tejas):\n- machine_type: raspberrypi4-64\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge-picamera-image:latest\n- device_profiles: ['pi_libcamera']\n- lease: count=1 duration_hours=3 platform_version=2 runtime=None exposed_ports=[]\n- reasoning: The Raspberry Pi 4 (64-bit) is chosen because it supports the arm64 architecture, has the required 'pi_libcamera' profile for camera usage, and no GPU is needed. The lease duration of 3 hours aligns with the example provided in the artifact context.",
+  "grounded_by": [
+    "edge-picamera-image",
+    "edge-cpu-inference",
+    "edge_ssh_image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.66,
+  "retrieval_sources": [
+    "https://chameleoncloud.readthedocs.io/en/latest/technical/reservations/index.html",
+    "https://blog.chameleoncloud.org/posts/cloud-wrangling-chameleons-python-library/"
+  ],
+  "advisor_s": 33.98,
+  "llm_s": 57.53,
+  "item": "P03",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T03:45:12Z",
+  "total_s": 92.17,
+  "response_chars": 1580,
+  "n_code_fences": 1
+}

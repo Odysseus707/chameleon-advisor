@@ -1,0 +1,28 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 2.0,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge-cpu-inference', 'edge_ssh_image', 'edge-picamera-image'], produced_by=tejas):\n- machine_type: raspberrypi4-64\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge_ssh_image:latest\n- device_profiles: ['pi_libcamera']\n- lease: count=1 duration_hours=3 platform_version=2 runtime=None exposed_ports=[22]\n- reasoning: The raspberrypi4-64 is chosen for its arm64 architecture and availability of the pi_libcamera profile, which supports camera functionalities. The edge_ssh_image container is suitable for SSH access and file transfers as required by the workload.",
+  "grounded_by": [
+    "edge-cpu-inference",
+    "edge_ssh_image",
+    "edge-picamera-image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.63,
+  "retrieval_sources": [
+    "https://blog.chameleoncloud.org/posts/conducting-research-on-the-edge-chiedge/"
+  ],
+  "advisor_s": 34.19,
+  "llm_s": 47.41,
+  "item": "P09",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T03:52:33Z",
+  "total_s": 82.23,
+  "response_chars": 1569,
+  "n_code_fences": 4
+}

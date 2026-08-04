@@ -1,0 +1,25 @@
+{
+  "advisor_enabled": false,
+  "gate": 1.0,
+  "gate_score": null,
+  "fired": false,
+  "advisory": null,
+  "grounded_by": null,
+  "produced_by": null,
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.79,
+  "retrieval_sources": [
+    "https://blog.chameleoncloud.org/posts/tips-and-tricks-packaging-experiments-reproducibility/",
+    "https://blog.chameleoncloud.org/posts/seamless-ssh-container-access-with-chiedge/",
+    "https://blog.chameleoncloud.org/posts/cloud-wrangling-chameleons-python-library/"
+  ],
+  "llm_s": 83.79,
+  "item": "N07",
+  "condition": "blind",
+  "system": "s5-fork-off",
+  "adapter": "fork",
+  "created": "2026-07-19T04:15:45Z",
+  "total_s": 84.58,
+  "response_chars": 2547,
+  "n_code_fences": 3
+}

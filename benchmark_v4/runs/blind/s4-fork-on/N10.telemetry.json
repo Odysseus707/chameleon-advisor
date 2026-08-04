@@ -1,0 +1,26 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 2.5,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge_sensehat_image', 'edge-picamera-image', 'edge_ssh_image'], produced_by=tejas):\n- machine_type: raspberrypi4-64 [iot-rpi4-picam3]\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge_sensehat_image:latest\n- device_profiles: ['pi_libcamera', 'pi_sensehat']\n- lease: count=1 duration_hours=3 platform_version=2 runtime=None exposed_ports=[]\n- reasoning: The raspberrypi4-64 device with the name 'iot-rpi4-picam3' is chosen because it has both a camera module and a Sense HAT attached, which are required for the workload. The pi_libcamera and pi_sensehat profiles ensure that the container can access these peripherals.",
+  "grounded_by": [
+    "edge_sensehat_image",
+    "edge-picamera-image",
+    "edge_ssh_image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.82,
+  "retrieval_sources": [],
+  "advisor_s": 32.94,
+  "llm_s": 40.42,
+  "item": "N10",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T03:31:24Z",
+  "total_s": 74.19,
+  "response_chars": 1406,
+  "n_code_fences": 2
+}

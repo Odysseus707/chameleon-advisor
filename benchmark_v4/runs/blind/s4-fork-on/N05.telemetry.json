@@ -1,0 +1,28 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 1.75,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge-cpu-inference', 'edge_ssh_image', 'edge-picamera-image'], produced_by=tejas):\n- machine_type: jetson-nano\n- architecture: arm64   gpu: True\n- image: ollama/ollama:latest\n- device_profiles: []\n- lease: count=1 duration_hours=24 platform_version=2 runtime=nvidia exposed_ports=[8000]\n- reasoning: The jetson-nano is a GPU-capable device suitable for running the Ollama container with GPU support. It matches the arm64 architecture and has the necessary runtime set to 'nvidia'. The lease duration is set to 24 hours, and only port 8000 (Ollama API) is exposed.",
+  "grounded_by": [
+    "edge-cpu-inference",
+    "edge_ssh_image",
+    "edge-picamera-image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.74,
+  "retrieval_sources": [
+    "https://blog.chameleoncloud.org/posts/chi-fabric-stitch-ports/"
+  ],
+  "advisor_s": 35.91,
+  "llm_s": 54.79,
+  "item": "N05",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T03:24:50Z",
+  "total_s": 91.44,
+  "response_chars": 1483,
+  "n_code_fences": 4
+}

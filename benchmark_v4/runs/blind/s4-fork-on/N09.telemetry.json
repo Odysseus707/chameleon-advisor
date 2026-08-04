@@ -1,0 +1,27 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 3.75,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge-picamera-image', 'edge_ssh_image'], produced_by=tejas):\n- machine_type: raspberrypi4-64\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge-picamera-image:latest\n- device_profiles: ['pi_libcamera']\n- lease: count=1 duration_hours=3 platform_version=2 runtime=None exposed_ports=[22]\n- reasoning: The raspberrypi4-64 is chosen because it supports the arm64 architecture, has a camera profile (pi_libcamera), and does not have GPU requirements. The edge-picamera-image container will be used to start the camera service, and SSH access will be retrofitted into this container for teammate collaboration.",
+  "grounded_by": [
+    "edge-picamera-image",
+    "edge_ssh_image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.75,
+  "retrieval_sources": [
+    "https://chameleoncloud.readthedocs.io/en/latest/technical/kvm/kvm_gui.html"
+  ],
+  "advisor_s": 35.07,
+  "llm_s": 81.28,
+  "item": "N09",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T03:30:10Z",
+  "total_s": 117.1,
+  "response_chars": 2734,
+  "n_code_fences": 0
+}

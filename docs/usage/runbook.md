@@ -1,5 +1,13 @@
 # Runbook — Self-hosted Chameleon Docs Assistant + advisor room
 
+> **Current source of truth for access is `PROJECT_GUIDE.md` §2, not this file.**
+> This runbook was verified 2026-07-15 and is partly stale: the node floating IP
+> is now `129.114.109.224` (was `.237`), and direct `http://<ip>:8501` access no
+> longer works — the security group blocks 8501 from outside, so you must reach
+> the app through the SSH tunnel (`./connect_chatbot.sh`, see PROJECT_GUIDE.md).
+> The relaunch/gotchas below (Ollama pin, `.env` handling, systemd) are still
+> accurate.
+
 How to (re)launch the stack on a Chameleon P100 node, plus the non-obvious
 gotchas that cost real time the first go. Built and verified 2026-07-15.
 

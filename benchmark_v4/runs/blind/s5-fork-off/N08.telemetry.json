@@ -1,0 +1,26 @@
+{
+  "advisor_enabled": false,
+  "gate": 1.0,
+  "gate_score": null,
+  "fired": false,
+  "advisory": null,
+  "grounded_by": null,
+  "produced_by": null,
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.85,
+  "retrieval_sources": [
+    "https://blog.chameleoncloud.org/posts/tips-and-tricks-packaging-experiments-reproducibility/",
+    "https://blog.chameleoncloud.org/posts/chameleon-experiments-using-direct-network-connections-public-clouds-aws/",
+    "https://blog.chameleoncloud.org/posts/accessing-multiple-nodes-private-network-without-dns-using-jupyter-notebook/",
+    "https://chameleoncloud.readthedocs.io/en/latest/getting-started/jupyter-python-chi.html"
+  ],
+  "llm_s": 68.91,
+  "item": "N08",
+  "condition": "blind",
+  "system": "s5-fork-off",
+  "adapter": "fork",
+  "created": "2026-07-19T04:16:55Z",
+  "total_s": 69.75,
+  "response_chars": 2017,
+  "n_code_fences": 4
+}

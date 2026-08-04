@@ -1,0 +1,29 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 1.5,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge-picamera-image', 'edge_sensehat_image', 'edge_ssh_image'], produced_by=tejas):\n- machine_type: raspberrypi4-64 [nyu-rpi5-03]\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge-picamera-image:latest\n- device_profiles: ['pi_libcamera']\n- lease: count=1 duration_hours=2 platform_version=2 runtime=None exposed_ports=[8888]\n- reasoning: Selected raspberrypi4-64 (nyu-rpi5-03) for its availability and compatibility with the Jupyter minimal-notebook container, exposing port 8888 as requested. The pi_libcamera profile is included to support potential camera usage.",
+  "grounded_by": [
+    "edge-picamera-image",
+    "edge_sensehat_image",
+    "edge_ssh_image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.85,
+  "retrieval_sources": [
+    "https://blog.chameleoncloud.org/posts/tips-and-tricks-packaging-experiments-reproducibility/",
+    "https://chameleoncloud.readthedocs.io/en/latest/getting-started/jupyter-python-chi.html"
+  ],
+  "advisor_s": 35.6,
+  "llm_s": 61.76,
+  "item": "N11",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T03:33:02Z",
+  "total_s": 98.22,
+  "response_chars": 1698,
+  "n_code_fences": 3
+}

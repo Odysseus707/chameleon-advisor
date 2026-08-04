@@ -1,0 +1,24 @@
+{
+  "advisor_enabled": true,
+  "gate": 1.0,
+  "gate_score": 1.5,
+  "fired": true,
+  "advisory": "A CHI@Edge resource recommendation for this workload (grounded_by=['edge_sensehat_image'], produced_by=tejas):\n- machine_type: raspberrypi4-64 [iot-rpi-cm4-02]\n- architecture: arm64   gpu: False\n- image: ghcr.io/chameleoncloud/edge_sensehat_image:latest\n- device_profiles: ['pi_libcamera', 'pi_sensehat', 'pi_gpio']\n- lease: count=1 duration_hours=1 platform_version=2 runtime=None exposed_ports=[]\n- reasoning: Selected raspberrypi4-64 with device_name 'iot-rpi-cm4-02' as it has the Sense HAT attached and matches the required profile.",
+  "grounded_by": [
+    "edge_sensehat_image"
+  ],
+  "produced_by": "tejas",
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.67,
+  "retrieval_sources": [],
+  "advisor_s": 25.99,
+  "llm_s": 39.68,
+  "item": "P20",
+  "condition": "blind",
+  "system": "s4-fork-on",
+  "adapter": "fork",
+  "created": "2026-07-19T04:03:40Z",
+  "total_s": 66.34,
+  "response_chars": 1326,
+  "n_code_fences": 1
+}

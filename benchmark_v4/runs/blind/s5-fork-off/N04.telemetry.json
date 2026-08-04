@@ -1,0 +1,21 @@
+{
+  "advisor_enabled": false,
+  "gate": 1.0,
+  "gate_score": null,
+  "fired": false,
+  "advisory": null,
+  "grounded_by": null,
+  "produced_by": null,
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 1.3,
+  "retrieval_sources": [],
+  "llm_s": 8.93,
+  "item": "N04",
+  "condition": "blind",
+  "system": "s5-fork-off",
+  "adapter": "fork",
+  "created": "2026-07-19T04:13:19Z",
+  "total_s": 10.23,
+  "response_chars": 312,
+  "n_code_fences": 0
+}

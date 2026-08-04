@@ -1,0 +1,23 @@
+{
+  "advisor_enabled": false,
+  "gate": 1.0,
+  "gate_score": null,
+  "fired": false,
+  "advisory": null,
+  "grounded_by": null,
+  "produced_by": null,
+  "model": "qwen2.5:32b-instruct-q4_K_M",
+  "retrieval_s": 0.46,
+  "retrieval_sources": [
+    "https://chameleoncloud.readthedocs.io/en/latest/technical/gui/index.html"
+  ],
+  "llm_s": 44.39,
+  "item": "P10",
+  "condition": "blind",
+  "system": "s5-fork-off",
+  "adapter": "fork",
+  "created": "2026-07-19T04:27:29Z",
+  "total_s": 44.86,
+  "response_chars": 1579,
+  "n_code_fences": 0
+}
