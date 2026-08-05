@@ -57,6 +57,15 @@ PROJECT_CALLS = {"choose_project"}
 STRONG_CALLS = (EDGE_CALLS | KVM_CALLS | BAREMETAL_CALLS | SITE_CALLS
                 | LEASE_CALLS | PROJECT_CALLS)
 
+# Reservation calls only. These are what the emitter and validator dispatch on,
+# so these and only these decide api_family. The creation calls (create_server,
+# create_container, Server, Container) describe the execution environment and
+# are deliberately excluded: create_server is used on KVM@TACC as readily as on
+# bare metal, so treating it as a baremetal marker over-assigns the family.
+RESERVATION_EDGE = {"add_device_reservation", "get_device_reservation"}
+RESERVATION_KVM = {"add_flavor_reservation", "get_flavor_id"}
+RESERVATION_BAREMETAL = {"add_node_reservation"}
+
 # Shared grammar: real python-chi, but the names collide with ordinary Python.
 WEAK_CALLS = {"execute", "upload", "download", "associate_floating_ip",
               "wait_for_active", "submit", "set"}
@@ -285,8 +294,15 @@ def scan_repo(root: Path) -> TriageSignals:
                            "choose_site" if has_choose else
                            "use_site" if has_use else "none")
 
-    fams = [n for n, s in (("edge", EDGE_CALLS), ("kvm", KVM_CALLS),
-                           ("baremetal", BAREMETAL_CALLS)) if all_calls & s]
+    # api_family is decided by the RESERVATION call, never by the creation call.
+    # create_server and Server are used on KVM@TACC as readily as on bare metal
+    # (deploy-a-kubernetes-cluster provisions VMs on KVM@TACC with create_server),
+    # so keying family off them over-assigns baremetal. Only add_node_reservation,
+    # add_flavor_reservation and add_device_reservation actually dispatch.
+    # api_family is risk R1: a wrong value renders a spec that fails at
+    # submission, so it is left as 'none' rather than guessed.
+    fams = [n for n, s in (("edge", RESERVATION_EDGE), ("kvm", RESERVATION_KVM),
+                           ("baremetal", RESERVATION_BAREMETAL)) if all_calls & s]
     sig.api_family_detected = (fams[0] if len(fams) == 1 else
                                "mixed" if len(fams) > 1 else "none")
 
