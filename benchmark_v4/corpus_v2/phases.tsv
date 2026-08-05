@@ -1,0 +1,206 @@
+artifact_id	phase	slot	triage_class	api_family_detected	python_chi_era	site_call_style	selection_reason
+bare-metal-experiment-pattern	1	1_baremetal	instructional	baremetal	current	choose_site	canonical Bare Metal Experiment Pattern; baremetal grammar has zero positive local examples to validate the parser against
+using-a-gpu-on-kvm-tacc	1	2_kvm	instructional	kvm	mixed	use_site	named KVM artifact (kvm_gpu_artifact / cloud-chi), most provisioning cells
+reproduced-pbp-fine-tuning-defense-solution-ndss-2025	1	3_dispersed_research	evidence	none	legacy	use_site	evidence class, dispersed=True, lowest provisioning_density; worst case for the fragment boundary heuristic
+reproduce-unsupervised-video-summarization	1	4_over_size_cap	no-chameleon-code	none	unknown	none	largest repo fetched via sparse-checkout fallback
+bidl-a-high-throughput-low-latency-permissioned-blockchain-frame	1	5_trovi_wrapper	no-chameleon-code	none	unknown	none	links only the generic trovi_external_artifacts_deployment wrapper; exercises the no-GitHub path
+ml-experiment-tracking-with-mlflow-nvidia-vm-version	1	6_mlflow_nvidia_vm	instructional	none	mixed	choose_site	mlflow-chi NVIDIA VM variant; content held constant across api_family, sharpest grammar-discrimination test
+fairify-artifact	1	7_choose_site	evidence	baremetal	current	choose_site	site set via context.choose_site, not chi.use_site; choose_site is 10 of 27 measured site-setting calls
+does-quantization-improve-inference-speed-it-depends	1	8_legacy_era	evidence	baremetal	legacy	use_site	python_chi_era=legacy, most provisioning cells
+zorse-efficient-llm-training-on-heterogeneous-gpu-clusters	1	9_lowest_confidence	evidence	none	mixed	choose_site	lowest triage_confidence among code-bearing artifacts (0.0); the instructional/evidence boundary case
+tensorflow-gpu	1	10_negative_control	no-chameleon-code	none	current	none	no-chameleon-code with the most scanned code, so a false negative would hide here first
+reproducing-tacotron2-qualitative-claims	2	baremetal|evidence|legacy	evidence	baremetal	legacy	use_site	stratum fill, 2 per cell
+re-an-image-is-worth-16x16-words-transformers-for-image-recognit	2	baremetal|evidence|legacy	evidence	baremetal	legacy	use_site	stratum fill, 2 per cell
+silhouette-artifact	2	baremetal|evidence|current	evidence	baremetal	current	choose_site	stratum fill, 2 per cell
+partial-reproduction-of-sieve-nsdi-24	2	baremetal|evidence|current	evidence	baremetal	current	choose_site	stratum fill, 2 per cell
+legal-document-summarizer	2	none|instructional|mixed	instructional	none	mixed	choose_site	stratum fill, 2 per cell
+ml-experiment-tracking-with-mlflow-amd-gpu-version	2	none|instructional|mixed	instructional	none	mixed	choose_site	stratum fill, 2 per cell
+re-on-warm-starting-neural-network-training	2	baremetal|instructional|legacy	instructional	baremetal	legacy	use_site	stratum fill, 2 per cell
+fsa-benchmark	2	baremetal|instructional|legacy	instructional	baremetal	legacy	use_site	stratum fill, 2 per cell
+persistent-storage-on-chameleon	2	mixed|instructional|mixed	instructional	mixed	mixed	choose_site	stratum fill, 2 per cell
+mpi-and-spack-based-hpc-cluster	2	mixed|instructional|mixed	instructional	mixed	mixed	use_site	stratum fill, 2 per cell
+ma-icbf-reproduction	2	baremetal|evidence|mixed	evidence	baremetal	mixed	mixed	stratum fill, 2 per cell
+tabpfn-a-transformer-that-solves-small-tabular-classification-pr	2	baremetal|evidence|mixed	evidence	baremetal	mixed	choose_site	stratum fill, 2 per cell
+reproducing-kangaroo-cache-result	2	baremetal|instructional|current	instructional	baremetal	current	choose_site	stratum fill, 2 per cell
+mu-slope	2	baremetal|instructional|current	instructional	baremetal	current	choose_site	stratum fill, 2 per cell
+ssh-on-chi-edge-tutorial	2	edge|instructional|legacy	instructional	edge	legacy	use_site	stratum fill, 2 per cell
+floto-development-set-up	2	edge|instructional|legacy	instructional	edge	legacy	use_site	stratum fill, 2 per cell
+data-platforms-on-chameleon	2	kvm|instructional|mixed	instructional	kvm	mixed	choose_site	stratum fill, 2 per cell
+online-evaluation-of-ml-systems	2	kvm|instructional|mixed	instructional	kvm	mixed	choose_site	stratum fill, 2 per cell
+mlflow-with-persistent-data	2	kvm|instructional|current	instructional	kvm	current	choose_site	stratum fill, 2 per cell
+set-up-a-dockerhub-pull-through-cache	2	kvm|instructional|current	instructional	kvm	current	choose_site	stratum fill, 2 per cell
+connect-google-colab-to-a-server-on-chameleon	2	baremetal|instructional|mixed	instructional	baremetal	mixed	choose_site	stratum fill, 2 per cell
+deploy-a-kubernetes-cluster	2	baremetal|instructional|mixed	instructional	baremetal	mixed	use_site	stratum fill, 2 per cell
+aesthetic-hub-serving-nvidia	2	none|evidence|mixed	evidence	none	mixed	choose_site	stratum fill, 2 per cell
+protoken-token-level-attribution-for-federated-large-language-mo	2	none|evidence|mixed	evidence	none	mixed	choose_site	stratum fill, 2 per cell
+build-an-mlops-pipeline	2	none|instructional|current	instructional	none	current	choose_site	stratum fill, 2 per cell
+acto-push-button-end-to-end-testing-of-kubernetes-operators-and	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+enoki-high-velocity-linux-kernel-scheduler-development-paper-rep	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+a-next-generation-discontinuous-galerkin-fluid-dynamics-solver-w	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+adachain-reproducibility-artifact	3		no-chameleon-code	none	current	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+artifact-for-baleen-ml-admission-prefetching-for-flash-caches-fa	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+artifact-for-elect-enabling-erasure-coding-tiering-for-lsm-tree	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+artifact-for-metis-file-system-model-checking-via-versatile-inpu	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+artifact-for-rfuse-modernizing-userspace-filesystem-framework-th	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+artifact-reproduction-lightweight-modular-verification-for-webas	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+automatic-question-usability-evaluation-toolkit-saquet-repro	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+bandits-meet-mechanism-design	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+bpftime-userspace-uprobe-benchmark-osdi-25-reproduction-on-chame	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+cents-reproducibility-artifact	3		no-chameleon-code	none	current	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+chi-in-a-box-quickstart	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+chi-edge-camera-peripheral-tutorial	3		instructional	edge	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+chi-edge-sensors-and-gpio-tutorial	3		instructional	edge	mixed	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+clip	3		evidence	baremetal	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+clock-with-adaptive-replacement-cache-implementation	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+clock-pro-implementation-on-libcachesim	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+cloud-computing-on-chameleon	3		instructional	none	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+clusdur-task-1-4	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+compressor-compressing-pre-trained-models-of-code-into-3-mb	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+cookie-monster-efficient-on-device-budgeting-for-differentially	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+cuda-ubuntu-22-04	3		instructional	edge	legacy	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+cuts-scaling-subgraph-isomorphism-on-distributed-multi-gpu-syste	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+data-acquisition-remote-experimental-data	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+data-analysis-in-duckdb	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+data-analysis-in-pandas	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+data-analysis-in-polars	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+data-cleaning	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+data-integration	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+data-transformation	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+data-visualization-charts-in-matplotlib	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+data-visualization-charts-in-pyobsplot	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+data-visualization-color	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+data-visualization-selection-and-brushing	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+decoding-finger-velocity-from-cortical-spike-trains-with-recurre	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+deploy-applications-on-chameleon-via-the-infrastructure-manager	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+earthsight-a-distributed-framework-for-low-latency-satellite-int	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+ecstatic-reproducibility-study	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+evaluation-of-ml-systems-by-closing-the-feedback-loop	3		instructional	kvm	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+excel-data-loading	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+exli-artifact	3		evidence	baremetal	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+flashlight-pytorch-compiler-extensions-to-accelerate-attention-v	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+flashnet	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+flex-artifact	3		evidence	baremetal	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+flink-25728-bug-reproduction	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+gluetest-artifact	3		evidence	baremetal	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+gnns-also-deserve-editing-and-they-need-it-more-than-once-seed-g	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+gnss-track-visualization-from-sigcap-data-reproducibility	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+halfmoon-log-optimal-fault-tolerant-stateful-serverless-computin	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+hdfs-15118	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+healer-relation-learning-guided-kernel-fuzzing	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+hello-chameleon	3		instructional	kvm	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+hemem-scalable-tiered-memory-management-for-big-data-application	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+hierasparse-hierarchical-semi-structured-sparse-kv-attention	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+hyper-hypothetical-reasoning-with-what-if-and-how-to-queries-usi	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+icse-2023-on-the-reproducibility-of-software-defect-datasets	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+icse-2024-fplearner	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+indoor-outdoor-spectrum-sharing-enabled-by-gnss-based-classifier	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+indyscc-chameleon-assignment-cuhksz	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+inspecting-network-traffic-with-tcpdump-and-wireshark	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+introducing-python-to-the-geoscience-classroom	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+jupyter-opencode-environment	3		instructional	mixed	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+kangaroo-caching-billions-of-tiny-objects-on-flash	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+large-scale-model-training-on-chameleon-a100-80gb-version	3		instructional	mixed	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+large-scale-model-training-on-chameleon-h100-version	3		instructional	mixed	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+leaftl-reproduction-cs332	3		instructional	baremetal	current	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+llm-benchmarks-for-network-application-with-netpress-reproducibi	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+machine-learning-process	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+magneto-oracle-suite-for-mobile-app-testing	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+miso-reproduction-attempt	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+ml-experiment-tracking-with-mlflow-nvidia-gpu-version	3		instructional	none	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+ml-in-detecting-and-addressing-system-drift	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+model-optimizations-for-serving-machine-learning-models-amd-gpu	3		instructional	none	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+model-optimizations-for-serving-machine-learning-models-nvidia-g	3		instructional	none	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+mpi-spack-bare-metal-cluster	3		instructional	mixed	mixed	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+mpi-spack-bare-metal-cluster-2	3		instructional	mixed	mixed	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+mpi-spack-kvm-cluster	3		instructional	mixed	mixed	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+nanogpt-toy-version	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+ndzip-gpu-efficient-lossless-compression-of-scientific-floating	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+nest-network-and-memory-aware-device-placement-for-distributed-d	3		evidence	edge	current	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+network-emulation	3		instructional	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+observatory-row-order-insignificance-reproduction-and-bug-discov	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+octosketch-enabling-real-time-continuous-network-monitoring-over	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+offline-evaluation-of-ml-systems	3		instructional	kvm	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+on-the-detectability-of-chatgpt-content-benchmarking-methodology	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+openflow-quick-start-example	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+openflow-quick-start-appliance	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+openmcp-a-reproducible-benchmarking-harness-for-evaluating-compu	3		evidence	kvm	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+os-liberty-puppet	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+osdi-2024-bof-anvil	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+osre24-benchmarking-drift-management-approaches	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+p4control-artifact	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+paralegal-performance-benchmark	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+parrot-efficient-serving-of-llm-based-applications-with-semantic	3		instructional	baremetal	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+pendulum-timing-side-channel-mitigation-via-automated-program-re	3		evidence	baremetal	mixed	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+prairelearn	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+prism-research-multi-llm-serving-reproduced-experiment	3		no-chameleon-code	none	current	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+probfuzz-artifact	3		evidence	baremetal	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+random-walks-on-huge-graphs-at-cache-efficiency	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reducing-energy-bloat-in-large-model-training	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+regular-sequential-serializability-and-regular-sequential-consis	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+regular-sequential-serializability-and-regular-sequential-consis-2	3		no-chameleon-code	none	current	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reltr-relation-transformer-for-scene-graph-generation	3		evidence	baremetal	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproduce-attempt-for-palimpzest	3		no-chameleon-code	none	current	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproduce-attempt-for-textee	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproduce-sysflow-a-cloud-native-system-telemetry-framework	3		instructional	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproduced-an-evaluation-for-ml-based-ms-ms-similarity-predictio	3		no-chameleon-code	none	current	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproduced-autothrottle-network-service-experiment-on-3-node-clu	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproduced-novel-ar-labeling-ieee-vis-23	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducibility-study-of-tsb-clustering-vldb-2025	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducibility-study-cfboost-enhanced-codebase-analysis	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-deep-neural-nets-33-years-ago-and-33-years-from-now	3		instructional	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-acm-hpdc-24-paper-accelerating-function-centric-appl	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-acm-hpdc-25-paper-hyperf-end-to-end-autotuning-frame	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-asplos-23-leaftl-a-learning-based-flash-translation	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-bp-tree-vldb-24	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-crossprefetch-accelerating-i-o-prefetching-for-moder	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-dealing-with-acronyms-abbreviations-and-typos-in-rea	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-eipsim-elastic-ip-simulator	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-femu-accurate-nvme-ssd-emulation-and-benchmarking-wi	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-gradient-ga-for-sample-efficient-molecular-optimizat	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-lottery-ticket-hypothesis-finding-sparse-trainable-n	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-p4control	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-polar-vldb-24	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-privacysphere-privacy-preserving-smart-spaces	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-speech-to-text-translation-results	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-the-brewer-vldb-23-entity-resolution-experiment	3		evidence	baremetal	mixed	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproducing-the-result-of-the-paper-exploring-the	3		evidence	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproduction-compo-community-preferences-for-language-model-pers	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproduction-of-building-verified-neural-networks-for-computer-s	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproduction-of-dynamic-data-layout-optimization-with-worst-case	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproduction-of-hypogenic-hypothesis-generation-to-the-clarity-t	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+reproduction-of-coauthor-chi-2022-metadata-and-survey-analysis-o	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+rocm-ubuntu-24-04	3		instructional	edge	legacy	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+ryu-openflow-controller	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+s3fifo	3		evidence	baremetal	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+sage-virtualwaggle-arm64	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+sage-virtualwaggle-ubuntu18-04	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+sciunit-cli-demonstration	3		evidence	kvm	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+sciunit-nb-kernels-demonstration	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+security-onion-network-monitoring	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+serving-machine-learning-models-on-edge-devices	3		instructional	none	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+setting-up-a-multi-node-single-server-riak-cluster-with-replicat	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+shortcut-learning-in-text-classification	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+sixthsense-artifact	3		evidence	baremetal	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+snowboard-finding-kernel-concurrency-bugs-through-systematic-int	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+spark-29351-bug-reproduce	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+statefuzz-reproduce	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+swarmlora-batched-computation-across-isolated-functions-for-serv	3		no-chameleon-code	none	current	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+symmc-artifact	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+system-optimizations-for-serving-machine-learning-models	3		instructional	none	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+taming-throughput-latency-tradeoff-in-llm-inference-with-sarathi	3		evidence	baremetal	current	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+teaching-computer-networks-on-chameleon	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+the-aurora-single-level-store-operating-system	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+the-demikernel-library-os-architecture-for-microsecond-kernel-by	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+the-pos-experiment-controller-reproducible-portable-network-expe	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+train-ml-models-with-ray-amd-gpu-version	3		instructional	none	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+train-ml-models-with-ray-nvidia-gpu-version	3		instructional	none	mixed	choose_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+trovi-reproduce-copyonpin	3		instructional	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+ucare-minio	3		instructional	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+using-cloud-servers-for-gpu-based-inference	3		excluded	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+using-edge-devices-for-cpu-based-inference	3		excluded	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+validating-jit-compilers-via-compilation-space-exploration	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+vattention-reproduction-on-chameleon-mechanism-turing-rtx-6000	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+vocal-grader	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+what-is-the-impact-of-releasing-code-with-publications-statistic	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+yarn-9565-rmappimpl-rannodes-not-cleared-on-finaltransition	3		instructional	baremetal	legacy	use_site	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time
+yarn-9565-rmappimpl-rannodes-not-cleared-on-finaltransition-2	3		no-chameleon-code	none	unknown	none	remainder; no per-artifact audit, stratified sample of 20 drawn at audit time

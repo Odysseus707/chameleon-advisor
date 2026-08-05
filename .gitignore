@@ -23,3 +23,7 @@ __pycache__/
 
 # --- Claude Code machine-local settings ---
 **/.claude/settings.local.json
+
+# --- corpus_v2 fetch cache: 200 upstream clones, ~8 GB, reproducible from
+#     fetch_state.jsonl content hashes ---
+benchmark_v4/corpus_v2/cache/

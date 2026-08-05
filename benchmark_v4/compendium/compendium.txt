@@ -1,0 +1,813 @@
+## "Acto: Push-Button End-to-End Testing of Kubernetes Operators and Controllers" Bugs Reproduction
+   tags: reproducible research
+   https://github.com/TZ-zzz/acto-chameleon
+   https://github.com/xlab-uiuc/acto
+   https://github.com/xlab-uiuc/acto-chameleon
+
+## "Enoki: High Velocity Linux Kernel Scheduler Development" Paper Reproduction
+   tags: reproducible research
+   https://github.com/smiller123/enoki
+
+## A Next-Generation Discontinuous Galerkin Fluid Dynamics Solver with Application to High-Resolution Lung Airflow Simulations
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+   https://github.com/dealii/dealii
+   https://github.com/exadg/exadg
+
+## AdaChain Reproducibility Artifact
+   tags: reproducible research
+   https://github.com/aurelliatirza/AdaChain_Reproducing
+
+## Aesthetic Hub Serving (Nvidia)
+   tags: education, experiment
+   https://github.com/somadisingh/aesthetic-hub-serving
+
+## Artifact for Baleen: ML Admission & Prefetching for Flash Caches (FAST 2024)
+   tags: reproducible research
+   https://github.com/wonglkd/Baleen-FAST24
+
+## Artifact for ELECT: Enabling Erasure Coding Tiering for LSM-tree-based Storage (FAST 2024)
+   tags: experiment, reproducible research
+   https://github.com/adslabcuhk/elect
+
+## Artifact for Metis: File System Model Checking via Versatile Input and State Exploration (FAST 2024)
+   tags: reproducible research
+   https://github.com/sbu-fsl/Metis
+
+## Artifact for RFUSE: Modernizing Userspace Filesystem Framework through Scalable Kernel-Userspace Communication (FAST 2024)
+   tags: reproducible research
+   https://github.com/snu-csl/rfuse
+
+## Artifact Reproduction: Lightweight, Modular Verification for WebAssembly-to-Native Instruction Selection (Crocus, ASPLOS '24)
+   https://github.com/avanhatt/asplos24-ae-crocus
+
+## Automatic Question Usability Evaluation Toolkit (SAQUET) - REPRO
+   tags: education, reproducible research
+   https://github.com/akdabarri/repro-
+
+## Bandits meet mechanism design
+   tags: experiment
+   https://github.com/nicholas-10/reproduced-experiments
+
+## Bare Metal Experiment Pattern
+   tags: example, experiment pattern
+   https://github.com/ChameleonCloud/bare_metal_experiment_pattern
+
+## BIDL: A High-throughput, Low-latency Permissioned Blockchain Framework for Datacenter Networks
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+
+## bpftime Userspace Uprobe Benchmark: OSDI '25 Reproduction on Chameleon
+   https://github.com/eunomia-bpf/bpftime
+
+## Build an MLOps Pipeline
+   tags: education
+   https://github.com/teaching-on-testbeds/mlops-chi
+
+## CENTS Reproducibility Artifact
+   tags: reproducible research
+   https://github.com/aurelliatirza/CENTS_REPRODUCTION
+
+## CHI-in-a-Box QuickStart
+   https://github.com/ChameleonCloud/chi-in-a-box
+   https://github.com/chameleoncloud/chi-in-a-box
+
+## CHI@Edge Camera Peripheral Tutorial
+   tags: appliance, education, example
+   https://github.com/ChameleonCloud/edge-picamera-image
+
+## CHI@Edge Sensors and GPIO tutorial
+   tags: education, example
+   https://github.com/ChameleonCloud/edge_sensehat_image
+
+## CLIP
+   tags: experiment
+   https://github.com/Ezra-je/Reproduced-Experiment-CLIP
+
+## Clock with Adaptive Replacement Cache Implementation
+   tags: experiment
+   https://github.com/raflyhangga/libCacheSim
+
+## Clock-Pro Implementation on libCacheSim
+   tags: education
+   https://github.com/Marthenn/libCacheSim-ClockPro-trovi
+
+## Cloud Computing on Chameleon
+   tags: education
+   https://github.com/teaching-on-testbeds/cloud-chi
+
+## ClusDur_Task_1.4
+   https://github.com/DUSCC/Chameleon_Task_1.4
+
+## Compressor: Compressing Pre-trained Models of Code into 3 MB
+   tags: experiment, reproducible research
+   https://github.com/yhfie/Compressor-CHI
+
+## Connect Google Colab to a server on Chameleon
+   tags: education
+   https://github.com/teaching-on-testbeds/colab
+
+## Cookie Monster: Efficient On-Device Budgeting for Differentially-Private Ad-Measurement Systems
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+   https://github.com/columbia/cookiemonster
+
+## CUDA (Ubuntu 22.04)
+   tags: appliance
+   https://github.com/ChameleonCloud/CC-Images
+
+## cuTS: Scaling Subgraph Isomorphism on Distributed Multi-GPU Systems Using Trie Based Data Structure
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+
+## Data Acquisition - Remote Experimental Data
+   tags: education
+   https://github.com/sagecontinuum/sage-data-client
+
+## Data Analysis in DuckDB
+   tags: education
+   https://github.com/dakoop/fount-data-duckdb
+
+## Data Analysis in pandas
+   tags: education
+   https://github.com/dakoop/fount-data-pandas
+
+## Data Analysis in polars
+   tags: education
+   https://github.com/dakoop/fount-data-polars
+
+## Data Cleaning
+   tags: education
+   https://github.com/dakoop/fount-data-cleaning
+
+## Data Integration
+   tags: education
+   https://github.com/dakoop/fount-data-integration
+
+## Data platforms on Chameleon
+   https://github.com/teaching-on-testbeds/data-platform-chi
+
+## Data Transformation
+   tags: education
+   https://github.com/dakoop/fount-data-cleaning
+   https://github.com/dakoop/fount-data-transformation
+
+## Data Visualization: Charts in matplotlib
+   tags: education
+   https://github.com/dakoop/fount-charts-matplotlib
+
+## Data Visualization: Charts in pyobsplot
+   tags: education
+   https://github.com/dakoop/fount-charts-pyobsplot
+
+## Data Visualization: Color
+   tags: education
+   https://github.com/dakoop/fount-vis-color
+
+## Data Visualization: Selection and Brushing
+   tags: education
+   https://github.com/dakoop/fount-vis-interaction
+
+## Decoding Finger Velocity from Cortical Spike Trains with Recurrent Spiking Neural Networks
+   tags: reproducible research
+   http://github.com/Tansil011019/neural-decoding-RSNN-reproduce
+
+## Deploy a Kubernetes cluster
+   tags: education
+   https://github.com/teaching-on-testbeds/k8s
+
+## Deploy Applications on Chameleon via the Infrastructure Manager (IM)
+   tags: experiment, reproducible research
+   https://github.com/grycap/apricotlab
+   https://github.com/grycap/im-trovi-artifact
+
+## Does Quantization Improve Inference Speed? It Depends
+   tags: experiment, reproducible research
+   https://github.com/AhmedFarrukh/QuantizationExperiments
+
+## EarthSight: A Distributed Framework for Low-Latency Satellite Intelligence
+   tags: experiment, reproducible research
+   https://github.com/scai-tech/EarthSight-MLSys2026
+   https://github.com/sitar-lab/EarthSight-MLSys2026
+
+## ECSTATIC Reproducibility Study
+   tags: reproducible research
+   https://github.com/muflihimaduddin/ECSTATIC
+
+## Evaluation of ML systems by closing the feedback loop
+   tags: education
+   https://github.com/teaching-on-testbeds/eval-loop-chi
+
+## Excel Data Loading
+   tags: education
+   https://github.com/Manvitha-Kuncham/project
+
+## ExLi Artifact
+   tags: reproducible research
+   https://github.com/EngineeringSoftware/exli
+   https://github.com/radhofan/exli
+
+## Fairify Artifact
+   tags: reproducible research
+   https://github.com/radhofan/Fairify
+   https://github.com/sumonbis/Fairify
+
+## Flashlight: PyTorch Compiler Extensions to Accelerate Attention Variants
+   tags: reproducible research
+   https://github.com/bozhiyou/flashlight
+
+## FlashNet
+   tags: experiment, reproducible research, storage
+   https://github.com/rannnayy/flashnet-trovi
+
+## Flex Artifact
+   tags: reproducible research
+   https://github.com/radhofan/flex
+   https://github.com/uiuc-arc/flex
+
+## FLINK-25728 Bug Reproduction
+   tags: experiment
+   https://github.com/JayceUchi/FLINK-25728
+
+## FLOTO Development Set up
+   tags: example
+   https://github.com/UChicago-FLOTO/chi_edge_demo
+
+## FSA-benchmark
+   tags: example, reproducible research, storage
+   https://github.com/songxikang/FSA-benchmarking
+
+## GlueTest Artifact
+   tags: reproducible research
+   https://github.com/radhofan/gluetest
+   https://github.com/seal-research/gluetest
+
+## GNNs Also Deserve Editing, and They Need It More Than Once (SEED-GNN)
+   tags: experiment, reproducible research
+   https://github.com/malifalhakim/gnn_editing
+
+## GNSS Track Visualization from SigCap Data REPRODUCIBILITY
+   tags: reproducible research
+   https://github.com/hardaniIsmunabil/notredame-trovi
+
+## Halfmoon: Log-Optimal Fault-Tolerant Stateful Serverless Computing
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+   https://github.com/pkusys/Halfmoon-bench
+
+## HDFS-15118
+   tags: experiment
+   https://github.com/FarFlyField/hadoop-HDFS-15118
+
+## HEALER: Relation Learning Guided Kernel Fuzzing
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+   https://github.com/SunHao-0/healer
+
+## Hello, Chameleon
+   tags: education
+   https://github.com/teaching-on-testbeds/hello-chameleon
+
+## HeMem: Scalable Tiered Memory Management for Big Data Applications and Real NVM Reproducibility
+   tags: reproducible research
+   https://github.com/Bernhard09/hemem
+
+## HieraSparse: Hierarchical Semi-Structured Sparse KV Attention
+   tags: reproducible research
+   https://github.com/psl-ntu/HieraSparse
+
+## HypeR: Hypothetical Reasoning With What-If and How-To Queries Using a Probabilistic Causal Approach
+   https://github.com/hasnadaffau/Hyper
+
+## ICSE 2023: On the Reproducibility of Software Defect Datasets
+   tags: experiment
+   https://github.com/ucd-plse/on-the-reproducibility
+
+## ICSE 2024: FPLearner
+   tags: experiment
+   https://github.com/ucd-plse/FPLearner
+
+## Indoor/Outdoor Spectrum Sharing Enabled by GNSS-based Classifiers REPRODUCIBILITY
+   tags: reproducible research
+   https://github.com/hardaniIsmunabil/notredame-trovi-2
+
+## IndySCC Chameleon Assignment, CUHKSZ
+   tags: experiment
+   https://github.com/CUHKSZ-HPC/IndySCC_As_01
+
+## Inspecting network traffic with tcpdump and Wireshark
+   tags: education
+   https://github.com/teaching-on-testbeds/chameleon-education
+
+## Introducing Python to the Geoscience Classroom
+   tags: education
+   https://github.com/pycogss/pycogss-intro-to-python
+
+## Jupyter + OpenCode environment
+   https://github.com/teaching-on-testbeds/chi-jupyter-opencode
+
+## Kangaroo: Caching Billions of Tiny Objects on Flash
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+   https://github.com/saramcallister/CacheLib-1
+
+## Large-scale model training on Chameleon (A100 80GB version)
+   tags: education
+   https://github.com/teaching-on-testbeds/llm-chi
+
+## Large-scale model training on Chameleon (H100 version)
+   tags: education
+   https://github.com/teaching-on-testbeds/llm-chi
+
+## LeafTL Reproduction - CS332
+   https://github.com/jadwkhater/LeaFTL-CS332
+
+## Legal Document Summarizer
+   tags: education
+   https://github.com/shettynitis/LLM_LegalDocSummarization
+
+## LLM Benchmarks for Network Application with NetPress Reproducibility
+   tags: reproducible research
+   https://github.com/RedPanda-88/NetPress-Reproduction
+
+## MA-ICBF Reproduction
+   tags: experiment
+   https://github.com/anisamsrh/MA-ICBF_Reproduction_Notebook
+
+## Machine Learning Process
+   tags: education
+   https://github.com/pramonettivega/machine_learning_process
+
+## Magneto-oracle suite for mobile app testing
+   tags: experiment, experiment pattern, reproducible research
+   https://github.com/laurafbind/Magneto-oracle-suite-for-mobile-app-testing
+
+## MISO reproduction attempt
+   tags: reproducible research
+   https://github.com/muhnatha/reproduce_MISO
+
+## ML experiment tracking with MLFlow (AMD GPU version)
+   tags: education
+   https://github.com/teaching-on-testbeds/mlflow-chi
+
+## ML experiment tracking with MLFlow (NVIDIA GPU version)
+   tags: education
+   https://github.com/teaching-on-testbeds/mlflow-chi
+
+## ML experiment tracking with MLFlow (NVIDIA VM version)
+   tags: education
+   https://github.com/teaching-on-testbeds/mlflow-chi
+
+## ML in Detecting and Addressing System Drift
+   tags: experiment, reproducible research
+   https://github.com/JoannaCCJH/drift-detection-OSRE24
+
+## MLFlow with persistent data
+   https://github.com/teaching-on-testbeds/mlflow-standalone
+
+## Model optimizations for serving machine learning models (AMD GPU version)
+   tags: education
+   https://github.com/teaching-on-testbeds/serve-model-chi
+
+## Model optimizations for serving machine learning models (NVIDIA GPU version)
+   tags: education
+   https://github.com/teaching-on-testbeds/serve-model-chi
+
+## MPI and Spack based HPC Cluster
+   tags: appliance, example
+   https://github.com/pmodels/cc-hpc-appliances
+   https://github.com/rohanbabbar04/MPI-Spack-Experiment-Artifact
+
+## MPI+Spack Bare Metal Cluster
+   tags: appliance
+   https://github.com/pmodels/cc-hpc-appliances
+
+## MPI+Spack Bare Metal Cluster
+   tags: appliance
+   https://github.com/pmodels/cc-hpc-appliances
+
+## MPI+Spack KVM Cluster
+   tags: appliance
+   https://github.com/pmodels/cc-hpc-appliances
+
+## mu_slope
+   https://github.com/sud295/mu_slope
+
+## NanoGPT toy version
+   https://github.com/karpathy/nanoGPT
+
+## ndzip-gpu: Efficient Lossless Compression of Scientific Floating-Point Data on GPUs
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+
+## NEST: Network- and Memory-Aware Device Placement for Distributed Deep Learning
+   tags: experiment, reproducible research
+   https://github.com/scai-tech/Nest
+
+## Network emulation
+   tags: education
+   https://github.com/teaching-on-testbeds/network-emulation
+
+## Observatory Row Order Insignificance: Reproduction and Bug Discovery
+   tags: reproducible research
+   https://github.com/AuroraWXZ/trovi_observatory
+
+## OctoSketch: Enabling Real-Time, Continuous Network Monitoring  over Multiple Cores
+   https://github.com/SieDeta/octosketch-reproduce
+
+## Offline evaluation of ML systems
+   tags: education
+   https://github.com/teaching-on-testbeds/eval-offline-chi
+
+## On the Detectability of ChatGPT Content: Benchmarking, Methodology, and Evaluation Through the Lens of Academic Writing REPRODUCIBILTY
+   tags: experiment
+   https://github.com/agw2005/CheckGPT-reproduction
+
+## Online evaluation of ML systems
+   tags: education
+   https://github.com/teaching-on-testbeds/eval-online-chi
+
+## OpenFlow quick start example
+   https://github.com/ChameleonCloud/ryu
+
+## OpenFlow: Quick Start Appliance
+   tags: appliance
+   https://github.com/ChameleonCloud/ryu
+
+## OpenMCP: A Reproducible Benchmarking Harness for Evaluating Computer-Use Agents on Chameleon Cloud
+   tags: experiment, reproducible research
+   https://github.com/AguLeon/MCP_SLM_Project
+   https://github.com/AguLeon/OpenMCP
+
+## OS-Liberty-Puppet
+   tags: appliance
+   https://github.com/dloup/xp5k-openstack
+
+## OSDI 2024 BoF Anvil
+   tags: reproducible research
+   https://github.com/xlab-uiuc/anvil-chameleon
+
+## OSRE24 - Benchmarking Drift Management Approaches
+   tags: education, experiment, reproducible research
+   https://github.com/williamnixon20/osre-drift
+
+## P4Control Artifact
+   tags: reproducible research
+   https://github.com/peng-gao-lab/p4control
+
+## Paralegal Performance Benchmark
+   https://github.com/brownsys/paralegal-osdi-2025-artifact
+
+## Parrot: Efficient Serving of LLM-based Applications with Semantic Variable Artifact
+   https://github.com/JeffreyHoward/Parrot-Repro
+
+## Partial Reproduction of SIEVE (NSDI '24)
+   tags: reproducible research
+   https://github.com/RorroArt/sieve-chameleon-repro
+
+## Pendulum: Timing Side-Channel Mitigation via Automated  Program Repair
+   tags: experiment, reproducible research
+   https://github.com/yhfie/Pendulum-CHI
+
+## Persistent storage on Chameleon
+   tags: education
+   https://github.com/teaching-on-testbeds/data-persist-chi
+
+## PraireLearn
+   tags: education
+   https://github.com/ayuprmts/Repro_DHS
+
+## Prism Research (Multi-LLM Serving) Reproduced Experiment
+   https://github.com/Multi-LLM/prism-research
+
+## ProbFuzz Artifact
+   tags: reproducible research
+   https://github.com/radhofan/probfuzz
+   https://github.com/uiuc-arc/probfuzz
+
+## ProToken: Token-Level Attribution for Federated Large Language Models
+   tags: experiment, reproducible research
+   https://github.com/ahmayun/protoken
+
+## Random Walks on Huge Graphs at Cache Efficiency
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+   https://github.com/flashmobwalk/flashmob
+
+## Re: An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale
+   tags: education, reproducible research
+   https://github.com/mohammed183/re_vit
+
+## Re: On Warm Starting Neural Network Training
+   tags: education, reproducible research
+   https://github.com/mohammed183/re_warm_start_nn
+
+## Reducing Energy Bloat in Large Model Training
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+   https://github.com/ml-energy/zeus
+
+## Regular Sequential Serializability and Regular Sequential Consistency
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+   https://github.com/jmhelt/tapir
+
+## Regular Sequential Serializability and Regular Sequential Consistency
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+   https://github.com/princeton-sns/gryff-rs
+
+## RelTR: Relation Transformer for Scene Graph Generation
+   tags: experiment
+   https://github.com/Ezra-je/Reproduced-Experiment-RelTR
+
+## Reproduce Attempt for Palimpzest
+   tags: experiment
+   https://github.com/MathiasAdya/palimpzest
+   https://github.com/mitdbg/palimpzest
+
+## Reproduce Attempt for TextEE
+   tags: experiment, reproducible research
+   https://github.com/ej0cl6/TextEE
+
+## Reproduce SysFlow: A cloud-native system telemetry framework
+   tags: education, reproducible research
+   https://github.com/raihansltn/SysFlow-Repro
+
+## Reproduce: Unsupervised Video Summarization
+   tags: experiment
+   https://github.com/amalia13977/exp_1
+   https://github.com/amalia13977/repro_jasim
+
+## Reproduced an Evaluation for ML-Based MS/MS Similarity Prediction (BMC Bioinformatics 2025)
+   tags: experiment
+   https://github.com/jenniferbudim/eval-method-similarity-ms-ms
+
+## Reproduced Autothrottle Network Service Experiment on 3-Node Cluster
+   https://github.com/b33rk/autothrottle
+
+## Reproduced Novel AR Labeling  (IEEE VIS 23)
+   tags: experiment
+   https://github.com/lafuanh/Reproduced-experiments
+
+## Reproduced PBP Fine-tuning Defense Solution (NDSS 2025)
+   tags: experiment
+   https://github.com/agw2005/pbp-reproduced
+
+## Reproducibility Study of TSB-Clustering (VLDB 2025)
+   tags: experiment
+   https://github.com/TheDatumOrg/TSB-Clustering
+   https://github.com/cattna/Reproduction-of-TSB-Clustering-from-VLDB-2025
+
+## Reproducibility Study: CFBoost – Enhanced Codebase & Analysis
+   tags: experiment, reproducible research
+   https://github.com/AgentBubu/CFBoost-Repro
+
+## Reproducing "Deep Neural Nets: 33 years ago and 33 years from now"
+   tags: education, reproducible research
+   https://github.com/karpathy/lecun1989-repro
+   https://github.com/teaching-on-testbeds/deep-nets-reproducing
+
+## Reproducing ACM HPDC '24 Paper: Accelerating Function-Centric Applications with Context Reuse
+   tags: experiment, reproducible research
+   https://github.com/asm-shahadat/hpdc24-context-reuse-reproduction
+
+## Reproducing ACM HPDC '25 Paper: HYPERF: End-to-End Autotuning Framework for HPC
+   tags: experiment, reproducible research
+   https://github.com/asm-shahadat/hpdc25-hyperf-reproduction
+
+## Reproducing ASPLOS' 23: LeaFTL: A Learning-Based Flash Translation Layer for Solid-State Drives
+   tags: experiment, reproducible research
+   https://github.com/LinjieM/Trovi-Reproduce-LeaFTL
+
+## Reproducing BP-tree (VLDB '24)
+   tags: experiment, reproducible research
+   https://github.com/S-Saqib/trovi_reproduce_bptree-vldb24_driver
+
+## Reproducing CrossPrefetch : Accelerating I/O Prefetching for Modern Storage
+   tags: education, experiment, reproducible research
+   https://github.com/aliffianilhamf/CrossPrefetch
+
+## Reproducing Dealing with Acronyms, Abbreviations, and Typos in Real-World Entity Matching
+   tags: example
+   https://github.com/HasanPalito/repro
+
+## Reproducing EIPSIM: Elastic IP Simulator
+   tags: reproducible research
+   https://github.com/imincloudnine/repro-eipsim
+
+## Reproducing FEMU: Accurate NVMe SSD Emulation and Benchmarking with FIO
+   tags: reproducible research
+   https://github.com/vanessaelizabeth2/FEMU-with-FIO
+
+## Reproducing Gradient-GA for Sample-Efficient Molecular Optimization
+   tags: reproducible research
+   https://github.com/nandiniiph/Reproduce-GradientGA
+
+## Reproducing Kangaroo Cache Result
+   https://github.com/kathirmeyyappan/kangaroo-cache-repro
+
+## Reproducing Lottery Ticket Hypothesis : Finding Sparse, Trainable Neural Networks (ICLR 2019)
+   tags: education, experiment, reproducible research
+   https://github.com/codenameyizzz/Reproduce-The-Lottery-Ticket-Hypothesis--ICLR-2019-
+   https://github.com/codenameyizzz/yizreel_repro_the_lottery_ticket_hypothesis
+
+## Reproducing P4Control
+   tags: reproducible research
+   https://github.com/imincloudnine/repro-p4
+
+## Reproducing Polar (VLDB '24)
+   tags: experiment, reproducible research
+   https://github.com/S-Saqib/trovi_reproduce_polar-vldb24-driver
+
+## Reproducing PrivacySphere: Privacy-Preserving Smart Spaces
+   https://github.com/TsaniaMila/Reproduce-PrivacySphere
+
+## Reproducing Speech-to-Text Translation Results
+   tags: education, reproducible research
+   https://github.com/shreyjasuja/re_s2tt
+
+## Reproducing Tacotron2 qualitative claims
+   tags: education, reproducible research
+   https://github.com/indianspeedster/ML_Project_Tacotron2
+
+## Reproducing the BrewER (VLDB '23) Entity Resolution Experiment
+   tags: reproducible research
+   https://github.com/AuroraWXZ/trovi_BrewER
+
+## Reproducing the result of the paper "Exploring the ..."
+   tags: experiment, reproducible research
+   https://github.com/indianspeedster/mlr_2022
+
+## Reproduction ComPO: Community Preferences for Language Model Personalization
+   tags: experiment, reproducible research
+   https://github.com/fassabilf/compred
+
+## Reproduction of Building Verified Neural Networks for Computer Systems with Ouroboros from MLSys 2023
+   tags: reproducible research
+   https://github.com/Jabir0/Ouroboros_repro
+
+## Reproduction of Dynamic Data Layout Optimization with Worst-case Guarantees
+   tags: experiment
+   https://github.com/Dhixerz/Reproduction---Dynamic-Data-Layout-Optimization-with-Worst-case-Guarantees
+
+## Reproduction of Hypogenic - Hypothesis Generation to the CLARITY task for Unmasking Political Question Evasions
+   tags: reproducible research
+   https://github.com/bertfil/hypothesis-generation
+
+## Reproduction of “CoAuthor” (CHI 2022): Metadata and Survey Analysis of Human-AI Writing Interactions
+   tags: experiment
+   https://github.com/rezkysantika/Repro-CoAuthor
+
+## ROCm (Ubuntu 24.04)
+   tags: appliance
+   https://github.com/ChameleonCloud/CC-Images
+
+## Ryu OpenFlow Controller
+   tags: appliance
+   https://github.com/RENCI-NRIG/exogeni-recipes
+
+## S3FIFO
+   tags: reproducible research
+   https://github.com/williamnixon20/s3fifo-repro
+
+## Sage-VirtualWaggle-ARM64
+   tags: appliance
+   https://github.com/sagecontinuum/sage
+
+## Sage-VirtualWaggle-Ubuntu18.04
+   tags: appliance
+   https://github.com/sagecontinuum/sage
+
+## Sciunit-CLI-Demonstration
+   tags: reproducible research
+   https://github.com/radiant-systems-lab/SciunitTrainingFiles
+
+## Sciunit-NB Kernels-Demonstration
+   tags: reproducible research
+   https://github.com/radiant-systems-lab/FlincTrainingFiles
+
+## Security Onion Network Monitoring
+   tags: appliance
+   https://github.com/ChameleonCloud/ryu
+   https://github.com/RENCI-NRIG/exogeni-recipes
+
+## Serving machine learning models on edge devices
+   tags: education
+   https://github.com/teaching-on-testbeds/serve-edge-chi
+
+## Set up a DockerHub pull through cache
+   https://github.com/teaching-on-testbeds/dockerhub-pull-through-cache
+
+## Setting up a multi-node, single-server Riak cluster with replication across nodes (CC-Ubuntu22.04)
+   tags: education, example
+   https://github.com/Justin08784/trovi-riak-example
+
+## Shortcut Learning in Text Classification
+   tags: reproducible research
+   https://github.com/nandiniiph/nandiniiph-reproduce-shortcut-learning-in-text-classification
+
+## Silhouette Artifact
+   tags: reproducible research
+   https://github.com/iaoing/Silhouette
+
+## SixthSense Artifact
+   tags: reproducible research
+   https://github.com/radhofan/sixthsense
+   https://github.com/uiuc-arc/sixthsense
+
+## Snowboard: Finding Kernel Concurrency Bugs through Systematic Inter-thread Communication Analysis
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+   https://github.com/rssys/snowboard
+
+## Spark-29351-Bug-Reproduce
+   https://github.com/QinPR/spark_bug_reproduce
+
+## SSH on CHI@Edge Tutorial
+   tags: appliance, example, experiment pattern
+   https://github.com/ChameleonCloud/edge_ssh_image
+
+## StateFuzz-Reproduce
+   tags: reproducible research
+   https://github.com/sonix03/StateFuzz-Reproduce
+
+## SwarmLoRA: Batched Computation across Isolated Functions for Serverless LoRA Inference
+   tags: reproducible research
+   https://github.com/SHUs-Lab/SwarmLoRA
+
+## SymMC Artifact
+   tags: reproducible research
+   https://github.com/faizqowy/SymMC-Tool
+
+## System optimizations for serving machine learning models
+   tags: education
+   https://github.com/teaching-on-testbeds/serve-system-chi
+
+## TabPFN: A Transformer That Solves Small Tabular Classification Problems in a Second
+   tags: experiment, reproducible research
+   https://github.com/Ezra-je/Reproduced-Experiment-TabPFN
+
+## Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve
+   tags: reproducible research
+   https://github.com/gsmll/Sarathi-Serve
+
+## Teaching computer networks on Chameleon
+   tags: education
+   https://github.com/teaching-on-testbeds/chameleon-education
+
+## TensorFlow GPU
+   tags: appliance
+   https://github.com/tensorflow/models
+
+## The Aurora Single Level Store Operating System
+   tags: storage
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+   https://github.com/rcslab/aurora
+
+## The Demikernel Library OS Architecture for Microsecond, Kernel-Bypass Datacenter Systems
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+   https://github.com/microsoft/demikernel
+   https://github.com/microsoft/demikernelConference
+
+## The pos Experiment Controller: Reproducible & Portable Network Experiments
+   https://github.com/hstubbe/wons2024
+
+## Train ML models with Ray (AMD GPU version)
+   tags: education
+   https://github.com/teaching-on-testbeds/mltrain-chi
+
+## Train ML models with Ray (NVIDIA GPU version)
+   tags: education
+   https://github.com/teaching-on-testbeds/mltrain-chi
+
+## Trovi-Reproduce-CopyonPin
+   https://github.com/LinjieM/Trovi-Reproduce-CopyonPin
+
+## UCARE-MinIO
+   https://github.com/dParikesit/UCARE-MinIO
+
+## Using a GPU on KVM@TACC
+   tags: example
+   https://github.com/ChameleonCloud/kvm_gpu_artifact
+
+## Using cloud servers for GPU-based inference
+   tags: education
+   https://github.com/teaching-on-testbeds/cloud-gpu-inference
+
+## Using edge devices for CPU-based inference
+   tags: education
+   https://github.com/teaching-on-testbeds/edge-cpu-inference
+
+## Validating JIT Compilers via Compilation Space Exploration
+   https://github.com/ChameleonCloud/trovi_external_artifacts_deployment
+
+## vAttention Reproduction on Chameleon (Mechanism, Turing RTX 6000)
+   https://github.com/microsoft/vattention
+
+## Vocal-Grader
+   https://github.com/aslanbayli/vocal-grader
+
+## What is the Impact of Releasing Code with Publications? Statistics From the Machine Learning, Robotics, and Control Communities
+   tags: reproducible research
+   https://github.com/adhiya-r/code-release-reproduced
+
+## YARN-9565 RMAppImpl#ranNodes not cleared on FinalTransition
+   tags: education, experiment
+   https://github.com/jiajunmao/yarn-repro-trovi
+
+## YARN-9565 RMAppImpl#ranNodes not cleared on FinalTransition
+   tags: experiment
+   https://github.com/jiajunmao/hadoop-repro
+
+## Zorse: Efficient LLM Training on Heterogeneous GPU Clusters
+   tags: experiment
+   https://github.com/benson-guo/zorse
+
