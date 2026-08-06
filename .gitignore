@@ -7,7 +7,10 @@ vivek.pem
 /RAG-docs-chameleon/
 
 # --- Virtualenvs (also self-ignored; belt and braces) ---
+# Both forms: the trailing slash matches the real directory, the bare
+# name matches the per-project symlinks pointing at the root venv.
 .venv/
+.venv
 venv/
 rag_env/
 
