@@ -42,5 +42,14 @@ Everything heavy runs on a Chameleon bare-metal node (`/home/cc/`, systemd servi
 ## Fresh-machine notes
 
 - `RAG-docs-chameleon/` is not in this repo: `git clone https://github.com/Odysseus707/RAG-docs-chameleon.git` then check out `wip/advisor-integration` (do **not** work on `main` — the advisor bridge files live only on the WIP branch).
-- Virtualenvs are local-only (gitignored): `chi-edge-advisor/.venv`, `benchmark_v4/.venv`; recreate from each project's requirements files.
+- One virtualenv for the whole workspace, at the root: `.venv` (gitignored).
+  `chi-edge-advisor/.venv` and `benchmark_v4/.venv` are symlinks to it, so every
+  documented `.venv/bin/python ...` invocation still works from either project.
+  Recreate with `python -m venv .venv && .venv/bin/python -m pip install -r
+  chi-edge-advisor/requirements.txt -r benchmark_v4/requirements.txt`.
+- A virtualenv is not relocatable: moving or renaming this directory bakes the
+  old absolute path into `pyvenv.cfg`, every console-script shebang, and
+  `activate`. The symptom is `python: command not found` immediately after
+  activating, or a broken `pip` while `.venv/bin/python` still works. Rebuild
+  the venv if that happens.
 - Obtain `vivek.pem` separately and place it at the workspace root.
