@@ -34,6 +34,14 @@ class DeviceAvailability:
     reserved_until: Optional[str] = None  # ISO8601 timestamp
     next_free_window: Optional[str] = None  # ISO8601 timestamp or human range
 
+    # Bookable at all? False means maintenance/disabled, which is neither free
+    # nor reserved: offering it yields a spec that cannot be submitted.
+    # None => the backend does not track it.
+    reservable: Optional[bool] = None
+    # Hours a currently-free device stays free before its next reservation.
+    # None alongside free_now=True means nothing is booked after it.
+    available_hours: Optional[float] = None
+
     # Bookkeeping: which backend produced this record, and whether the live
     # fields are authoritative or merely inferred/static.
     source: str = "unknown"
@@ -90,7 +98,7 @@ def get_backend(name: Optional[str] = None) -> AvailabilityBackend:
         from .reference_api import ReferenceApiBackend
 
         return ReferenceApiBackend()
-    if chosen in {"blazar", "python-chi", "chi"}:
+    if chosen in {"blazar", "blazar_rest", "live", "python-chi", "chi"}:
         from .blazar import BlazarBackend
 
         return BlazarBackend()

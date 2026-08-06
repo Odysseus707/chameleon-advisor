@@ -69,10 +69,23 @@ class TestFactory(unittest.TestCase):
         with self.assertRaises(ValueError):
             get_backend("nonsense")
 
-    def test_blazar_requires_python_chi(self):
-        # python-chi is not installed in the test env -> clear error.
-        with self.assertRaises(RuntimeError):
-            get_backend("blazar")
+    def test_blazar_requires_credentials(self):
+        # BlazarBackend talks to Keystone/Blazar over REST, so python-chi is no
+        # longer a dependency. What it does require is credentials: one
+        # application-credential openrc per site, via CHAMELEON_RC_GLOB.
+        import os
+        from advisor import config
+
+        saved_env = os.environ.pop("CHAMELEON_RC_GLOB", None)
+        saved_cfg = config.settings.chameleon_rc_glob
+        object.__setattr__(config.settings, "chameleon_rc_glob", None)
+        try:
+            with self.assertRaises(RuntimeError):
+                get_backend("blazar")
+        finally:
+            object.__setattr__(config.settings, "chameleon_rc_glob", saved_cfg)
+            if saved_env is not None:
+                os.environ["CHAMELEON_RC_GLOB"] = saved_env
 
 
 if __name__ == "__main__":

@@ -26,32 +26,22 @@ import argparse
 import glob
 import json
 import os
-import subprocess
 import sys
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
-import requests
 
 sys.path.insert(0, __file__.rsplit("/", 1)[0])
 
-TIMEOUT = 30
-HORIZON = timedelta(days=7)          # beyond this we just say ">7d"
-CONTIGUOUS_GAP = timedelta(minutes=30)   # gap below this counts as back-to-back
-RESOURCES = (("os-hosts", "node_type"), ("devices", "machine_name"))
+from advisor.availability.blazar import (  # noqa: E402
+    CONTIGUOUS_GAP, RESOURCES, fetch_sites, load_rc, probe_site, windows,
+)
+
+HORIZON = timedelta(days=7)   # display cap; stored timestamps stay exact
 
 
 def _now():
     return datetime.now(timezone.utc)
-
-
-def _dt(s):
-    """Blazar emits naive UTC like 2026-08-06T15:00:00.000000."""
-    try:
-        v = datetime.fromisoformat(str(s).replace("Z", "+00:00"))
-    except (ValueError, TypeError):
-        return None
-    return v.replace(tzinfo=timezone.utc) if v.tzinfo is None else v
 
 
 def human(delta):
@@ -62,150 +52,6 @@ def human(delta):
     if h < 1:
         return f"{int(delta.total_seconds() // 60)}m"
     return f"{h}h" if h < 48 else f"{h // 24}d {h % 24}h"
-
-
-def windows(reservations, now):
-    """(busy_now, free_until, next_free, lease_id).
-
-    free_until  when a currently-free node gets taken (None = nothing booked).
-    next_free   when a currently-busy node frees, chaining back-to-back leases,
-                because the first lease ending is not when you can actually get
-                the node if another starts straight after.
-    """
-    spans = sorted(
-        ((_dt(r.get("start_date")), _dt(r.get("end_date")), r.get("lease_id"))
-         for r in reservations or []),
-        key=lambda s: (s[0] or now))
-    spans = [s for s in spans if s[0] and s[1]]
-
-    current = next((s for s in spans if s[0] <= now < s[1]), None)
-    if current is None:
-        nxt = next((s[0] for s in spans if s[0] > now), None)
-        return False, nxt, None, None
-
-    cursor, lease = current[1], current[2]
-    for start, end, _lid in spans:
-        if start <= cursor + CONTIGUOUS_GAP and end > cursor:
-            cursor = end
-    return True, None, cursor, lease
-
-
-def load_rc(path):
-    """Source an openrc in a subshell; return its OS_* vars. stdin closed so a
-    password-prompting openrc fails fast instead of hanging."""
-    p = subprocess.run(["bash", "-c", f'set -a; . "{path}" >/dev/null 2>&1; set +a; env'],
-                       capture_output=True, text=True, timeout=30,
-                       stdin=subprocess.DEVNULL)
-    return {k: v for k, v in (l.partition("=")[::2] for l in p.stdout.splitlines())
-            if k.startswith("OS_") and v}
-
-
-def _auth_body(env):
-    if env.get("OS_APPLICATION_CREDENTIAL_ID"):
-        return {"auth": {"identity": {"methods": ["application_credential"],
-                "application_credential": {
-                    "id": env["OS_APPLICATION_CREDENTIAL_ID"],
-                    "secret": env.get("OS_APPLICATION_CREDENTIAL_SECRET", "")}}}}
-    if env.get("OS_USERNAME") and env.get("OS_PASSWORD"):
-        d = env.get("OS_USER_DOMAIN_NAME", "default")
-        return {"auth": {
-            "identity": {"methods": ["password"], "password": {"user": {
-                "name": env["OS_USERNAME"], "password": env["OS_PASSWORD"],
-                "domain": {"name": d}}}},
-            "scope": {"project": {"name": env.get("OS_PROJECT_NAME", ""),
-                                  "domain": {"name": d}}}}}
-    return None
-
-
-def _get(url, token):
-    try:
-        r = requests.get(url, headers={"X-Auth-Token": token}, timeout=TIMEOUT)
-    except requests.RequestException as e:
-        return None, type(e).__name__
-    return (r.json(), None) if r.status_code == 200 else (None, f"HTTP {r.status_code}")
-
-
-def probe_site(env, rc_file=None):
-    label = env.get("OS_REGION_NAME") or os.path.basename(rc_file or "?")
-    out = {"site": label, "blazar": None, "kind": None, "nodes": [], "error": None}
-
-    body = _auth_body(env)
-    if not body or not env.get("OS_AUTH_URL"):
-        out["error"] = "no credentials or OS_AUTH_URL in this RC"
-        return out
-
-    url = env["OS_AUTH_URL"].rstrip("/")
-    url = url if url.endswith("/v3") else url + "/v3"
-    try:
-        r = requests.post(f"{url}/auth/tokens", json=body, timeout=TIMEOUT)
-    except requests.RequestException as e:
-        out["error"] = f"{type(e).__name__}: {e}"
-        return out
-    if r.status_code not in (200, 201):
-        out["error"] = f"keystone HTTP {r.status_code}"
-        return out
-    token = r.headers.get("X-Subject-Token")
-
-    for svc in r.json().get("token", {}).get("catalog", []):
-        if svc.get("type") == "reservation":
-            for ep in svc.get("endpoints", []):
-                if ep.get("interface") == "public":
-                    out["blazar"] = ep["url"].rstrip("/")
-    if not out["blazar"]:
-        out["error"] = "no reservation endpoint in catalog"
-        return out
-
-    for path, type_field in RESOURCES:
-        data, err = _get(f"{out['blazar']}/{path}", token)
-        if not err:
-            items = data.get(path.replace("os-", "")) or data.get("hosts") or []
-            out["kind"] = path
-            break
-    else:
-        out["error"] = "no usable resource endpoint"
-        return out
-
-    allocs, err = _get(f"{out['blazar']}/{out['kind']}/allocations", token)
-    if err:
-        out["error"] = f"allocations: {err}"
-        return out
-    by_id = {str(a.get("resource_id")): a.get("reservations") or []
-             for a in allocs.get("allocations", [])}
-
-    now = _now()
-    for it in items:
-        rid = str(it.get("id", ""))
-        # KVM@TACC has no node_type; its hosts are typed by hypervisor.
-        ntype = it.get(type_field) or it.get("hypervisor_type") or "unknown"
-        reservable = it.get("reservable", True)
-        busy, free_until, next_free, lease = windows(by_id.get(rid, []), now)
-
-        if not reservable:
-            status = "down"
-        elif busy:
-            status = "busy"
-        else:
-            status = "free"
-
-        out["nodes"].append({
-            "site": label, "node_type": ntype, "uid": it.get("uid") or rid,
-            "name": (it.get("node_name") or it.get("name")
-                     or it.get("hypervisor_hostname") or rid),
-            "status": status, "reservable": bool(reservable),
-            "immediately_available": status == "free",
-            "free_until_utc": free_until.isoformat() if free_until else None,
-            "available_hours": (round((free_until - now).total_seconds() / 3600, 2)
-                                if free_until else None),
-            "next_free_utc": next_free.isoformat() if next_free else None,
-            "busy_hours_remaining": (round((next_free - now).total_seconds() / 3600, 2)
-                                     if next_free else None),
-            "lease_id": lease,
-            "gpu_model": it.get("gpu.gpu_model"), "gpu_count": it.get("gpu.gpu_count"),
-            "vcpus": it.get("vcpus"), "ram_gb": (
-                round(int(it["memory_mb"]) / 1024) if str(it.get("memory_mb", "")).isdigit()
-                else None),
-        })
-    return out
 
 
 def by_type(nodes):

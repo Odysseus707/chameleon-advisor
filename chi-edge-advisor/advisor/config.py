@@ -71,6 +71,12 @@ class Settings:
         default_factory=lambda: os.environ.get("CHI_PROJECT_NAME") or None
     )
 
+    # Glob of Chameleon application-credential openrc files, one per site
+    # (a credential is scoped to a single site). Consumed by BlazarBackend.
+    chameleon_rc_glob: Optional[str] = field(
+        default_factory=lambda: os.environ.get("CHAMELEON_RC_GLOB") or None
+    )
+
     # --- LLM reasoner (OpenAI-compatible client) ---
     # Default: Tejas AI endpoint serving Meta-Llama-3.3-70B-Instruct.
     llm_provider: str = field(
