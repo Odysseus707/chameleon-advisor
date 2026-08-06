@@ -3,7 +3,7 @@
 
   python probe_availability.py --rc "~/Downloads/app-cred-*-openrc.sh"
   python probe_availability.py --rc "..." --nodes            # per-node detail
-  python probe_availability.py --rc "..." --xlsx live.xlsx   # advisor export
+  python probe_availability.py --rc "..." --xlsx            # -> data/availability.xlsx
   python probe_availability.py --rc "..." --json
   python probe_availability.py --reference                   # static API check
 
@@ -26,12 +26,18 @@ import argparse
 import glob
 import json
 import os
+import pathlib
 import sys
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
 
 sys.path.insert(0, __file__.rsplit("/", 1)[0])
+
+# Generated exports belong beside the advisor's other data, not in
+# whatever directory the command happened to run from.
+HERE = pathlib.Path(__file__).resolve().parent
+DEFAULT_XLSX = HERE / "data" / "availability.xlsx"
 
 from advisor.availability.blazar import (  # noqa: E402
     CONTIGUOUS_GAP, RESOURCES, fetch_sites, load_rc, probe_site, windows,
@@ -216,7 +222,10 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--rc", help="glob of openrc files, one per site")
     ap.add_argument("--nodes", action="store_true", help="per-node detail")
-    ap.add_argument("--xlsx", help="write the advisor export to this path")
+    ap.add_argument("--xlsx", nargs="?", const=str(DEFAULT_XLSX), default=None,
+                    metavar="PATH",
+                    help=f"write the advisor export; bare --xlsx uses "
+                         f"{DEFAULT_XLSX.relative_to(HERE)}")
     ap.add_argument("--reference", action="store_true",
                     help="also run the static reference-API check")
     ap.add_argument("--json", action="store_true")

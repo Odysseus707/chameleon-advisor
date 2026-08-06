@@ -6,3 +6,6 @@ data/*.json
 data/*.jsonl
 *.egg-info/
 .pytest_cache/
+
+# Generated availability exports (regenerated live, never reviewed as source)
+data/*.xlsx
