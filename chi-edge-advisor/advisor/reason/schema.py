@@ -24,6 +24,13 @@ class Recommendation:
     exposed_ports: List[int] = field(default_factory=list)
     gpu: bool = False
 
+    # Which site to provision on, and which python-chi grammar that site needs.
+    # api_family selects the emitter template, so it is copied from the resource
+    # catalog (observed from Blazar) rather than guessed: a wrong value renders
+    # a spec that fails at submission.
+    site: Optional[str] = None
+    api_family: str = "edge"  # "edge" | "kvm" | "baremetal"
+
     # provenance: artifact_ids that grounded this recommendation
     grounded_by: List[str] = field(default_factory=list)
     # which reasoner produced it: "tejas" | "anthropic" | "heuristic"
@@ -51,6 +58,8 @@ class Recommendation:
             runtime=pick("runtime"),
             exposed_ports=list(pick("exposed_ports", default=[]) or []),
             gpu=bool(pick("gpu", default=False)),
+            site=pick("site"),
+            api_family=pick("api_family", default="edge"),
             grounded_by=list(pick("grounded_by", "artifact_ids", default=[]) or []),
             produced_by=pick("produced_by", default="unknown"),
         )

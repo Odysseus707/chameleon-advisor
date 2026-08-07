@@ -178,6 +178,12 @@ class Reasoner:
             )
             + f"Image {meta.image if meta else 'n/a'} from the grounded artifact."
         )
+        # Site and grammar come from the catalog, which observed them from
+        # Blazar. Never inferred from the machine_type string: a wrong
+        # api_family renders a spec that fails at submission.
+        site = dt.sites[0] if dt and dt.sites else (meta.site if meta else None)
+        api_family = dt.api_family if dt else "edge"
+
         return Recommendation(
             machine_type=machine_type,
             count=1,
@@ -191,6 +197,8 @@ class Reasoner:
             runtime=runtime,
             exposed_ports=exposed_ports,
             gpu=gpu,
+            site=site,
+            api_family=api_family,
             grounded_by=list(retrieval.provenance),
             produced_by="heuristic",
         )

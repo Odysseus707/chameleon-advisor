@@ -86,6 +86,12 @@ def validate_recommendation(
                 if unknown else
                 f"profiles {rec.device_profiles} valid for {rec.machine_type}.",
             )
+    elif getattr(rec, "api_family", "edge") != "edge":
+        # device_profiles are a CHI@Edge concept: baremetal and KVM have no
+        # equivalent, so requiring them there would fail every valid spec.
+        report.add("device_profile_exists", True,
+                   f"device_profiles not applicable to {rec.api_family}.",
+                   severity="warning")
     else:
         report.add("device_profile_exists", True,
                    "no device_profiles requested.", severity="warning")
