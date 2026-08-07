@@ -281,6 +281,23 @@ class InventoryCache:
                         and name not in dt.example_devices:
                     dt.example_devices.append(name)
 
+        # Blazar exposes no device_profiles or peripherals, so a live sweep on
+        # its own silently empties them and device_profile_exists then rejects
+        # a perfectly good pi_libcamera recommendation. The sweep is
+        # authoritative for topology (sites, counts, api_family, arch, gpu);
+        # the curated entries stay authoritative for capabilities Blazar cannot
+        # see. Merge rather than replace.
+        curated = {d.machine_type: d for d in CURATED_CATALOG}
+        for dt in by_type.values():
+            c = curated.get(dt.machine_type)
+            if c is None:
+                continue
+            dt.device_profiles = dt.device_profiles or list(c.device_profiles)
+            dt.peripherals = dt.peripherals or list(c.peripherals)
+            dt.notes = dt.notes or c.notes
+            dt.platform_version = c.platform_version
+            dt.runtime = dt.runtime or c.runtime
+
         # A type spanning both an edge and a non-edge site would make emitter
         # dispatch ambiguous. It does not happen today; say so if it starts.
         for dt in by_type.values():

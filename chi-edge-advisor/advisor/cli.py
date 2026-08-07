@@ -41,9 +41,39 @@ def run_pipeline(
     logger = logger or RunLogger()
     print(f"[run_id={logger.run_id}] workload: {workload!r}")
 
+    # -- RETRIEVE --------------------------------------------------------
+    # Runs first, before any network call. Routing reads only the workload
+    # string and the artifact registry, so nothing here needs availability;
+    # putting it first is what lets it tell READ which hardware to ask about.
+    _hr("1. RETRIEVE  (artifact routing + grounding)")
+    store = ArtifactStore().build()
+    router = RetrievalRouter(store)
+    retrieval = router.route(workload)
+    print(f"embedder             : {store.embedder.name} ({store.num_chunks} chunks)")
+    print(f"task scores          : "
+          f"{ {k: round(v, 2) for k, v in retrieval.task_scores.items()} }")
+    print(f"selected artifacts   : {retrieval.selected_artifact_ids}")
+    print(f"per-artifact budget  : {retrieval.per_artifact_budget}")
+    print(f"provenance           : {retrieval.provenance}")
+    print(f"candidate hardware   : {retrieval.candidate_machine_types}")
+    logger.log(
+        "retrieve",
+        task_scores=retrieval.task_scores,
+        selected_artifact_ids=retrieval.selected_artifact_ids,
+        per_artifact_budget=retrieval.per_artifact_budget,
+        provenance=retrieval.provenance,
+        candidate_machine_types=retrieval.candidate_machine_types,
+        candidate_sites=retrieval.candidate_sites,
+        num_chunks=len(retrieval.chunks),
+    )
+
     # -- READ: availability + inventory ----------------------------------
-    _hr("1. READ  (availability + static inventory)")
-    backend = get_backend(backend_name)
+    # Scoped to the candidate hardware, so only the sites that can host it get
+    # contacted. Blazar cannot filter server-side, so this site pruning is the
+    # whole saving: ~7s instead of ~44s for a single-site type.
+    _hr("2. READ  (availability + static inventory)")
+    backend = get_backend(backend_name,
+                          machine_types=retrieval.candidate_machine_types)
     print(f"availability backend : {backend.name} "
           f"(reports_live_state={backend.reports_live_state})")
     hc = backend.healthcheck()
@@ -55,7 +85,8 @@ def run_pipeline(
         availability = []
     inventory = InventoryCache().load()
     print(f"live devices seen    : {len(availability)}")
-    print(f"inventory device types: {[d.machine_type for d in inventory]}")
+    print(f"inventory device types: {len(inventory)} types across "
+          f"{len({s for d in inventory for s in d.sites})} sites")
     logger.log(
         "read",
         workload=workload,
@@ -66,30 +97,27 @@ def run_pipeline(
         inventory=[asdict(d) for d in inventory],
     )
 
-    # -- RETRIEVE --------------------------------------------------------
-    _hr("2. RETRIEVE  (artifact routing + grounding)")
-    store = ArtifactStore().build()
-    router = RetrievalRouter(store)
-    retrieval = router.route(workload)
-    print(f"embedder             : {store.embedder.name} ({store.num_chunks} chunks)")
-    print(f"task scores          : "
-          f"{ {k: round(v, 2) for k, v in retrieval.task_scores.items()} }")
-    print(f"selected artifacts   : {retrieval.selected_artifact_ids}")
-    print(f"per-artifact budget  : {retrieval.per_artifact_budget}")
-    print(f"provenance           : {retrieval.provenance}")
-    logger.log(
-        "retrieve",
-        task_scores=retrieval.task_scores,
-        selected_artifact_ids=retrieval.selected_artifact_ids,
-        per_artifact_budget=retrieval.per_artifact_budget,
-        provenance=retrieval.provenance,
-        num_chunks=len(retrieval.chunks),
-    )
-
     # -- REASON ----------------------------------------------------------
     _hr("3. REASON  (LLM recommendation)")
     reasoner = Reasoner()
     rec = reasoner.recommend(workload, availability, inventory, retrieval)
+
+    # The reasoner is not bound to the candidate set, and the LLM path in
+    # particular can name a type we never fetched. Leaving that alone makes
+    # checks.py find zero devices of that type and fail device_free_in_window,
+    # turning a good recommendation into a silent exit 1. One extra targeted
+    # fetch is the cheaper error.
+    if rec.machine_type and not any(
+            a.machine_type == rec.machine_type for a in availability):
+        try:
+            rescued = backend.list_devices(machine_type=rec.machine_type)
+        except Exception as exc:  # noqa: BLE001
+            rescued = []
+            print(f"re-fetch for {rec.machine_type!r} failed: {exc}")
+        if rescued:
+            print(f"re-fetched {len(rescued)} {rec.machine_type} device(s) "
+                  f"outside the candidate set")
+            availability = list(availability) + rescued
     if hours:
         rec.duration_hours = hours
     print(f"produced_by          : {rec.produced_by}")

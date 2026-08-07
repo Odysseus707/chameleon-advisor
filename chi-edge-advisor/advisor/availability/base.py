@@ -89,12 +89,16 @@ class AvailabilityBackend(abc.ABC):
         return {"backend": self.name, "reachable": True}
 
 
-def get_backend(name: Optional[str] = None) -> AvailabilityBackend:
+def get_backend(name: Optional[str] = None,
+                machine_types: Optional[Iterable[str]] = None
+                ) -> AvailabilityBackend:
     """Factory: build the configured backend.
 
     ``name`` overrides config; otherwise `settings.availability_backend` wins.
-    Importing backend implementations lazily keeps python-chi optional for the
-    reference-API-only path.
+    ``machine_types`` is the hardware the caller cares about; a backend that
+    can map types to sites uses it to skip sites that cannot host any of them.
+    Backends that cannot are simply constructed without it.
+    Imports are lazy so the reference-API path pulls in no HTTP client.
     """
     chosen = (name or settings.availability_backend or "reference_api").lower()
 
@@ -105,7 +109,7 @@ def get_backend(name: Optional[str] = None) -> AvailabilityBackend:
     if chosen in {"blazar", "blazar_rest", "live", "python-chi", "chi"}:
         from .blazar import BlazarBackend
 
-        return BlazarBackend()
+        return BlazarBackend(machine_types=machine_types)
 
     raise ValueError(
         f"Unknown availability backend {chosen!r}; "

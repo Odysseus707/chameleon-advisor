@@ -54,6 +54,13 @@ class RetrievalResult:
     use_case_scores: Dict[str, float] = field(default_factory=dict)
     # per-section provenance, aligned 1:1 with ``chunks``/context sections.
     sections: List[SectionProvenance] = field(default_factory=list)
+    # Hardware the selected artifacts actually target, in score order. This is
+    # the advisor picking its tags: it lets the availability layer fetch only
+    # the sites that carry these types instead of sweeping all of them.
+    # Deliberately over-generated (union across every selected artifact, not
+    # just the top one), because a type missing here costs a second fetch.
+    candidate_machine_types: List[str] = field(default_factory=list)
+    candidate_sites: List[str] = field(default_factory=list)
 
 
 class RetrievalRouter:
@@ -146,6 +153,20 @@ class RetrievalRouter:
                 provenance.append(c.artifact_id)
 
         context_text = self._assemble(chunks)
+        # Union over provenance order first (artifacts that actually grounded
+        # the answer), then the rest of the selection, so the reasoner's likely
+        # pick sorts early while the fallbacks stay in the fetch set.
+        types, sites = [], []
+        for aid in provenance + [a for a in selected if a not in provenance]:
+            meta = ARTIFACTS_BY_ID.get(aid)
+            if not meta:
+                continue
+            for mt in meta.machine_types:
+                if mt not in types:
+                    types.append(mt)
+            if meta.site and meta.site not in sites:
+                sites.append(meta.site)
+
         return RetrievalResult(
             workload=workload,
             task_scores=scores,
@@ -154,6 +175,8 @@ class RetrievalRouter:
             chunks=chunks,
             context_text=context_text,
             provenance=provenance,
+            candidate_machine_types=types,
+            candidate_sites=sites,
         )
 
     @staticmethod

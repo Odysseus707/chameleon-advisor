@@ -14,7 +14,7 @@ live state to BlazarBackend.
 """
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Iterable, List, Optional
 
 from ..config import settings
 from ..http_util import get_json
@@ -86,15 +86,22 @@ class ReferenceApiBackend(AvailabilityBackend):
         )
 
     def list_devices(
-        self, machine_type: Optional[str] = None
+        self,
+        machine_type: Optional[str] = None,
+        machine_types: Optional[Iterable[str]] = None,
     ) -> List[DeviceAvailability]:
+        # No site index here, so filtering stays client-side: the reference API
+        # gets walked in full either way. Only the Blazar backend can prune.
+        wanted = {m for m in (machine_types or []) if m}
+        if machine_type:
+            wanted.add(machine_type)
         out: List[DeviceAvailability] = []
         for url in self._iter_node_urls():
             res = get_json(url)
             if not res.ok or not isinstance(res.json, dict):
                 continue
             dev = self._node_to_availability(res.json)
-            if machine_type and dev.machine_type != machine_type:
+            if wanted and dev.machine_type not in wanted:
                 continue
             out.append(dev)
         return out
