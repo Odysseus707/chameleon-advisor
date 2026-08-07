@@ -7,8 +7,9 @@
 
 \begin{document}
 
-\title{Live Allocation-Aware Resource Advising on Chameleon:\\
-Corpus Triage, Blazar Integration, and Targeted Availability Fetch}
+\title{A Chameleon Advisor That Knows What Is Actually Free:\\
+Sorting the Artifact Set, Reading Live Blazar State,\\
+and Only Asking the Sites That Matter}
 
 \author{\IEEEauthorblockN{Vivek Rai}
 \IEEEauthorblockA{Chameleon Fellowship\\
@@ -17,166 +18,155 @@ chi-edge-advisor / benchmark\_v4}}
 \maketitle
 
 \begin{abstract}
-We report three connected pieces of work on the Chameleon resource advisor.
-First, a deterministic ingestion pipeline over the 205-artifact Trovi catalog,
-which establishes that only 95 artifacts contain Chameleon provisioning code at
-all and only 90 are usable for resource recommendation. Second, replacement of
-the advisor's non-functional \texttt{python-chi} availability path with a direct
-Blazar REST client covering all seven Chameleon sites, adding reservation time
-windows and a previously invisible third node state. Third, a resource catalog
-mapping node types to sites, enabling targeted fetches that cut availability
-latency by up to $10.8\times$. We also record the architectural decision to
-abandon the hierarchical artifact router in favour of a flat, tag-indexed JSON
-store, which measurement shows is not merely simpler but more accurate.
+This covers three pieces of work on the Chameleon advisor. First, we went
+through all 205 Trovi artifacts and found that only 95 of them actually contain
+Chameleon provisioning code, and only 90 are useful for recommending hardware.
+Second, we replaced the advisor's broken availability code with one that talks
+to Blazar directly across all seven Chameleon sites, and it now knows how long
+a node stays free and when a busy one frees up. Third, we built a small
+database recording which node types live at which site, so the advisor only
+contacts the sites that matter, which is up to $10.8\times$ faster. We also
+explain why we dropped the tree structure for the artifact set in favour of
+flat records with tags: it is not just simpler, it retrieves better.
 \end{abstract}
 
 \begin{IEEEkeywords}
 testbed provisioning, resource allocation, Blazar, retrieval, reproducibility
 \end{IEEEkeywords}
 
-\section{Frozen-Measurement Baseline}
+\section{Not Breaking the Existing Benchmark}
 
-All downstream work is diffed against a pinned baseline so corpus expansion
-cannot silently perturb the benchmark. Capturing it exposed that the committed
-baseline was already stale: it recorded 406 empty / 150 scored cells, while the
-\texttt{runs/} files committed in the \emph{same} commit rescore to 314 / 242.
-There was, in effect, no valid baseline before this work.
+Everything here risks disturbing the 556 benchmark answers we already
+collected, so we first pinned a snapshot to compare against. Rescoring all 556
+cells, plus a checksum over the 63 input files, has to come out identical after
+any change. It does, and the gold gate still passes 50/50.
 
-\begin{table}[h]
-\caption{Pinned parity artifact (556 cells, 242 non-empty)}
-\label{tab:parity}
-\centering\footnotesize
-\begin{tabular}{@{}ll@{}}
-\toprule
-Artifact & sha256 (truncated) \\
-\midrule
-\texttt{run\_scores.csv}      & \texttt{252e42bf\ldots1387525} \\
-\texttt{gate\_report.json}    & \texttt{d51facdb\ldots71f3da6e} \\
-content manifest (63 files)   & \texttt{e26c9537\ldots cac9505a} \\
-\bottomrule
-\end{tabular}
-\end{table}
+Pinning it turned up something worth knowing on its own: the snapshot already
+in the repository was out of date. It recorded 406 empty and 150 scored cells,
+but the answer files committed in that same commit actually rescore to 314 and
+242. So there was no working baseline before this, only one that looked like
+one.
 
-The gold gate passes 50/50 and the pin re-verifies byte-identically. Physical
-separation does the enforcing: nothing the pipeline produces is written to
-\texttt{benchmark\_v4/grounding/}, because \texttt{run\_bench.py:90} and
-\texttt{tier\_assign.py:33} glob those paths and the frozen provenance hash
-depends on them.
+Nothing this work produces gets written into
+\texttt{benchmark\_v4/grounding/}, because two scripts read everything in that
+folder and the benchmark's stored checksum depends on what they find. Keeping
+the new files physically elsewhere is what guarantees that, rather than us
+remembering to be careful.
 
-\section{Corpus Triage: the Real \emph{N}}
+\section{How Many Artifacts Are Actually Usable}
 
-The 205 catalog artifacts were fetched (180 cloned, 20 sparse-checkout above a
-200\,MB cap, 7 unfetchable) and classified by AST-based detection of the
-measured \texttt{python-chi} call surface.
+We fetched all 205 artifacts (180 cloned normally, 20 partially because they
+were over a 200\,MB limit, 7 unreachable) and sorted them by whether they
+contain Chameleon provisioning calls.
 
 \begin{table}[h]
-\caption{Triage outcome over 205 Trovi artifacts}
-\label{tab:triage}
+\caption{What is in the 205 Trovi artifacts}
+\label{tab:sort}
 \centering\footnotesize
 \begin{tabular}{@{}lrl@{}}
 \toprule
-Class & $n$ & Consequence \\
+Kind & $n$ & What it means \\
 \midrule
-no-chameleon-code & 108 & unusable: no provisioning grammar \\
-instructional     & 49  & tutorial-shaped grounding \\
-evidence          & 46  & research-shaped grounding \\
-excluded          & 2   & policy (v1 overlap, explicit) \\
+no Chameleon code & 108 & nothing for the advisor to learn from \\
+teaching material & 49  & tutorials, clean examples \\
+research code     & 46  & experiments, setup is incidental \\
+excluded          & 2   & already in v1, or explicitly dropped \\
 \midrule
-\textbf{usable}   & \textbf{95} & \textbf{real \emph{N}, not 205} \\
+\textbf{usable}   & \textbf{95} & \textbf{the real number, not 205} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{This is the headline planning number.} 53\,\% of the catalog carries no
-Chameleon provisioning code, typically because the GitHub link points at
-upstream paper code while the provisioning lives in the Trovi body. Ranking the
-95 by how much of a \emph{groundable} resource recommendation can be extracted
-narrows it further: 39 tier-A and 51 tier-B, so \textbf{90 artifacts} are worth
-ingesting. Any plan sized on 205 is roughly $2\times$ over.
+\textbf{This is the number that changes the plan.} Just over half the catalog
+has no Chameleon provisioning code at all, usually because the GitHub link
+points at the paper's own code while the Chameleon setup lives in the Trovi
+copy instead. Scoring the remaining 95 by how much concrete hardware detail we
+can actually pull out of them narrows it again: 39 in the top group and 51 in
+the second, so \textbf{90 artifacts} are worth loading. Any plan built around
+205 is roughly twice as big as it needs to be.
 
-A secondary finding cuts the other way. The new corpus contains \textbf{52
-artifacts using \texttt{add\_node\_reservation}}, where the existing workspace
-had the bare-metal grammar zero times outside \texttt{forbidden\_calls} trap
-lists. The corpus supplies exactly the positive examples the emitter lacks.
+There is a useful surprise going the other way. The new set contains
+\textbf{52 artifacts that call \texttt{add\_node\_reservation}}, the bare-metal
+way of reserving hardware. Our existing material contained that call zero
+times, except in lists of calls to avoid. So the new artifacts supply exactly
+the examples the advisor has never had.
 
-Detection was cross-checked against an independent regex sweep over all 102
-inspectable negatives: \emph{one} true false negative, caused by a 9.4\,MB
-notebook skipped by a byte cap. Notebook size is driven by embedded output
-images rather than code, so the cap now applies to extracted source.
+We checked the negatives with a completely separate search over all 102 we
+could inspect, and found one genuine miss: a 9.4\,MB notebook skipped by a file
+size limit. Notebooks are large because of saved output images, not because of
+code, so the limit now applies to the code we pull out rather than the file.
 
-\section{Architecture: Tree $\rightarrow$ Tag-Indexed Store}
+\section{Why We Dropped the Tree Structure}
 
-The advisor was originally designed around a hierarchical router:
-site $\rightarrow$ use-case $\rightarrow$ artifact (\texttt{RouterTree}). We
-abandoned it for a flat store with JSON tag records. This was not simplification
-for its own sake; the hierarchy measurably retrieves worse.
+The advisor was originally built around a tree: pick the site, then the use
+case, then the artifact. We replaced it with flat records carrying tags, stored
+as JSON. This was not about simplicity. The tree finds the right artifact less
+often.
 
 \begin{table}[h]
-\caption{Router ablation A7, artifact hit rate (45 covered items)}
+\caption{Tree versus flat, how often the right artifact is found (45 items)}
 \label{tab:a7}
 \centering\footnotesize
 \begin{tabular}{@{}lcc@{}}
 \toprule
-Level & Tree & Flat + tags \\
+Stage & Tree & Flat + tags \\
 \midrule
-L0 site            & 100.0\,\% & n/a \\
-L1 use-case @2     & 73.3\,\%  & n/a \\
-L2 artifact @3     & 68.9\,\%  & \textbf{86.7\,\%} \\
-chunk-level        & 68.9\,\%  & \textbf{86.7\,\%} \\
+site               & 100.0\,\% & n/a \\
+use case (top 2)   & 73.3\,\%  & n/a \\
+artifact (top 3)   & 68.9\,\%  & \textbf{86.7\,\%} \\
+retrieved text     & 68.9\,\%  & \textbf{86.7\,\%} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The tree loses 17.8 points at the artifact level. The cause is structural: every
-hard gate is a place to be irrecoverably wrong. A use-case misclassification at
-L1 removes the correct artifact from consideration before L2 ever runs, and the
-L1 gate is only 73.3\,\% accurate. Flat scoring lets a weak signal on one facet
-be outvoted rather than becoming fatal.
+The tree is 17.8 points worse at finding the right artifact, and the reason is
+built into its shape. Each level is a gate you can fail permanently. If the use
+case is guessed wrong, the correct artifact is thrown out before the next level
+even runs, and that middle gate is only right 73.3\,\% of the time. Flat
+scoring lets a weak match on one thing be outvoted by strong matches on
+everything else, instead of ending the search.
 
-The corpus is therefore stored as flat tagged records, not a hierarchy:
-\texttt{catalog.jsonl}, \texttt{manifest.tsv} (18 columns), and
-\texttt{resource\_catalog.json}. Two orthogonal tag vocabularies are emitted
-rather than one taxonomy, because the advisor performs a \emph{mapping}: 23
-workload tags on the query side (what the user wants) and 13 resource tags on
-the answer side (what that implies about hardware). Resource tags derive only
-from observed code, never prose, since that half is what the emitter renders.
-TSV was chosen over JSON for the scan table on a measured 57 versus 238 tokens
-per row, paid 200 times.
+So the artifact set is now flat tagged records rather than a hierarchy:
+\texttt{catalog.jsonl}, an 18-column table in \texttt{manifest.tsv}, and
+\texttt{resource\_catalog.json}. We keep two separate tag lists rather than one
+combined one, because the advisor is really doing a translation: 23 tags for
+what the user is trying to do, and 13 for what hardware that implies. The
+hardware tags come only from code we actually saw, never from prose, because
+those are the ones that become a real reservation.
 
-\section{Live State: Blazar, Not the Reference API}
+\section{Getting Real Availability Data}
 
-The advisor's availability layer did not work. The public reference API is
-\textbf{static-only} and exposes zero CHI@Edge inventory; its deeper endpoints
-currently return 500/502. The \texttt{python-chi} backend failed at its own
-site-discovery call and saw only one site. We replaced it with direct REST:
-Keystone \texttt{/auth/tokens} $\rightarrow$ service catalog $\rightarrow$
-Blazar $\rightarrow$ \texttt{\{resource\}} + \texttt{/allocations}.
+The advisor's availability code did not work. The public Chameleon reference
+API only serves static hardware descriptions, lists no CHI@Edge devices at all,
+and its deeper endpoints currently return server errors. The
+\texttt{python-chi} path failed while looking up its own site list, and could
+only ever see one site. We replaced both by talking to Blazar directly.
 
-Three findings shaped the design.
+Three things we found shaped the design.
 
-\textbf{(1) Blazar has no server-side filter.} Measured, not assumed:
-\texttt{?node\_type=}, \texttt{?q=}, \texttt{?filter=} and \texttt{?query=} all
-return HTTP 200 with \emph{all} 132 hosts. Narrowing is therefore possible only
-by contacting fewer \emph{sites}.
+\textbf{First, Blazar cannot filter for you.} We tested four different query
+formats and every one returned all 132 hosts anyway. So the only way to ask for
+less is to contact fewer sites.
 
-\textbf{(2) Reservations do not name their hosts.} Reading \texttt{/leases}
-alone finds nothing reserved and reports every host free, even at a site with an
-active lease. The mapping lives on a separate \texttt{/allocations} endpoint.
-This single correction moved the answer from ``587 free of 587'' to
+\textbf{Second, a lease does not tell you which machines it holds.} Reading the
+lease list alone finds nothing reserved and reports every machine as free, even
+at a site with an active lease. That mapping lives on a separate endpoint. This
+one fix moved the answer from ``587 free out of 587'' to
 Table~\ref{tab:fleet}.
 
-\textbf{(3) There is a third state.} \texttt{reservable=false} is neither free
-nor reserved. A node in maintenance is unbookable, and reporting it free is
-precisely the failure that yields a spec that cannot be submitted.
-\textbf{111 of 655 nodes} were in that state, previously counted as free.
+\textbf{Third, there is a third state nobody was tracking.} A node can be
+neither free nor reserved: it can be switched off for maintenance and simply
+not bookable. \textbf{111 of 655 nodes} were in that state and were being
+counted as free. Recommending one of those hands the user a reservation that
+cannot be submitted.
 
 \begin{table}[h]
-\caption{Live Chameleon fleet, all seven sites}
+\caption{Live Chameleon hardware, all seven sites}
 \label{tab:fleet}
 \centering\footnotesize
 \begin{tabular}{@{}llrrrr@{}}
 \toprule
-Site & Resource & Free & Busy & Down & Total \\
+Site & Reads from & Free & Busy & Down & Total \\
 \midrule
 CHI@Edge  & devices  & 35  & 0   & 33  & 68  \\
 CHI@NCAR  & os-hosts & 35  & 8   & 1   & 44  \\
@@ -191,34 +181,34 @@ KVM@TACC  & os-hosts & 2   & 54  & 29  & 85  \\
 \end{tabular}
 \end{table}
 
-CHI@Edge required separate discovery: it answers \texttt{/devices}, not
-\texttt{/os-hosts}, and its machine type lives in \texttt{machine\_name}
-(\texttt{device\_type} is uniformly \texttt{"container"}). Every GPU class of
-interest (A100, V100, H100) was fully reserved at capture time, leaving only
-older silicon free. That contention is exactly what the advisor exists to
-reason about. Per-node reservation windows are also now recorded, so the
-advisor can answer ``free for how long'' and ``if not, when'' rather than only
-``free now''.
+CHI@Edge needed separate handling: it answers on \texttt{/devices} rather than
+\texttt{/os-hosts}, and its hardware name sits in a different field
+(\texttt{device\_type} is just ``container'' for every one of them). Every GPU
+worth wanting (A100, V100, H100) was fully booked when we measured, leaving
+only older cards free. That is exactly the situation the advisor exists to help
+with. We also record each node's reservation windows now, so the advisor can
+say how long something stays free, and when a busy one frees up, instead of
+only whether it is free this second.
 
-\section{Targeted Fetch}
+\section{Only Asking the Sites That Matter}
 
-Because filtering must happen at site granularity, we persist a node-type
-$\rightarrow$ site catalog refreshed by a full sweep. The distribution makes
-this worthwhile: of 41 distinct types, \textbf{37 live on exactly one site}
-(2 on two, 2 on three), a mean of 1.15 sites per type.
+Since we can only cut work by contacting fewer sites, we store which node types
+live where and refresh it periodically. The layout makes this pay off: of 41
+node types, \textbf{37 exist at exactly one site} (2 at two sites, 2 at three),
+an average of 1.15 sites per type.
 
 \begin{table}[h]
-\caption{Availability fetch latency, measured}
+\caption{How long it takes to check availability}
 \label{tab:speed}
 \centering\footnotesize
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 Request & Sites & Nodes & Time & Speedup \\
 \midrule
-Full sweep (baseline)      & 7 & 655 & 34.9\,s & $1.0\times$ \\
+Everything (before)        & 7 & 655 & 34.9\,s & $1.0\times$ \\
 \texttt{compute\_skylake}  & 3 & 57  & 18.9\,s & $1.8\times$ \\
 \texttt{gpu\_rtx\_6000}    & 1 & 37  & 7.5\,s  & $4.7\times$ \\
-Pi camera workload         & 1 & 46  & \textbf{3.2\,s} & $\mathbf{10.8\times}$ \\
+Pi camera job              & 1 & 46  & \textbf{3.2\,s} & $\mathbf{10.8\times}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -229,8 +219,8 @@ Pi camera workload         & 1 & 46  & \textbf{3.2\,s} & $\mathbf{10.8\times}$ \
 \begin{axis}[
   width=0.92\columnwidth, height=4.2cm,
   xbar, xmin=0, xmax=42,
-  xlabel={availability fetch latency (s)},
-  symbolic y coords={Pi camera,gpu\_rtx\_6000,compute\_skylake,Full sweep},
+  xlabel={time to check availability (s)},
+  symbolic y coords={Pi camera,gpu\_rtx\_6000,compute\_skylake,Everything},
   ytick=data, y dir=reverse,
   nodes near coords, nodes near coords align={horizontal},
   every node near coord/.append style={font=\scriptsize},
@@ -238,45 +228,46 @@ Pi camera workload         & 1 & 46  & \textbf{3.2\,s} & $\mathbf{10.8\times}$ \
   bar width=8pt, enlarge y limits=0.22,
 ]
 \addplot coordinates {(3.2,Pi camera) (7.5,gpu\_rtx\_6000)
-                      (18.9,compute\_skylake) (34.9,Full sweep)};
+                      (18.9,compute\_skylake) (34.9,Everything)};
 \end{axis}
 \end{tikzpicture}
-\caption{Targeted fetch versus full sweep. The saving scales with how few sites
-carry the requested type.}
+\caption{Asking about specific hardware instead of everything. The fewer sites
+carry that hardware, the more you save.}
 \label{fig:speed}
 \end{figure}
 
-The pipeline was reordered to exploit this. Retrieval reads only the workload
-string and the artifact registry, so it can run \emph{before} any network call
-and tell the availability layer which hardware to ask about:
+We reordered the advisor to take advantage of this. Picking artifacts only
+needs the user's question and the artifact list, no network at all, so it can
+run first and tell the availability step which hardware to ask about:
 \[
-\text{RETRIEVE} \rightarrow \text{READ} \rightarrow \text{REASON}
-\rightarrow \text{VALIDATE} \rightarrow \text{EMIT}
+\text{PICK ARTIFACTS} \rightarrow \text{CHECK AVAILABILITY} \rightarrow
+\text{DECIDE} \rightarrow \text{CHECK} \rightarrow \text{WRITE CODE}
 \]
-End to end, the pi-camera workload now contacts one site and sees 46 devices
-instead of 655, and still validates \textsc{pass}.
+End to end, the Pi camera question now contacts one site and looks at 46
+devices instead of 655, and still passes every check.
 
-Two guards prevent the optimisation from causing wrong answers, since pruning
-incorrectly is worse than not pruning. An unrecognised type falls back to the
-full sweep rather than pruning to an empty set. If the reasoner names a type
-outside the candidate set, one targeted re-fetch runs (measured 3.5\,s) instead
-of returning empty availability, which would fail
-\texttt{device\_free\_in\_window} and silently turn a good recommendation into a
-non-zero exit.
+Two safeguards keep the speedup from causing wrong answers, since narrowing
+badly is worse than not narrowing at all. If we do not recognise the hardware
+being asked for, we go back to checking everything rather than guessing and
+returning nothing. And if the advisor ends up choosing hardware we did not
+fetch, it does one extra targeted lookup (3.5\,s) instead of returning an empty
+list, which would make the checker think nothing is free and quietly fail a
+perfectly good answer.
 
-\section{Multi-Site Emission}
+\section{Writing Code for All Sites}
 
-\texttt{Recommendation} now carries \texttt{site} and \texttt{api\_family},
-copied from the catalog rather than inferred, and the emitter dispatches to
-three genuinely distinct grammars.
+The advisor's recommendation now carries which site it is for and which style
+of reservation call that site needs, both copied from the stored database
+rather than guessed. The code generator picks one of three genuinely different
+styles.
 
 \begin{table}[h]
-\caption{Emitter dispatch, verified}
+\caption{Three ways to reserve, now handled}
 \label{tab:emit}
 \centering\footnotesize
 \begin{tabular}{@{}llll@{}}
 \toprule
-Family & Types & Reservation call & Boot \\
+Style & Types & Reservation call & Then runs \\
 \midrule
 edge      & 7  & \texttt{add\_device\_reservation} & \texttt{Container} \\
 baremetal & 31 & \texttt{add\_node\_reservation}   & \texttt{Server} \\
@@ -285,44 +276,44 @@ kvm       & 3  & \texttt{add\_flavor\_reservation} & \texttt{Server} \\
 \end{tabular}
 \end{table}
 
-\textbf{Stated plainly:} the bare-metal template is written from the
-\texttt{python-chi} API, not from anything observed locally, because
-\texttt{add\_node\_reservation} and \texttt{create\_server} appear zero times as
-real calls in this workspace. Both non-edge templates carry an
-\textsc{unvalidated grammar} banner and are excluded from live dry-check. They
-are also unreachable in practice today: all five registry artifacts are
-\texttt{site="CHI@Edge"}, so routing never selects non-edge hardware. The
-dispatch is ready; grounding it is the next task.
+\textbf{Worth being clear about:} the bare-metal template is written from the
+\texttt{python-chi} documentation, not from any working example we have,
+because those calls appear zero times in our current material. Both non-edge
+templates are labelled unverified in the generated code and are left out of the
+live check. They also cannot be reached yet: all five artifacts currently
+registered are CHI@Edge, so the advisor never picks non-edge hardware. The
+machinery is ready; giving it real examples is the next job.
 
-\section{Remaining Work}
+\section{What Is Left}
 
 \begin{enumerate}\itemsep2pt
-\item \textbf{Ingest the 90 tier-A/B artifacts} into the registry. This is the
-blocking item: multi-site emission is structurally complete but ungrounded, so a
-GPU-training query still routes to a Raspberry Pi.
-\item \textbf{Teach reservation from artifacts} --- what to reserve and how ---
-grounding the bare-metal and KVM grammars against the 52 newly available
-\texttt{add\_node\_reservation} examples.
-\item \textbf{Schedule the catalog refresh.} A 168\,h TTL safety net exists but
-nothing schedules the sweep, so it can stall a user call by $\sim$35\,s.
-\item \textbf{Phase-1 adversarial audit} of the 10 selected artifacts, then the
-25-artifact stratified phase 2. Seven strata have only one member.
-\item \textbf{Recover \texttt{device\_profiles} for non-edge} types, and resolve
-the 4 Trovi-hosted artifacts unreachable while the Trovi API returns 404.
+\item \textbf{Load the 90 good artifacts} into the advisor. This blocks
+everything else: the multi-site code generation works but has no examples
+behind it, so a GPU training question still gets answered with a Raspberry Pi.
+\item \textbf{Teach the advisor how to reserve, from the artifacts themselves},
+using the 52 bare-metal examples we now have.
+\item \textbf{Schedule the hardware database refresh.} It refreshes itself once
+a week if nobody does it, but nothing schedules it, so that refresh can hold up
+someone's question for about 35\,s.
+\item \textbf{Check the 10 hardest artifacts by hand}, then the 25-artifact
+spread. Seven of those groups currently have only one member.
+\item \textbf{Recover the extra hardware details} Blazar does not report for
+non-edge sites, and deal with the 4 artifacts stored only in Trovi, which is
+returning errors.
 \end{enumerate}
 
 \section{Conclusion}
 
-The corpus is half the size it appeared: 95 of 205 artifacts carry provisioning
-code, and 90 are worth ingesting. The advisor now reads genuinely live state
-across all seven sites, including a maintenance state covering 17\,\% of the
-fleet that was previously reported as free. Targeted fetching makes that state
-cheap enough to consult on every query, at up to $10.8\times$ less latency. The
-architectural lesson worth carrying forward is the router ablation: the
-hierarchical design was intuitive and measurably worse, because every hard gate
-is a chance to be irrecoverably wrong.
+The artifact set is half the size it looked: 95 of 205 have Chameleon code, and
+90 are worth using. The advisor now reads genuinely live data from all seven
+sites, including 111 machines switched off for maintenance that were being
+reported as free. Narrowing the question to specific hardware makes that data
+cheap enough to check on every single query, up to $10.8\times$ faster. The
+design lesson worth keeping is the tree result: the structure that felt
+obviously right was measurably worse, because every gate in it is a place you
+can be wrong and never recover.
 
-Throughout, the frozen 556-cell measurement surface verified byte-identical and
-the advisor test suite remained at 38/38.
+Through all of it the frozen 556-cell benchmark came out identical, and the
+advisor's tests stayed at 38 out of 38.
 
 \end{document}
