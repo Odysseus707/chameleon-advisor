@@ -284,23 +284,46 @@ live check. They also cannot be reached yet: all five artifacts currently
 registered are CHI@Edge, so the advisor never picks non-edge hardware. The
 machinery is ready; giving it real examples is the next job.
 
-\section{What Is Left}
+\section{Finishing Up}
 
-\begin{enumerate}\itemsep2pt
-\item \textbf{Load the 90 good artifacts} into the advisor. This blocks
-everything else: the multi-site code generation works but has no examples
-behind it, so a GPU training question still gets answered with a Raspberry Pi.
-\item \textbf{Teach the advisor how to reserve, from the artifacts themselves},
-using the 52 bare-metal examples we now have.
-\item \textbf{Schedule the hardware database refresh.} It refreshes itself once
-a week if nobody does it, but nothing schedules it, so that refresh can hold up
-someone's question for about 35\,s.
-\item \textbf{Check the 10 hardest artifacts by hand}, then the 25-artifact
-spread. Seven of those groups currently have only one member.
-\item \textbf{Recover the extra hardware details} Blazar does not report for
-non-edge sites, and deal with the 4 artifacts stored only in Trovi, which is
-returning errors.
-\end{enumerate}
+The uncertain parts are behind us. What remains is one substantial piece of
+work, then deployment and handover, on the schedule below.
+
+\begin{table}[h]
+\caption{Plan to the end of the internship (24 August)}
+\label{tab:plan}
+\centering\footnotesize
+\begin{tabular}{@{}llc@{}}
+\toprule
+Item & Status & By \\
+\midrule
+Load the 90 artifacts into the advisor & in progress & 15 Aug \\
+Ground the reservation styles in them  & next        & 20 Aug \\
+Deploy to the node service             & queued      & 22 Aug \\
+Schedule the weekly hardware refresh   & queued      & 22 Aug \\
+Documentation and final presentation   & ongoing     & 24 Aug \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Loading the artifacts is the one that matters.} It turns the multi-site
+support from something that works structurally into something that gives good
+answers, and it is the reason a GPU training question currently still gets
+answered with a Raspberry Pi. Grounding the reservation styles follows directly
+from it, using the 52 bare-metal examples the new artifacts supply. Those two
+together are the last piece of new capability, and everything they depend on is
+already built and tested.
+
+The rest is wrapping up. Deployment means putting the new availability layer
+onto the node service and syncing it with the existing script, then scheduling
+the hardware refresh so the database stays current without anyone driving it.
+Both are mechanical.
+
+Two things are deliberately left for whoever picks this up next. Blazar does
+not report the extra hardware details for non-edge sites, so those still come
+from our own records rather than from live data. And 4 artifacts exist only
+inside Trovi, which is currently returning errors, so they cannot be fetched at
+all right now. Neither blocks anything above.
 
 \section{Conclusion}
 
