@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import abc
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Iterable, List, Optional
 
 from ..config import settings
 
@@ -69,11 +69,15 @@ class AvailabilityBackend(abc.ABC):
 
     @abc.abstractmethod
     def list_devices(
-        self, machine_type: Optional[str] = None
+        self,
+        machine_type: Optional[str] = None,
+        machine_types: Optional[Iterable[str]] = None,
     ) -> List[DeviceAvailability]:
-        """Return normalized availability for CHI@Edge devices.
+        """Return normalized availability for Chameleon devices/nodes.
 
-        When ``machine_type`` is given, restrict to that device type.
+        ``machine_type`` restricts to one type; ``machine_types`` to several.
+        A backend that can map types to sites should use this to avoid
+        contacting sites that cannot host any of them.
         """
 
     @abc.abstractmethod

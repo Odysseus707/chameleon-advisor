@@ -77,6 +77,13 @@ class Settings:
         default_factory=lambda: os.environ.get("CHAMELEON_RC_GLOB") or None
     )
 
+    # How long the resource catalog stays usable before a refresh sweep.
+    # The sweep costs ~44s across all sites, so run it on a schedule; this TTL
+    # is the safety net for when nobody has.
+    catalog_ttl_hours: int = field(
+        default_factory=lambda: int(os.environ.get("CATALOG_TTL_HOURS", "168"))
+    )
+
     # --- LLM reasoner (OpenAI-compatible client) ---
     # Default: Tejas AI endpoint serving Meta-Llama-3.3-70B-Instruct.
     llm_provider: str = field(
@@ -152,7 +159,8 @@ class Settings:
 
     @property
     def inventory_cache_path(self) -> Path:
-        return self.data_dir / "chi_edge_inventory.json"
+        # Multi-site now, so the old chi_edge_inventory.json name would lie.
+        return self.data_dir / "resource_catalog.json"
 
 
 settings = Settings()

@@ -1,13 +1,15 @@
-"""BlazarRestBackend: live reservation state from Blazar over plain REST.
-
-Why this exists alongside blazar.py. That backend goes through python-chi,
-which needs its own site-discovery call that is currently failing, and it only
-ever sees one site. This talks to Keystone and Blazar directly:
+"""BlazarBackend: live reservation state from Blazar over plain REST.
 
     Keystone /auth/tokens -> catalog -> blazar -> {resource} + /allocations
 
-and it answers the question the advisor actually asks: not just "is this device
-free" but "free for how long", and if not, "when does it free up".
+Replaced a python-chi implementation whose site discovery was failing and which
+only ever saw one site. This answers the question the advisor actually asks:
+not just "is this device free" but "free for how long", and if not, "when".
+
+Blazar has NO server-side filter: GET /os-hosts?node_type=... returns every
+host regardless. So narrowing has to happen by contacting fewer sites, which is
+what `machine_types` plus the resource catalog do. 37 of 41 types live on a
+single site, making a targeted fetch roughly 6x cheaper than the full sweep.
 
 Three states, because reservable=False is neither free nor reserved. A host in
 maintenance is unbookable, and reporting it free is exactly the failure that
@@ -25,13 +27,16 @@ OS_* variables cross back. Secrets are never logged.
 from __future__ import annotations
 
 import glob
+import logging
 import os
 import subprocess
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional
+from typing import Dict, Iterable, List, Optional
 
 from ..config import settings
 from .base import AvailabilityBackend, DeviceAvailability
+
+log = logging.getLogger(__name__)
 
 try:
     import requests
@@ -196,11 +201,24 @@ def probe_site(env: Dict[str, str], rc_file: Optional[str] = None) -> dict:
     return out
 
 
-def fetch_sites(rc_glob: Optional[str] = None) -> List[dict]:
-    """Probe every site whose openrc matches the glob. Used by the CLI report."""
+def fetch_sites(rc_glob: Optional[str] = None,
+                sites: Optional[Iterable[str]] = None) -> List[dict]:
+    """Probe sites whose openrc matches the glob.
+
+    `sites` restricts to those OS_REGION_NAMEs, and is where the cost saving
+    lives. Sourcing an openrc is a local subshell with no network, so we read
+    every rc file to learn which site it belongs to, then pay the HTTP cost
+    (auth + resources + allocations, ~6s) only for the ones asked for.
+    """
     pattern = rc_glob or settings.chameleon_rc_glob
-    return [probe_site(load_rc(p), p)
-            for p in sorted(glob.glob(os.path.expanduser(pattern or "")))]
+    wanted = set(sites) if sites else None
+    out = []
+    for p in sorted(glob.glob(os.path.expanduser(pattern or ""))):
+        env = load_rc(p)
+        if wanted is not None and env.get("OS_REGION_NAME") not in wanted:
+            continue
+        out.append(probe_site(env, p))
+    return out
 
 
 def to_availability(n: dict) -> DeviceAvailability:
@@ -232,7 +250,8 @@ class BlazarBackend(AvailabilityBackend):
     reports_live_state = True
 
     def __init__(self, rc_glob: Optional[str] = None,
-                 site: Optional[str] = None, all_sites: bool = False):
+                 site: Optional[str] = None, all_sites: bool = False,
+                 machine_types: Optional[Iterable[str]] = None):
         if requests is None:
             raise RuntimeError(
                 "BlazarBackend requires requests. `pip install requests`, "
@@ -244,23 +263,79 @@ class BlazarBackend(AvailabilityBackend):
                 "your Chameleon application-credential openrc files, e.g. "
                 "'~/Downloads/app-cred-*-openrc.sh'. One per site, since a "
                 "credential is scoped to a single site.")
-        # Default to the configured site; the advisor is CHI@Edge-shaped today.
-        self.site = None if all_sites else (site or settings.chi_site_name)
+        # machine_types wins over site: the caller has told us what hardware it
+        # wants, and the catalog knows better than a default which sites carry it.
+        self.machine_types = sorted({m for m in (machine_types or []) if m}) or None
+        self.site = (None if (all_sites or self.machine_types)
+                     else (site or settings.chi_site_name))
         self._cache: Optional[List[dict]] = None
+        self._probed: List[str] = []
+
+    def _target_sites(self) -> Optional[List[str]]:
+        """Sites worth contacting. None means "no idea, sweep everything"."""
+        if self.machine_types:
+            from ..inventory.catalog import InventoryCache
+            known = InventoryCache().sites_for_types(self.machine_types)
+            # Empty means the catalog has never seen these types. Pruning on
+            # that would silently return "nothing free" for real hardware, so
+            # fall back to the full sweep and let the caller pay once.
+            if known:
+                return known
+            log.warning("no catalog entry for %s; falling back to a full sweep",
+                        self.machine_types)
+        return [self.site] if self.site else None
 
     def _sites(self) -> List[dict]:
         if self._cache is None:
-            self._cache = fetch_sites(self.rc_glob)
+            targets = self._target_sites()
+            self._cache = fetch_sites(self.rc_glob, sites=targets)
+            self._probed = [s["site"] for s in self._cache]
         return self._cache
 
-    def _nodes(self) -> List[dict]:
-        return [n for s in self._sites() if not s["error"] for n in s["nodes"]
-                if self.site is None or n["site"] == self.site]
+    def _extend_for(self, machine_types: Iterable[str]) -> None:
+        """Fetch sites for types we did not originally ask for.
 
-    def list_devices(self, machine_type: Optional[str] = None
+        The guard against a silent wrong answer: if the reasoner picks a type
+        outside the candidate set, an empty availability list makes
+        device_free_in_window fail and turns a good recommendation into exit 1.
+        One extra targeted fetch (~6s, usually one site) is the cheaper error.
+        """
+        from ..inventory.catalog import InventoryCache
+        extra = [s for s in InventoryCache().sites_for_types(machine_types)
+                 if s not in self._probed]
+        if not extra:
+            return
+        log.info("extending availability fetch to %s for %s",
+                 extra, sorted(set(machine_types)))
+        self._cache = (self._cache or []) + fetch_sites(self.rc_glob, sites=extra)
+        self._probed += extra
+
+    def _nodes(self) -> List[dict]:
+        nodes = [n for s in self._sites() if not s["error"] for n in s["nodes"]]
+        if self.machine_types:
+            return [n for n in nodes if n["node_type"] in set(self.machine_types)]
+        if self.site:
+            return [n for n in nodes if n["site"] == self.site]
+        return nodes
+
+    def list_devices(self, machine_type: Optional[str] = None,
+                     machine_types: Optional[Iterable[str]] = None
                      ) -> List[DeviceAvailability]:
-        return [to_availability(n) for n in self._nodes()
-                if machine_type is None or n["node_type"] == machine_type]
+        wanted = {m for m in (machine_types or []) if m}
+        if machine_type:
+            wanted.add(machine_type)
+        if wanted:
+            self._sites()  # ensure the first fetch happened before diffing
+            missing = wanted - {n["node_type"] for n in self._all_nodes()}
+            if missing:
+                self._extend_for(missing)
+        nodes = self._all_nodes() if wanted else self._nodes()
+        return [to_availability(n) for n in nodes
+                if not wanted or n["node_type"] in wanted]
+
+    def _all_nodes(self) -> List[dict]:
+        """Every node fetched so far, before site/type scoping."""
+        return [n for s in self._sites() if not s["error"] for n in s["nodes"]]
 
     def get_device(self, device_uid: str) -> Optional[DeviceAvailability]:
         return next((to_availability(n) for n in self._nodes()
@@ -276,7 +351,9 @@ class BlazarBackend(AvailabilityBackend):
             "reachable": bool(ok),
             "sites_ok": [s["site"] for s in ok],
             "sites_failed": {s["site"]: s["error"] for s in sites if s["error"]},
-            "scoped_to": self.site or "all sites",
+            "scoped_to": (f"types {self.machine_types}" if self.machine_types
+                          else self.site or "all sites"),
+            "sites_probed": self._probed,
             "devices": len(nodes),
             "free_now": sum(n["status"] == "free" for n in nodes),
             "down": sum(n["status"] == "down" for n in nodes),
