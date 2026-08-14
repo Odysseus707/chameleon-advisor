@@ -1,1 +1,0 @@
-My lease 'serve-edge-vr' is already active on a Raspberry Pi 5. Launch the Jupyter minimal-notebook container on it, give it a public IP, and show me how to find the notebook's token URL from the container logs.

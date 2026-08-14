@@ -1,1 +1,0 @@
-My CHI@Edge lease expires in an hour; extend it by 2 more hours from python-chi.

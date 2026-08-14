@@ -1,1 +1,0 @@
-Print the device_name of every raspberrypi4-64 device on CHI@Edge that is free to reserve right now (one per line).

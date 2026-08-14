@@ -1,1 +1,0 @@
-Record a 10-second 720p video at 30 fps from the Pi camera and download it to my machine.

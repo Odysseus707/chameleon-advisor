@@ -1,1 +1,0 @@
-Run GPU-accelerated inference on a Jetson-class device on CHI@Edge: reserve one and start a CUDA-capable container on it.

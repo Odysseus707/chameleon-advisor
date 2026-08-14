@@ -1,1 +1,0 @@
-Launch a container with the Sense HAT enabled.

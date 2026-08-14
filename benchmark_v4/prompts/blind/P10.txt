@@ -1,1 +1,0 @@
-Tear everything down: remove the CHI@Edge container and free the device.

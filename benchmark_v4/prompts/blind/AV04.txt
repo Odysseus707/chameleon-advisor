@@ -1,1 +1,0 @@
-Print the device_name of every currently-free CHI@Edge device that supports the pi_sensehat device profile.

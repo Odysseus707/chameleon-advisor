@@ -1,1 +1,0 @@
-Reserve three raspberrypi4-64 devices on CHI@Edge for 6 hours in one lease, and launch an SSH-enabled container on the lease so I can log in as root.

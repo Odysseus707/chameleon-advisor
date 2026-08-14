@@ -1,1 +1,0 @@
-Find which Pis have a camera attached and reserve one.

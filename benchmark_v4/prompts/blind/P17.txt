@@ -1,1 +1,0 @@
-Capture a 1080p still from the Pi Camera and download it.

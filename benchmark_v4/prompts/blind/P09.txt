@@ -1,1 +1,0 @@
-Upload model.pt into the CHI@Edge container, then download results.csv back out.

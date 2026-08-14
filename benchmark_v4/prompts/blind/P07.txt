@@ -1,1 +1,0 @@
-Expose port 8080 on my CHI@edge container and give it a public IP.

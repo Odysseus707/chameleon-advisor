@@ -1,1 +1,0 @@
-Use a plain USB (UVC) webcam on a CHI@Edge Pi with OpenCV - what device profile and container setup do I need?

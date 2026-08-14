@@ -1,1 +1,0 @@
-Print True if the device iot-rpi4-picam2 is free to reserve right now on CHI@Edge, otherwise print False.

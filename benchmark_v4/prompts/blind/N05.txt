@@ -1,1 +1,0 @@
-I already have an active CHI@Edge lease named 'my-llm-lease' on a GPU-capable device. Launch an Ollama container on it with GPU support, exposing only the Ollama API port, and give it a public IP.

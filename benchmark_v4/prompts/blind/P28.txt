@@ -1,1 +1,0 @@
-Convert my CHI@UC bare-metal script (add_node_reservation, node_type='compute_skylake', create_server) to run on CHI@Edge.

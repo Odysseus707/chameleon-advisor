@@ -1,1 +1,0 @@
-The device iot-rpi4-picam3 has both a camera module and a Sense HAT attached. Reserve it and launch ONE container that can access both peripherals; then verify each (list cameras; probe the sensor bus).
