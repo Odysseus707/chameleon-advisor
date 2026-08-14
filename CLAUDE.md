@@ -10,11 +10,11 @@ One workspace, four components. Read `README.md` for the map, `PROJECT_GUIDE.md`
 - `web_rag.py` does `import advisor_room` — a bare same-directory module
 - the `advisor` package is wired into the RAG venv via an absolute-path `pip install -e`
 - `chi-edge-advisor/advisor/config.py` defaults `grounding_dir` to `_PKG_ROOT.parent / "grounding"` (sibling assumption)
-- `benchmark_v4/tools/bench_config.yaml` pins node paths under `/home/cc/`
+- `benchmark/tools/bench_config.yaml` pins node paths under `/home/cc/`
 
 `RAG-docs-chameleon/` is an **independent git repo** (upstream: Odysseus707/RAG-docs-chameleon) on branch `wip/advisor-integration` — do not switch it back to `main` (that would remove `advisor_room.py` from the worktree). The workspace repo gitignores it.
 
-`vivek.pem` (root) is the node SSH key: gitignored, never commit, referenced by `benchmark_v4/tools/bench_config.yaml` and `node_sync.sh` at this exact location.
+`vivek.pem` (root) is the node SSH key: gitignored, never commit, referenced by `benchmark/tools/bench_config.yaml` and `node_sync.sh` at this exact location.
 
 ## Local run caveats
 
