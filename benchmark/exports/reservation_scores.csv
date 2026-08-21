@@ -1,0 +1,85 @@
+condition,system,item,status,fences,recovered,code_seen,all_passed,failed_checks,rank1,mechanism_passed,mechanism_total,specifics_passed,specifics_total,safety_passed,safety_total,feasibility_passed,feasibility_total,capability_passed,capability_total
+reservation,s7-advisor,R01,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+reservation,s7-advisor,R02,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R03,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+reservation,s7-advisor,R04,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+reservation,s7-advisor,R05,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R06,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,3,4
+reservation,s7-advisor,R07,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+reservation,s7-advisor,R08,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+reservation,s7-advisor,R09,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,0,1,0,2
+reservation,s7-advisor,R10,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+reservation,s7-advisor,R11,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+reservation,s7-advisor,R12,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+reservation,s7-advisor,R13,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+reservation,s7-advisor,R14,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+reservation,s7-advisor,R15,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,0,1,0,2
+reservation,s7-advisor,R16,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+reservation,s7-advisor,R17,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+reservation,s7-advisor,R18,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+reservation,s7-advisor,R19,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+reservation,s7-advisor,R20,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R21,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+reservation,s7-advisor,R22,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+reservation,s7-advisor,R23,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R24,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+reservation,s7-advisor,R25,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R26,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R27,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+reservation,s7-advisor,R28,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R29,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R30,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R31,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+reservation,s7-advisor,R32,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R33,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+reservation,s7-advisor,R34,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+reservation,s7-advisor,R35,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R36,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,3,4
+reservation,s7-advisor,R37,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R38,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R39,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+reservation,s7-advisor,R40,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R41,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R42,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+reservation,s7-advisor,R43,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+reservation,s7-advisor,R44,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+reservation,s7-advisor,R45,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+reservation,s7-advisor,R46,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+reservation,s7-advisor,R47,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+reservation,s7-advisor,R48,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+reservation,s7-advisor,R49,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R50,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R51,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,0,3,1,5
+reservation,s7-advisor,R52,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,1,1,0,2
+reservation,s7-advisor,R53,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R54,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R55,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,1,1,0,2
+reservation,s7-advisor,R56,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,1,1,0,2
+reservation,s7-advisor,R57,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,0,1,0,2
+reservation,s7-advisor,R58,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,1,1,0,2
+reservation,s7-advisor,R59,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,1,1,0,2
+reservation,s7-advisor,R60,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R61,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi5,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R62,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi5,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R63,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi5,,,,,2,2,0,3,1,5
+reservation,s7-advisor,R64,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi5,,,,,1,1,1,1,0,2
+reservation,s7-advisor,R65,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi5,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R66,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi5,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R67,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R68,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R69,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,0,3,1,5
+reservation,s7-advisor,R70,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,1,1,0,2
+reservation,s7-advisor,R71,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R72,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R73,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R74,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R75,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,0,3,1,5
+reservation,s7-advisor,R76,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,1,1,0,2
+reservation,s7-advisor,R77,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R78,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R79,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R80,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R81,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,0,3,1,5
+reservation,s7-advisor,R82,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,1,1,0,2
+reservation,s7-advisor,R83,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+reservation,s7-advisor,R84,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5

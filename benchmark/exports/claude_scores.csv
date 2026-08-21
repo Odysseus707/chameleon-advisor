@@ -1,0 +1,135 @@
+condition,system,item,status,fences,recovered,code_seen,all_passed,failed_checks,rank1,mechanism_passed,mechanism_total,specifics_passed,specifics_total,safety_passed,safety_total,feasibility_passed,feasibility_total,capability_passed,capability_total
+blind,s5-claude-sonnet,AV01,scored,True,False,True,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s5-claude-sonnet,AV02,scored,True,False,True,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s5-claude-sonnet,AV03,scored,True,False,True,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s5-claude-sonnet,AV04,scored,True,False,True,False,availability_query required_code_string v1_snapshot_exec,,0,1,0,2,,,,,,
+blind,s5-claude-sonnet,N01,scored,True,False,True,False,kwarg lease_hours container_call kwarg required_call,,2,4,2,5,2,2,,,,
+blind,s5-claude-sonnet,N02,scored,True,False,True,False,required_code_string required_code_string required_code_string required_code_string required_call,,1,2,0,4,,,,,,
+blind,s5-claude-sonnet,N03,scored,True,False,True,False,availability_query required_code_string lease_hours kwarg kwarg required_code_string required_code_string required_code_string required_call,,1,3,0,7,1,1,,,,
+blind,s5-claude-sonnet,N04,scored,True,False,True,False,required_call kwarg container_call kwarg kwarg kwarg required_code_string,,1,3,0,5,2,2,,,,
+blind,s5-claude-sonnet,N05,scored,True,False,True,False,required_call container_call kwarg kwarg kwarg,,2,4,0,3,2,2,,,,
+blind,s5-claude-sonnet,N06,scored,True,False,True,True,,,4,4,5,5,1,1,,,,
+blind,s5-claude-sonnet,N07,scored,True,False,True,False,container_call kwarg,,2,3,3,4,2,2,,,,
+blind,s5-claude-sonnet,N08,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,,0,4,0,3,0,1,,,,
+blind,s5-claude-sonnet,N09,scored,True,False,True,False,availability_query kwarg kwarg required_call profiles_known_only,,3,5,5,7,1,2,,,,
+blind,s5-claude-sonnet,N10,scored,True,False,True,False,container_call kwarg profiles_known_only required_code_string,,3,4,2,4,1,2,,,,
+blind,s5-claude-sonnet,N11,scored,True,False,True,False,kwarg container_call kwarg required_call,,2,4,2,4,2,2,,,,
+blind,s5-claude-sonnet,N12,scored,True,False,True,False,kwarg kwarg required_code_string required_call required_call required_code_string required_code_string reservation_wiring,,0,3,0,5,1,1,,,,
+blind,s5-claude-sonnet,N13,scored,True,False,True,False,required_call required_call kwarg lease_hours kwarg kwarg kwarg required_call reservation_wiring,,0,4,2,6,1,2,,,,
+blind,s5-claude-sonnet,N14,scored,True,False,True,True,,,1,1,,,2,2,,,,
+blind,s5-claude-sonnet,N15,scored,True,False,True,False,required_call,,1,2,1,1,1,1,,,,
+blind,s5-claude-sonnet,N16,scored,True,False,True,False,required_call container_call kwarg,,2,4,0,1,2,2,,,,
+blind,s5-claude-sonnet,N17,scored,True,False,True,False,abstain_or_discover forbidden_calls,,0,1,,,0,1,,,,
+blind,s5-claude-sonnet,N18,scored,True,False,True,False,profiles_known_only,,1,1,,,1,2,,,,
+blind,s5-claude-sonnet,P01,scored,True,False,True,True,,,2,2,1,1,,,,,,
+blind,s5-claude-sonnet,P02,scored,True,False,True,True,,,3,3,3,3,1,1,,,,
+blind,s5-claude-sonnet,P03,scored,True,False,True,False,required_code_string,,1,2,1,1,1,1,,,,
+blind,s5-claude-sonnet,P04,scored,True,False,True,True,,,3,3,2,2,1,1,,,,
+blind,s5-claude-sonnet,P05,scored,True,False,True,False,container_call reservation_wiring required_call,,0,3,1,1,2,2,,,,
+blind,s5-claude-sonnet,P06,scored,True,False,True,False,container_call,,1,2,1,1,,,,,,
+blind,s5-claude-sonnet,P07,scored,True,False,True,True,,,2,2,1,1,,,,,,
+blind,s5-claude-sonnet,P08,scored,True,False,True,True,,,2,2,1,1,,,,,,
+blind,s5-claude-sonnet,P09,scored,True,False,True,False,required_call required_call,,0,2,2,2,,,,,,
+blind,s5-claude-sonnet,P10,scored,True,False,True,True,,,1,1,,,,,,,,
+blind,s5-claude-sonnet,P11,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg required_call name_no_underscore,,0,3,1,3,0,1,,,,
+blind,s5-claude-sonnet,P12,scored,True,False,True,False,required_call required_call,,0,2,3,3,,,,,,
+blind,s5-claude-sonnet,P13,scored,True,False,True,False,required_text_string,,,,1,2,,,,,,
+blind,s5-claude-sonnet,P14,scored,True,False,True,False,required_call kwarg container_call reservation_wiring kwarg kwarg required_call required_code_string required_call name_no_underscore,,0,5,0,4,1,2,,,,
+blind,s5-claude-sonnet,P15,scored,True,False,True,False,availability_query required_code_string,,1,2,0,1,1,1,,,,
+blind,s5-claude-sonnet,P16,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string profiles_known_only,,0,3,0,3,1,2,,,,
+blind,s5-claude-sonnet,P17,scored,True,False,True,False,required_call required_code_string required_code_string required_code_string required_call,,0,2,0,3,,,,,,
+blind,s5-claude-sonnet,P18,scored,True,False,True,False,required_call required_code_string required_code_string required_code_string,,0,1,0,3,,,,,,
+blind,s5-claude-sonnet,P19,scored,True,False,True,False,required_code_string required_code_string,,1,1,0,2,,,,,,
+blind,s5-claude-sonnet,P20,scored,True,False,True,False,kwarg kwarg,,1,1,1,3,1,1,,,,
+blind,s5-claude-sonnet,P21,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg profiles_known_only,,1,3,1,3,1,2,,,,
+blind,s5-claude-sonnet,P22,scored,True,False,True,False,required_call,,0,1,2,2,,,,,,
+blind,s5-claude-sonnet,P23,scored,True,False,True,False,required_call required_code_string,,0,1,0,1,,,,,,
+blind,s5-claude-sonnet,P24,scored,True,False,True,False,required_text_string required_text_string,,,,0,2,,,,,,
+blind,s5-claude-sonnet,P25,scored,True,False,True,False,availability_query,,1,2,,,,,,,,
+blind,s5-claude-sonnet,P26,scored,True,False,True,False,availability_query required_code_string,,0,2,,,,,,,,
+blind,s5-claude-sonnet,P27,scored,True,False,True,False,required_call required_code_string,,0,1,0,1,,,,,,
+blind,s5-claude-sonnet,P28,scored,True,False,True,False,forbidden_calls container_call reservation_wiring,,1,3,1,1,0,1,,,,
+blind,s5-claude-sonnet,R01,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R02,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s5-claude-sonnet,R03,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s5-claude-sonnet,R04,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R05,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s5-claude-sonnet,R06,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,3,4
+blind,s5-claude-sonnet,R07,scored,False,False,False,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R08,scored,False,False,False,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R09,scored,False,False,False,False,no_down_types_listed forbidden_types_listed,raspberrypi4-64,,,,,1,1,0,1,1,2
+blind,s5-claude-sonnet,R10,scored,False,False,False,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R11,scored,True,False,True,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R12,scored,True,False,True,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R13,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R14,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R15,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R16,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R17,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R18,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R19,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R20,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R21,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,0,3,1,4
+blind,s5-claude-sonnet,R22,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R23,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R24,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R25,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R26,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R27,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,0,3,1,4
+blind,s5-claude-sonnet,R28,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,2,3,1,4
+blind,s5-claude-sonnet,R29,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R30,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R31,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R32,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+blind,s5-claude-sonnet,R33,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s5-claude-sonnet,R34,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R35,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s5-claude-sonnet,R36,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,3,4
+blind,s5-claude-sonnet,R37,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,4
+blind,s5-claude-sonnet,R38,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,4
+blind,s5-claude-sonnet,R39,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,2,4
+blind,s5-claude-sonnet,R40,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,2,2,0,3,2,4
+blind,s5-claude-sonnet,R41,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R42,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R43,scored,False,False,False,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R44,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+blind,s5-claude-sonnet,R45,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s5-claude-sonnet,R46,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R47,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+blind,s5-claude-sonnet,R48,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R49,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-orin-nano-devkit-nvme,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R50,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-orin-nano-devkit-nvme,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R51,scored,True,False,True,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R52,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R53,scored,True,False,True,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R54,scored,True,False,True,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R55,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R56,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R57,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R58,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R59,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R60,scored,True,False,True,False,abstains_when_uncovered,coral-dev,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R61,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,3,5
+blind,s5-claude-sonnet,R62,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,3,5
+blind,s5-claude-sonnet,R63,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,3,5
+blind,s5-claude-sonnet,R64,scored,False,False,False,False,no_down_types_listed forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,1,1,0,1,1,2
+blind,s5-claude-sonnet,R65,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,5,5
+blind,s5-claude-sonnet,R66,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,5,5
+blind,s5-claude-sonnet,R67,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,5,5
+blind,s5-claude-sonnet,R68,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,5,5
+blind,s5-claude-sonnet,R69,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,5,5
+blind,s5-claude-sonnet,R70,scored,False,False,False,False,no_down_types_listed forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,1,1,0,1,1,2
+blind,s5-claude-sonnet,R71,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R72,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R73,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R74,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R75,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R76,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R77,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R78,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R79,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,2,2,0,3,2,5
+blind,s5-claude-sonnet,R80,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,2,2,0,3,2,5
+blind,s5-claude-sonnet,R81,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-orin-nano-devkit-nvme,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R82,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,jetson-orin-nano-devkit-nvme,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R83,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-orin-nano-devkit-nvme,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R84,scored,False,False,False,False,abstains_when_uncovered,jetson-orin-nano-devkit-nvme,,,,,2,2,3,3,4,5

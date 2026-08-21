@@ -1,0 +1,557 @@
+condition,system,item,status,fences,recovered,code_seen,all_passed,failed_checks,mechanism_passed,mechanism_total,specifics_passed,specifics_total,safety_passed,safety_total
+blind,s1-chatbot,AV01,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s1-chatbot,AV02,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s1-chatbot,AV03,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s1-chatbot,AV04,scored,False,False,False,False,availability_query required_code_string v1_snapshot_exec,0,1,0,2,,
+blind,s1-chatbot,N01,scored,False,False,False,False,required_call kwarg kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,5,1,2
+blind,s1-chatbot,N02,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_code_string required_call,0,2,0,4,,
+blind,s1-chatbot,N03,scored,False,False,False,False,availability_query required_code_string lease_hours kwarg kwarg required_code_string required_code_string required_code_string required_call reservation_wiring,0,3,0,7,1,1
+blind,s1-chatbot,N04,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,5,1,2
+blind,s1-chatbot,N05,scored,False,False,False,False,required_call container_call reservation_wiring kwarg kwarg kwarg required_call name_no_underscore,0,4,0,3,1,2
+blind,s1-chatbot,N06,scored,False,False,False,False,required_call required_call lease_hours kwarg kwarg kwarg reservation_wiring required_call,0,4,1,5,1,1
+blind,s1-chatbot,N07,scored,False,False,False,False,required_call kwarg kwarg container_call reservation_wiring kwarg kwarg name_no_underscore,0,3,0,4,1,2
+blind,s1-chatbot,N08,scored,False,False,False,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,0,4,0,3,0,1
+blind,s1-chatbot,N09,scored,False,False,False,False,availability_query kwarg kwarg kwarg required_call required_code_string required_code_string required_code_string required_code_string required_call required_call reservation_wiring,0,5,0,7,2,2
+blind,s1-chatbot,N10,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg required_call required_code_string required_code_string name_no_underscore,0,4,0,4,1,2
+blind,s1-chatbot,N11,scored,False,False,False,False,required_call kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,4,1,2
+blind,s1-chatbot,N12,scored,False,False,False,False,kwarg kwarg required_code_string required_call required_call required_code_string required_code_string reservation_wiring,0,3,0,5,1,1
+blind,s1-chatbot,N13,scored,False,False,False,False,required_call required_call kwarg lease_hours kwarg kwarg kwarg required_code_string required_call reservation_wiring,0,4,1,6,1,2
+blind,s1-chatbot,N14,scored,False,False,False,True,,1,1,,,2,2
+blind,s1-chatbot,N15,scored,False,False,False,False,required_call required_call lease_hours,0,2,0,1,1,1
+blind,s1-chatbot,N16,scored,False,False,False,False,required_call required_call container_call reservation_wiring kwarg name_no_underscore,0,4,0,1,1,2
+blind,s1-chatbot,N17,scored,False,False,False,False,abstain_or_discover,0,1,,,1,1
+blind,s1-chatbot,N18,scored,False,False,False,True,,1,1,,,2,2
+blind,s1-chatbot,P01,scored,False,False,False,False,required_call required_code_string required_call,0,2,0,1,,
+blind,s1-chatbot,P02,scored,False,False,False,False,required_call required_call kwarg kwarg lease_hours required_call,0,3,0,3,1,1
+blind,s1-chatbot,P03,scored,False,False,False,False,required_call kwarg required_code_string,0,2,0,1,1,1
+blind,s1-chatbot,P04,scored,False,False,False,False,required_call required_call kwarg kwarg required_call,0,3,0,2,1,1
+blind,s1-chatbot,P05,scored,False,False,False,False,container_call reservation_wiring required_code_string name_no_underscore required_call,0,3,0,1,1,2
+blind,s1-chatbot,P06,scored,False,False,False,False,container_call kwarg required_code_string,0,2,0,1,,
+blind,s1-chatbot,P07,scored,False,False,False,False,required_code_string required_code_string required_call,0,2,0,1,,
+blind,s1-chatbot,P08,scored,False,False,False,False,required_call required_code_string required_code_string,0,2,0,1,,
+blind,s1-chatbot,P09,scored,False,False,False,False,required_call required_call required_code_string required_code_string,0,2,0,2,,
+blind,s1-chatbot,P10,scored,False,False,False,False,teardown,0,1,,,,
+blind,s1-chatbot,P11,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg required_call required_code_string name_no_underscore,0,3,0,3,0,1
+blind,s1-chatbot,P12,scored,False,False,False,False,required_call required_call required_code_string required_code_string required_code_string,0,2,0,3,,
+blind,s1-chatbot,P13,scored,False,False,False,False,required_text_string,,,1,2,,
+blind,s1-chatbot,P14,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg required_call required_code_string required_call name_no_underscore,0,5,0,4,1,2
+blind,s1-chatbot,P15,scored,False,False,False,False,availability_query required_code_string required_call,0,2,0,1,1,1
+blind,s1-chatbot,P16,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+blind,s1-chatbot,P17,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_call,0,2,0,3,,
+blind,s1-chatbot,P18,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string,0,1,0,3,,
+blind,s1-chatbot,P19,scored,False,False,False,False,required_call required_code_string required_code_string,0,1,0,2,,
+blind,s1-chatbot,P20,scored,False,False,False,False,required_call kwarg kwarg kwarg,0,1,0,3,1,1
+blind,s1-chatbot,P21,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+blind,s1-chatbot,P22,scored,False,False,False,False,required_call required_code_string required_code_string,0,1,0,2,,
+blind,s1-chatbot,P23,scored,False,False,False,False,required_call required_code_string,0,1,0,1,,
+blind,s1-chatbot,P24,scored,False,False,False,False,required_text_string required_text_string,,,0,2,,
+blind,s1-chatbot,P25,scored,False,False,False,False,availability_query required_code_string,0,2,,,,
+blind,s1-chatbot,P26,scored,False,False,False,False,availability_query required_code_string,0,2,,,,
+blind,s1-chatbot,P27,scored,False,False,False,False,required_call required_code_string,0,1,0,1,,
+blind,s1-chatbot,P28,scored,False,False,False,False,required_call kwarg container_call reservation_wiring,0,3,0,1,1,1
+blind,s2-gpt,AV01,empty,False,False,False,,,,,,,,
+blind,s2-gpt,AV02,empty,False,False,False,,,,,,,,
+blind,s2-gpt,AV03,empty,False,False,False,,,,,,,,
+blind,s2-gpt,AV04,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N01,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N02,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N03,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N04,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N05,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N06,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N07,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N08,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N09,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N10,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N11,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N12,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N13,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N14,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N15,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N16,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N17,empty,False,False,False,,,,,,,,
+blind,s2-gpt,N18,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P01,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P02,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P03,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P04,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P05,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P06,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P07,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P08,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P09,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P10,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P11,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P12,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P13,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P14,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P15,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P16,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P17,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P18,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P19,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P20,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P21,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P22,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P23,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P24,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P25,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P26,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P27,empty,False,False,False,,,,,,,,
+blind,s2-gpt,P28,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,AV01,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s3-sonnet,AV02,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s3-sonnet,AV03,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s3-sonnet,AV04,scored,False,False,False,False,availability_query required_code_string v1_snapshot_exec,0,1,0,2,,
+blind,s3-sonnet,N01,scored,False,False,False,False,required_call kwarg kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,5,1,2
+blind,s3-sonnet,N02,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_code_string required_call,0,2,0,4,,
+blind,s3-sonnet,N03,scored,False,False,False,False,availability_query required_code_string lease_hours kwarg kwarg required_code_string required_code_string required_code_string required_call reservation_wiring,0,3,0,7,1,1
+blind,s3-sonnet,N04,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,5,1,2
+blind,s3-sonnet,N05,scored,False,False,False,False,required_call container_call reservation_wiring kwarg kwarg kwarg required_call name_no_underscore,0,4,0,3,1,2
+blind,s3-sonnet,N06,scored,False,False,False,False,required_call required_call lease_hours kwarg kwarg kwarg reservation_wiring required_call,0,4,1,5,1,1
+blind,s3-sonnet,N07,scored,False,False,False,False,required_call kwarg kwarg container_call reservation_wiring kwarg kwarg name_no_underscore,0,3,0,4,1,2
+blind,s3-sonnet,N08,scored,False,False,False,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,0,4,0,3,0,1
+blind,s3-sonnet,N09,scored,False,False,False,False,availability_query kwarg kwarg kwarg required_call required_code_string required_code_string required_code_string required_code_string required_call required_call reservation_wiring,0,5,0,7,2,2
+blind,s3-sonnet,N10,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg required_call required_code_string required_code_string name_no_underscore,0,4,0,4,1,2
+blind,s3-sonnet,N11,scored,False,False,False,False,required_call kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,4,1,2
+blind,s3-sonnet,N12,scored,False,False,False,False,kwarg kwarg required_code_string required_call required_call required_code_string required_code_string reservation_wiring,0,3,0,5,1,1
+blind,s3-sonnet,N13,scored,False,False,False,False,required_call required_call kwarg lease_hours kwarg kwarg kwarg required_code_string required_call reservation_wiring,0,4,1,6,1,2
+blind,s3-sonnet,N14,scored,False,False,False,False,abstain_or_discover,0,1,,,2,2
+blind,s3-sonnet,N15,scored,False,False,False,False,required_call required_call lease_hours,0,2,0,1,1,1
+blind,s3-sonnet,N16,scored,False,False,False,False,required_call required_call container_call reservation_wiring kwarg name_no_underscore,0,4,0,1,1,2
+blind,s3-sonnet,N17,scored,False,False,False,False,abstain_or_discover,0,1,,,1,1
+blind,s3-sonnet,N18,scored,False,False,False,True,,1,1,,,2,2
+blind,s3-sonnet,P01,scored,False,False,False,False,required_call required_code_string required_call,0,2,0,1,,
+blind,s3-sonnet,P02,scored,False,False,False,False,required_call required_call kwarg kwarg lease_hours required_call,0,3,0,3,1,1
+blind,s3-sonnet,P03,scored,False,False,False,False,required_call kwarg required_code_string,0,2,0,1,1,1
+blind,s3-sonnet,P04,scored,False,False,False,False,required_call required_call kwarg kwarg required_call,0,3,0,2,1,1
+blind,s3-sonnet,P05,scored,False,False,False,False,container_call reservation_wiring required_code_string name_no_underscore required_call,0,3,0,1,1,2
+blind,s3-sonnet,P06,scored,False,False,False,False,container_call kwarg required_code_string,0,2,0,1,,
+blind,s3-sonnet,P07,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P08,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P09,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P10,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P11,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P12,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P13,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P14,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P15,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P16,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P17,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P18,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P19,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P20,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P21,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P22,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P23,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P24,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P25,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P26,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P27,empty,False,False,False,,,,,,,,
+blind,s3-sonnet,P28,empty,False,False,False,,,,,,,,
+blind,s4-fork-on,AV01,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s4-fork-on,AV02,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s4-fork-on,AV03,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s4-fork-on,AV04,scored,False,False,False,False,availability_query required_code_string v1_snapshot_exec,0,1,0,2,,
+blind,s4-fork-on,N01,scored,False,False,False,False,required_call kwarg kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,5,1,2
+blind,s4-fork-on,N02,scored,True,False,True,False,required_call required_code_string required_code_string required_call,0,2,2,4,,
+blind,s4-fork-on,N03,scored,True,False,True,False,availability_query required_code_string lease_hours kwarg kwarg required_code_string required_code_string required_code_string required_call reservation_wiring,0,3,0,7,1,1
+blind,s4-fork-on,N04,scored,True,False,True,False,required_call kwarg container_call reservation_wiring kwarg kwarg kwarg name_no_underscore,0,3,1,5,1,2
+blind,s4-fork-on,N05,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg kwarg required_call name_no_underscore,0,4,0,3,1,2
+blind,s4-fork-on,N06,scored,True,False,True,False,lease_hours kwarg kwarg required_call,3,4,2,5,1,1
+blind,s4-fork-on,N07,scored,True,False,True,False,required_call kwarg kwarg container_call reservation_wiring kwarg kwarg name_no_underscore,0,3,0,4,1,2
+blind,s4-fork-on,N08,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,0,4,0,3,0,1
+blind,s4-fork-on,N09,scored,False,False,False,False,availability_query kwarg kwarg kwarg required_call required_code_string required_code_string required_code_string required_code_string required_call required_call reservation_wiring,0,5,0,7,2,2
+blind,s4-fork-on,N10,scored,True,False,True,False,required_call kwarg container_call reservation_wiring kwarg required_call required_code_string name_no_underscore,0,4,1,4,1,2
+blind,s4-fork-on,N11,scored,True,False,True,False,required_call kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,4,1,2
+blind,s4-fork-on,N12,scored,True,False,True,False,kwarg kwarg required_code_string required_call required_call required_code_string required_code_string reservation_wiring,0,3,0,5,1,1
+blind,s4-fork-on,N13,scored,True,False,True,False,required_call required_call kwarg lease_hours kwarg kwarg kwarg required_code_string required_call reservation_wiring,0,4,1,6,1,2
+blind,s4-fork-on,N14,scored,False,False,False,False,abstain_or_discover,0,1,,,2,2
+blind,s4-fork-on,N15,scored,False,False,False,False,required_call required_call lease_hours,0,2,0,1,1,1
+blind,s4-fork-on,N16,scored,True,False,True,False,required_call required_call container_call reservation_wiring kwarg name_no_underscore,0,4,0,1,1,2
+blind,s4-fork-on,N17,scored,True,False,True,False,forbidden_calls,1,1,,,0,1
+blind,s4-fork-on,N18,scored,False,False,False,False,abstain_or_discover,0,1,,,2,2
+blind,s4-fork-on,P01,scored,True,False,True,False,required_call,1,2,1,1,,
+blind,s4-fork-on,P02,scored,True,False,True,False,forbidden_calls required_call kwarg kwarg,2,3,1,3,0,1
+blind,s4-fork-on,P03,scored,True,False,True,False,forbidden_calls required_call kwarg required_code_string,0,2,0,1,0,1
+blind,s4-fork-on,P04,scored,True,False,True,False,required_call kwarg kwarg,2,3,0,2,1,1
+blind,s4-fork-on,P05,scored,False,False,False,False,container_call reservation_wiring required_code_string name_no_underscore required_call,0,3,0,1,1,2
+blind,s4-fork-on,P06,scored,True,False,True,False,container_call kwarg required_code_string,0,2,0,1,,
+blind,s4-fork-on,P07,scored,False,False,False,False,required_code_string required_code_string required_call,0,2,0,1,,
+blind,s4-fork-on,P08,scored,True,False,True,False,required_call required_code_string,0,2,1,1,,
+blind,s4-fork-on,P09,scored,True,False,True,False,required_call required_call,0,2,2,2,,
+blind,s4-fork-on,P10,scored,False,False,False,False,teardown,0,1,,,,
+blind,s4-fork-on,P11,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg required_call required_code_string name_no_underscore,0,3,0,3,0,1
+blind,s4-fork-on,P12,scored,False,False,False,False,required_call required_call required_code_string required_code_string required_code_string,0,2,0,3,,
+blind,s4-fork-on,P13,scored,False,False,False,True,,,,2,2,,
+blind,s4-fork-on,P14,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg required_call required_code_string required_call name_no_underscore,0,5,0,4,1,2
+blind,s4-fork-on,P15,scored,True,False,True,False,availability_query required_code_string required_call,0,2,0,1,1,1
+blind,s4-fork-on,P16,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+blind,s4-fork-on,P17,scored,True,False,True,False,required_call required_code_string required_call,0,2,2,3,,
+blind,s4-fork-on,P18,scored,True,False,True,False,required_call required_code_string required_code_string,0,1,1,3,,
+blind,s4-fork-on,P19,scored,True,False,True,False,required_call required_code_string required_code_string,0,1,0,2,,
+blind,s4-fork-on,P20,scored,True,False,True,False,required_call kwarg kwarg kwarg,0,1,0,3,1,1
+blind,s4-fork-on,P21,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+blind,s4-fork-on,P22,scored,True,False,True,False,required_call,0,1,2,2,,
+blind,s4-fork-on,P23,scored,True,False,True,False,required_call,0,1,1,1,,
+blind,s4-fork-on,P24,scored,False,False,False,True,,,,2,2,,
+blind,s4-fork-on,P25,scored,False,False,False,False,availability_query required_code_string,0,2,,,,
+blind,s4-fork-on,P26,scored,False,False,False,False,availability_query required_code_string,0,2,,,,
+blind,s4-fork-on,P27,scored,False,False,False,False,required_call required_code_string,0,1,0,1,,
+blind,s4-fork-on,P28,scored,True,False,True,False,forbidden_calls required_call kwarg container_call reservation_wiring,0,3,0,1,0,1
+blind,s5-fork-off,AV01,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s5-fork-off,AV02,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s5-fork-off,AV03,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s5-fork-off,AV04,scored,False,False,False,False,availability_query required_code_string v1_snapshot_exec,0,1,0,2,,
+blind,s5-fork-off,N01,scored,False,False,False,False,required_call kwarg kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,5,1,2
+blind,s5-fork-off,N02,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_code_string required_call,0,2,0,4,,
+blind,s5-fork-off,N03,scored,False,False,False,False,availability_query required_code_string lease_hours kwarg kwarg required_code_string required_code_string required_code_string required_call reservation_wiring,0,3,0,7,1,1
+blind,s5-fork-off,N04,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,5,1,2
+blind,s5-fork-off,N05,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg kwarg required_call name_no_underscore,0,4,0,3,1,2
+blind,s5-fork-off,N06,scored,True,False,True,False,reservation_wiring,3,4,5,5,1,1
+blind,s5-fork-off,N07,scored,True,False,True,False,required_call kwarg kwarg container_call reservation_wiring kwarg kwarg name_no_underscore,0,3,0,4,1,2
+blind,s5-fork-off,N08,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,0,4,0,3,0,1
+blind,s5-fork-off,N09,scored,True,False,True,False,availability_query kwarg kwarg kwarg required_call required_code_string required_code_string required_code_string required_call required_call reservation_wiring,0,5,1,7,2,2
+blind,s5-fork-off,N10,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg required_call required_code_string required_code_string name_no_underscore,0,4,0,4,1,2
+blind,s5-fork-off,N11,scored,True,False,True,False,required_call kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,4,1,2
+blind,s5-fork-off,N12,scored,False,False,False,False,kwarg kwarg required_code_string required_call required_call required_code_string required_code_string reservation_wiring,0,3,0,5,1,1
+blind,s5-fork-off,N13,scored,False,False,False,False,required_call required_call kwarg lease_hours kwarg kwarg kwarg required_code_string required_call reservation_wiring,0,4,1,6,1,2
+blind,s5-fork-off,N14,scored,False,False,False,True,,1,1,,,2,2
+blind,s5-fork-off,N15,scored,False,False,False,False,required_call required_call lease_hours,0,2,0,1,1,1
+blind,s5-fork-off,N16,scored,True,False,True,False,required_call required_call container_call reservation_wiring kwarg name_no_underscore,0,4,0,1,1,2
+blind,s5-fork-off,N17,scored,True,False,True,False,abstain_or_discover,0,1,,,1,1
+blind,s5-fork-off,N18,scored,False,False,False,True,,1,1,,,2,2
+blind,s5-fork-off,P01,scored,True,False,True,False,required_call,1,2,1,1,,
+blind,s5-fork-off,P02,scored,True,False,True,False,forbidden_calls required_call kwarg kwarg,2,3,1,3,0,1
+blind,s5-fork-off,P03,scored,True,False,True,False,forbidden_calls required_call kwarg required_code_string,0,2,0,1,0,1
+blind,s5-fork-off,P04,scored,False,False,False,False,required_call required_call kwarg kwarg required_call,0,3,0,2,1,1
+blind,s5-fork-off,P05,scored,False,False,False,False,container_call reservation_wiring required_code_string name_no_underscore required_call,0,3,0,1,1,2
+blind,s5-fork-off,P06,scored,False,False,False,False,container_call kwarg required_code_string,0,2,0,1,,
+blind,s5-fork-off,P07,scored,False,False,False,False,required_code_string required_code_string required_call,0,2,0,1,,
+blind,s5-fork-off,P08,scored,True,False,True,False,required_call required_code_string,0,2,1,1,,
+blind,s5-fork-off,P09,scored,True,False,True,False,required_call required_call,0,2,2,2,,
+blind,s5-fork-off,P10,scored,False,False,False,False,teardown,0,1,,,,
+blind,s5-fork-off,P11,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg required_call required_code_string name_no_underscore,0,3,0,3,0,1
+blind,s5-fork-off,P12,scored,False,False,False,False,required_call required_call required_code_string required_code_string required_code_string,0,2,0,3,,
+blind,s5-fork-off,P13,scored,False,False,False,False,required_text_string,,,1,2,,
+blind,s5-fork-off,P14,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg required_call required_code_string required_call name_no_underscore,0,5,0,4,1,2
+blind,s5-fork-off,P15,scored,False,False,False,False,availability_query required_code_string required_call,0,2,0,1,1,1
+blind,s5-fork-off,P16,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+blind,s5-fork-off,P17,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_call,0,2,0,3,,
+blind,s5-fork-off,P18,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string,0,1,0,3,,
+blind,s5-fork-off,P19,scored,False,False,False,False,required_call required_code_string required_code_string,0,1,0,2,,
+blind,s5-fork-off,P20,scored,False,False,False,False,required_call kwarg kwarg kwarg,0,1,0,3,1,1
+blind,s5-fork-off,P21,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+blind,s5-fork-off,P22,scored,True,False,True,False,required_call,0,1,2,2,,
+blind,s5-fork-off,P23,scored,False,False,False,False,required_call required_code_string,0,1,0,1,,
+blind,s5-fork-off,P24,scored,False,False,False,False,required_text_string required_text_string,,,0,2,,
+blind,s5-fork-off,P25,scored,False,False,False,False,availability_query required_code_string,0,2,,,,
+blind,s5-fork-off,P26,scored,False,False,False,False,availability_query required_code_string,0,2,,,,
+blind,s5-fork-off,P27,scored,False,False,False,False,required_call required_code_string,0,1,0,1,,
+blind,s5-fork-off,P28,scored,True,False,True,False,forbidden_calls required_call kwarg container_call reservation_wiring,0,3,0,1,0,1
+blind,s6-opus,AV01,empty,False,False,False,,,,,,,,
+blind,s6-opus,AV02,empty,False,False,False,,,,,,,,
+blind,s6-opus,AV03,empty,False,False,False,,,,,,,,
+blind,s6-opus,AV04,empty,False,False,False,,,,,,,,
+blind,s6-opus,N01,empty,False,False,False,,,,,,,,
+blind,s6-opus,N02,empty,False,False,False,,,,,,,,
+blind,s6-opus,N03,empty,False,False,False,,,,,,,,
+blind,s6-opus,N04,empty,False,False,False,,,,,,,,
+blind,s6-opus,N05,empty,False,False,False,,,,,,,,
+blind,s6-opus,N06,empty,False,False,False,,,,,,,,
+blind,s6-opus,N07,empty,False,False,False,,,,,,,,
+blind,s6-opus,N08,empty,False,False,False,,,,,,,,
+blind,s6-opus,N09,empty,False,False,False,,,,,,,,
+blind,s6-opus,N10,empty,False,False,False,,,,,,,,
+blind,s6-opus,N11,empty,False,False,False,,,,,,,,
+blind,s6-opus,N12,empty,False,False,False,,,,,,,,
+blind,s6-opus,N13,empty,False,False,False,,,,,,,,
+blind,s6-opus,N14,empty,False,False,False,,,,,,,,
+blind,s6-opus,N15,empty,False,False,False,,,,,,,,
+blind,s6-opus,N16,empty,False,False,False,,,,,,,,
+blind,s6-opus,N17,empty,False,False,False,,,,,,,,
+blind,s6-opus,N18,empty,False,False,False,,,,,,,,
+blind,s6-opus,P01,empty,False,False,False,,,,,,,,
+blind,s6-opus,P02,empty,False,False,False,,,,,,,,
+blind,s6-opus,P03,empty,False,False,False,,,,,,,,
+blind,s6-opus,P04,empty,False,False,False,,,,,,,,
+blind,s6-opus,P05,empty,False,False,False,,,,,,,,
+blind,s6-opus,P06,empty,False,False,False,,,,,,,,
+blind,s6-opus,P07,empty,False,False,False,,,,,,,,
+blind,s6-opus,P08,empty,False,False,False,,,,,,,,
+blind,s6-opus,P09,empty,False,False,False,,,,,,,,
+blind,s6-opus,P10,empty,False,False,False,,,,,,,,
+blind,s6-opus,P11,empty,False,False,False,,,,,,,,
+blind,s6-opus,P12,empty,False,False,False,,,,,,,,
+blind,s6-opus,P13,empty,False,False,False,,,,,,,,
+blind,s6-opus,P14,empty,False,False,False,,,,,,,,
+blind,s6-opus,P15,empty,False,False,False,,,,,,,,
+blind,s6-opus,P16,empty,False,False,False,,,,,,,,
+blind,s6-opus,P17,empty,False,False,False,,,,,,,,
+blind,s6-opus,P18,empty,False,False,False,,,,,,,,
+blind,s6-opus,P19,empty,False,False,False,,,,,,,,
+blind,s6-opus,P20,empty,False,False,False,,,,,,,,
+blind,s6-opus,P21,empty,False,False,False,,,,,,,,
+blind,s6-opus,P22,empty,False,False,False,,,,,,,,
+blind,s6-opus,P23,empty,False,False,False,,,,,,,,
+blind,s6-opus,P24,empty,False,False,False,,,,,,,,
+blind,s6-opus,P25,empty,False,False,False,,,,,,,,
+blind,s6-opus,P26,empty,False,False,False,,,,,,,,
+blind,s6-opus,P27,empty,False,False,False,,,,,,,,
+blind,s6-opus,P28,empty,False,False,False,,,,,,,,
+heldout,s1-chatbot,N02,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_code_string required_call,0,2,0,4,,
+heldout,s1-chatbot,N04,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,5,1,2
+heldout,s1-chatbot,N05,scored,False,False,False,False,required_call container_call reservation_wiring kwarg kwarg kwarg required_call name_no_underscore,0,4,0,3,1,2
+heldout,s1-chatbot,N08,scored,False,False,False,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,0,4,0,3,0,1
+heldout,s1-chatbot,N13,scored,False,False,False,False,required_call required_call kwarg lease_hours kwarg kwarg kwarg required_code_string required_call reservation_wiring,0,4,1,6,1,2
+heldout,s1-chatbot,N15,scored,False,False,False,False,required_call required_call lease_hours,0,2,0,1,1,1
+heldout,s1-chatbot,N16,scored,False,False,False,False,required_call required_call container_call reservation_wiring kwarg name_no_underscore,0,4,0,1,1,2
+heldout,s1-chatbot,P11,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg required_call required_code_string name_no_underscore,0,3,0,3,0,1
+heldout,s1-chatbot,P13,scored,False,False,False,False,required_text_string,,,1,2,,
+heldout,s1-chatbot,P16,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+heldout,s1-chatbot,P17,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_call,0,2,0,3,,
+heldout,s1-chatbot,P21,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+heldout,s1-chatbot,P22,scored,False,False,False,False,required_call required_code_string required_code_string,0,1,0,2,,
+heldout,s1-chatbot,P24,scored,False,False,False,False,required_text_string required_text_string,,,0,2,,
+heldout,s2-gpt,N02,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,N04,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,N05,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,N08,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,N13,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,N15,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,N16,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,P11,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,P13,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,P16,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,P17,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,P21,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,P22,empty,False,False,False,,,,,,,,
+heldout,s2-gpt,P24,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,N02,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,N04,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,N05,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,N08,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,N13,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,N15,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,N16,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,P11,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,P13,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,P16,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,P17,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,P21,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,P22,empty,False,False,False,,,,,,,,
+heldout,s3-sonnet,P24,empty,False,False,False,,,,,,,,
+heldout,s6-opus,N02,empty,False,False,False,,,,,,,,
+heldout,s6-opus,N04,empty,False,False,False,,,,,,,,
+heldout,s6-opus,N05,empty,False,False,False,,,,,,,,
+heldout,s6-opus,N08,empty,False,False,False,,,,,,,,
+heldout,s6-opus,N13,empty,False,False,False,,,,,,,,
+heldout,s6-opus,N15,empty,False,False,False,,,,,,,,
+heldout,s6-opus,N16,empty,False,False,False,,,,,,,,
+heldout,s6-opus,P11,empty,False,False,False,,,,,,,,
+heldout,s6-opus,P13,empty,False,False,False,,,,,,,,
+heldout,s6-opus,P16,empty,False,False,False,,,,,,,,
+heldout,s6-opus,P17,empty,False,False,False,,,,,,,,
+heldout,s6-opus,P21,empty,False,False,False,,,,,,,,
+heldout,s6-opus,P22,empty,False,False,False,,,,,,,,
+heldout,s6-opus,P24,empty,False,False,False,,,,,,,,
+matched,s1-chatbot,AV01,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+matched,s1-chatbot,AV02,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+matched,s1-chatbot,AV03,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+matched,s1-chatbot,AV04,scored,False,False,False,False,availability_query required_code_string v1_snapshot_exec,0,1,0,2,,
+matched,s1-chatbot,N01,scored,True,False,True,False,required_call kwarg kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,5,1,2
+matched,s1-chatbot,N02,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_code_string required_call,0,2,0,4,,
+matched,s1-chatbot,N03,scored,True,False,True,False,availability_query lease_hours kwarg kwarg required_code_string required_code_string required_code_string required_call reservation_wiring,0,3,1,7,1,1
+matched,s1-chatbot,N04,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,5,1,2
+matched,s1-chatbot,N05,scored,False,False,False,False,required_call container_call reservation_wiring kwarg kwarg kwarg required_call name_no_underscore,0,4,0,3,1,2
+matched,s1-chatbot,N06,scored,False,False,False,False,required_call required_call lease_hours kwarg kwarg kwarg reservation_wiring required_call,0,4,1,5,1,1
+matched,s1-chatbot,N07,scored,True,False,True,False,required_call kwarg kwarg container_call reservation_wiring kwarg kwarg name_no_underscore,0,3,0,4,1,2
+matched,s1-chatbot,N08,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,0,4,0,3,0,1
+matched,s1-chatbot,N09,scored,False,False,False,False,availability_query kwarg kwarg kwarg required_call required_code_string required_code_string required_code_string required_code_string required_call required_call reservation_wiring,0,5,0,7,2,2
+matched,s1-chatbot,N10,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg required_call required_code_string required_code_string name_no_underscore,0,4,0,4,1,2
+matched,s1-chatbot,N11,scored,False,False,False,False,required_call kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,4,1,2
+matched,s1-chatbot,N12,scored,False,False,False,False,kwarg kwarg required_code_string required_call required_call required_code_string required_code_string reservation_wiring,0,3,0,5,1,1
+matched,s1-chatbot,N13,scored,False,False,False,False,required_call required_call kwarg lease_hours kwarg kwarg kwarg required_code_string required_call reservation_wiring,0,4,1,6,1,2
+matched,s1-chatbot,N15,scored,False,False,False,False,required_call required_call lease_hours,0,2,0,1,1,1
+matched,s1-chatbot,N16,scored,True,False,True,False,required_call required_call container_call reservation_wiring kwarg name_no_underscore,0,4,0,1,1,2
+matched,s1-chatbot,P01,scored,False,False,False,False,required_call required_code_string required_call,0,2,0,1,,
+matched,s1-chatbot,P02,scored,False,False,False,False,required_call required_call kwarg kwarg lease_hours required_call,0,3,0,3,1,1
+matched,s1-chatbot,P03,scored,False,False,False,False,required_call kwarg required_code_string,0,2,0,1,1,1
+matched,s1-chatbot,P04,scored,False,False,False,False,required_call required_call kwarg kwarg required_call,0,3,0,2,1,1
+matched,s1-chatbot,P05,scored,False,False,False,False,container_call reservation_wiring required_code_string name_no_underscore required_call,0,3,0,1,1,2
+matched,s1-chatbot,P06,scored,False,False,False,False,container_call kwarg required_code_string,0,2,0,1,,
+matched,s1-chatbot,P07,scored,True,False,False,False,required_code_string required_code_string required_call,0,2,0,1,,
+matched,s1-chatbot,P08,scored,False,False,False,False,required_call required_code_string required_code_string,0,2,0,1,,
+matched,s1-chatbot,P09,scored,False,False,False,False,required_call required_call required_code_string required_code_string,0,2,0,2,,
+matched,s1-chatbot,P10,scored,False,False,False,False,teardown,0,1,,,,
+matched,s1-chatbot,P11,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg required_call required_code_string name_no_underscore,0,3,0,3,0,1
+matched,s1-chatbot,P12,scored,False,False,False,False,required_call required_call required_code_string required_code_string required_code_string,0,2,0,3,,
+matched,s1-chatbot,P13,scored,False,False,False,True,,,,2,2,,
+matched,s1-chatbot,P14,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg required_call required_code_string required_call name_no_underscore,0,5,0,4,1,2
+matched,s1-chatbot,P15,scored,False,False,False,False,availability_query required_code_string required_call,0,2,0,1,1,1
+matched,s1-chatbot,P16,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+matched,s1-chatbot,P17,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_call,0,2,0,3,,
+matched,s1-chatbot,P18,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string,0,1,0,3,,
+matched,s1-chatbot,P19,scored,False,False,False,False,required_call required_code_string required_code_string,0,1,0,2,,
+matched,s1-chatbot,P20,scored,False,False,False,False,required_call kwarg kwarg kwarg,0,1,0,3,1,1
+matched,s1-chatbot,P21,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+matched,s1-chatbot,P22,scored,False,False,False,False,required_call required_code_string required_code_string,0,1,0,2,,
+matched,s1-chatbot,P23,scored,False,False,False,False,required_call required_code_string,0,1,0,1,,
+matched,s1-chatbot,P24,scored,False,False,False,True,,,,2,2,,
+matched,s1-chatbot,P25,scored,False,False,False,False,availability_query required_code_string,0,2,,,,
+matched,s1-chatbot,P26,scored,False,False,False,False,availability_query required_code_string,0,2,,,,
+matched,s1-chatbot,P27,scored,False,False,False,False,required_call required_code_string,0,1,0,1,,
+matched,s1-chatbot,P28,scored,False,False,False,False,required_call kwarg container_call reservation_wiring,0,3,0,1,1,1
+matched,s2-gpt,AV01,empty,False,False,False,,,,,,,,
+matched,s2-gpt,AV02,empty,False,False,False,,,,,,,,
+matched,s2-gpt,AV03,empty,False,False,False,,,,,,,,
+matched,s2-gpt,AV04,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N01,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N02,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N03,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N04,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N05,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N06,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N07,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N08,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N09,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N10,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N11,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N12,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N13,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N15,empty,False,False,False,,,,,,,,
+matched,s2-gpt,N16,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P01,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P02,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P03,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P04,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P05,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P06,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P07,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P08,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P09,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P10,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P11,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P12,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P13,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P14,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P15,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P16,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P17,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P18,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P19,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P20,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P21,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P22,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P23,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P24,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P25,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P26,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P27,empty,False,False,False,,,,,,,,
+matched,s2-gpt,P28,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,AV01,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,AV02,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,AV03,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,AV04,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N01,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N02,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N03,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N04,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N05,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N06,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N07,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N08,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N09,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N10,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N11,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N12,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N13,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N15,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,N16,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P01,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P02,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P03,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P04,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P05,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P06,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P07,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P08,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P09,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P10,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P11,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P12,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P13,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P14,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P15,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P16,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P17,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P18,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P19,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P20,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P21,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P22,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P23,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P24,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P25,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P26,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P27,empty,False,False,False,,,,,,,,
+matched,s3-sonnet,P28,empty,False,False,False,,,,,,,,
+matched,s6-opus,AV01,empty,False,False,False,,,,,,,,
+matched,s6-opus,AV02,empty,False,False,False,,,,,,,,
+matched,s6-opus,AV03,empty,False,False,False,,,,,,,,
+matched,s6-opus,AV04,empty,False,False,False,,,,,,,,
+matched,s6-opus,N01,empty,False,False,False,,,,,,,,
+matched,s6-opus,N02,empty,False,False,False,,,,,,,,
+matched,s6-opus,N03,empty,False,False,False,,,,,,,,
+matched,s6-opus,N04,empty,False,False,False,,,,,,,,
+matched,s6-opus,N05,empty,False,False,False,,,,,,,,
+matched,s6-opus,N06,empty,False,False,False,,,,,,,,
+matched,s6-opus,N07,empty,False,False,False,,,,,,,,
+matched,s6-opus,N08,empty,False,False,False,,,,,,,,
+matched,s6-opus,N09,empty,False,False,False,,,,,,,,
+matched,s6-opus,N10,empty,False,False,False,,,,,,,,
+matched,s6-opus,N11,empty,False,False,False,,,,,,,,
+matched,s6-opus,N12,empty,False,False,False,,,,,,,,
+matched,s6-opus,N13,empty,False,False,False,,,,,,,,
+matched,s6-opus,N15,empty,False,False,False,,,,,,,,
+matched,s6-opus,N16,empty,False,False,False,,,,,,,,
+matched,s6-opus,P01,empty,False,False,False,,,,,,,,
+matched,s6-opus,P02,empty,False,False,False,,,,,,,,
+matched,s6-opus,P03,empty,False,False,False,,,,,,,,
+matched,s6-opus,P04,empty,False,False,False,,,,,,,,
+matched,s6-opus,P05,empty,False,False,False,,,,,,,,
+matched,s6-opus,P06,empty,False,False,False,,,,,,,,
+matched,s6-opus,P07,empty,False,False,False,,,,,,,,
+matched,s6-opus,P08,empty,False,False,False,,,,,,,,
+matched,s6-opus,P09,empty,False,False,False,,,,,,,,
+matched,s6-opus,P10,empty,False,False,False,,,,,,,,
+matched,s6-opus,P11,empty,False,False,False,,,,,,,,
+matched,s6-opus,P12,empty,False,False,False,,,,,,,,
+matched,s6-opus,P13,empty,False,False,False,,,,,,,,
+matched,s6-opus,P14,empty,False,False,False,,,,,,,,
+matched,s6-opus,P15,empty,False,False,False,,,,,,,,
+matched,s6-opus,P16,empty,False,False,False,,,,,,,,
+matched,s6-opus,P17,empty,False,False,False,,,,,,,,
+matched,s6-opus,P18,empty,False,False,False,,,,,,,,
+matched,s6-opus,P19,empty,False,False,False,,,,,,,,
+matched,s6-opus,P20,empty,False,False,False,,,,,,,,
+matched,s6-opus,P21,empty,False,False,False,,,,,,,,
+matched,s6-opus,P22,empty,False,False,False,,,,,,,,
+matched,s6-opus,P23,empty,False,False,False,,,,,,,,
+matched,s6-opus,P24,empty,False,False,False,,,,,,,,
+matched,s6-opus,P25,empty,False,False,False,,,,,,,,
+matched,s6-opus,P26,empty,False,False,False,,,,,,,,
+matched,s6-opus,P27,empty,False,False,False,,,,,,,,
+matched,s6-opus,P28,empty,False,False,False,,,,,,,,
+uncovered,s1-chatbot,N14,scored,False,False,False,False,abstain_or_discover,0,1,,,2,2
+uncovered,s1-chatbot,N17,scored,False,False,False,False,abstain_or_discover,0,1,,,1,1
+uncovered,s1-chatbot,N18,scored,False,False,False,False,abstain_or_discover,0,1,,,2,2
+uncovered,s2-gpt,N14,empty,False,False,False,,,,,,,,
+uncovered,s2-gpt,N17,empty,False,False,False,,,,,,,,
+uncovered,s2-gpt,N18,empty,False,False,False,,,,,,,,
+uncovered,s3-sonnet,N14,empty,False,False,False,,,,,,,,
+uncovered,s3-sonnet,N17,empty,False,False,False,,,,,,,,
+uncovered,s3-sonnet,N18,empty,False,False,False,,,,,,,,
+uncovered,s6-opus,N14,empty,False,False,False,,,,,,,,
+uncovered,s6-opus,N17,empty,False,False,False,,,,,,,,
+uncovered,s6-opus,N18,empty,False,False,False,,,,,,,,

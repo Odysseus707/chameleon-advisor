@@ -1,0 +1,3954 @@
+[
+  {
+    "item": "AV01",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "availability_query",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "get_devices(filter_reserved=True, ...) correct",
+        "params": {
+          "device_type": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "v1_snapshot_exec",
+        "group": "specifics",
+        "passed": true,
+        "detail": "rc=0 missing=[] leaked=[]",
+        "params": {}
+      }
+    ],
+    "v1": {
+      "passed": true,
+      "rc": 0,
+      "missing": [],
+      "leaked": [],
+      "stderr": ""
+    }
+  },
+  {
+    "item": "AV02",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "availability_query",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "get_devices(filter_reserved=True, ...) correct",
+        "params": {}
+      },
+      {
+        "check": "v1_snapshot_exec",
+        "group": "specifics",
+        "passed": true,
+        "detail": "rc=0 missing=[] leaked=[]",
+        "params": {}
+      }
+    ],
+    "v1": {
+      "passed": true,
+      "rc": 0,
+      "missing": [],
+      "leaked": [],
+      "stderr": ""
+    }
+  },
+  {
+    "item": "AV03",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "availability_query",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "get_devices(filter_reserved=True, ...) correct",
+        "params": {}
+      },
+      {
+        "check": "v1_snapshot_exec",
+        "group": "specifics",
+        "passed": true,
+        "detail": "rc=0 missing=[] leaked=[]",
+        "params": {}
+      }
+    ],
+    "v1": {
+      "passed": true,
+      "rc": 0,
+      "missing": [],
+      "leaked": [],
+      "stderr": ""
+    }
+  },
+  {
+    "item": "AV04",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "specifics": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "availability_query",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "get_devices(filter_reserved=True, ...) correct",
+        "params": {}
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'supported_device_profiles' in code",
+        "params": {
+          "s": "supported_device_profiles"
+        }
+      },
+      {
+        "check": "v1_snapshot_exec",
+        "group": "specifics",
+        "passed": true,
+        "detail": "rc=0 missing=[] leaked=[]",
+        "params": {}
+      }
+    ],
+    "v1": {
+      "passed": true,
+      "rc": 0,
+      "missing": [],
+      "leaked": [],
+      "stderr": ""
+    }
+  },
+  {
+    "item": "N01",
+    "all_passed": true,
+    "groups": {
+      "safety": {
+        "passed": 2,
+        "total": 2
+      },
+      "mechanism": {
+        "passed": 4,
+        "total": 4
+      },
+      "specifics": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    "results": [
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['machine_type', 'machine_name']='raspberrypi4-64'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "machine_type",
+            "machine_name"
+          ],
+          "equals": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['amount', 'count']=3",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "amount",
+            "count"
+          ],
+          "equals": 3
+        }
+      },
+      {
+        "check": "lease_hours",
+        "group": "specifics",
+        "passed": true,
+        "detail": "duration = 6h",
+        "params": {
+          "hours": 6
+        }
+      },
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='ghcr.io/chameleoncloud/edge_ssh_image:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "ghcr.io/chameleoncloud/edge_ssh_image:latest"
+          ]
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['exposed_ports'] contains 22",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "exposed_ports"
+          ],
+          "contains": 22
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['associate_floating_ip']: 1 (need >= 1)",
+        "params": {
+          "name": "associate_floating_ip"
+        }
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N02",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      },
+      "specifics": {
+        "passed": 4,
+        "total": 4
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['execute']: 1 (need >= 1)",
+        "params": {
+          "name": "execute"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'rpicam-vid' in code",
+        "params": {
+          "s": "rpicam-vid"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '-t 10000' in code",
+        "params": {
+          "s": "-t 10000"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '--width 1280' in code",
+        "params": {
+          "s": "--width 1280"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '--framerate 30' in code",
+        "params": {
+          "s": "--framerate 30"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['download']: 1 (need >= 1)",
+        "params": {
+          "name": "download"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N03",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 3,
+        "total": 3
+      },
+      "specifics": {
+        "passed": 7,
+        "total": 7
+      },
+      "safety": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "availability_query",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "get_devices(filter_reserved=True, ...) correct",
+        "params": {
+          "device_type": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'iot-rpi4-picam' in code",
+        "params": {
+          "s": "iot-rpi4-picam"
+        }
+      },
+      {
+        "check": "lease_hours",
+        "group": "specifics",
+        "passed": true,
+        "detail": "duration = 12h",
+        "params": {
+          "hours": 12
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['device_profiles'] contains 'pi_libcamera'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "device_profiles"
+          ],
+          "contains": "pi_libcamera"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='ghcr.io/chameleoncloud/edge-picamera-image:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "ghcr.io/chameleoncloud/edge-picamera-image:latest"
+          ]
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'rpicam-still' in code",
+        "params": {
+          "s": "rpicam-still"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '--width 640' in code",
+        "params": {
+          "s": "--width 640"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '--height 480' in code",
+        "params": {
+          "s": "--height 480"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['download']: 1 (need >= 1)",
+        "params": {
+          "name": "download"
+        }
+      },
+      {
+        "check": "profiles_known_only",
+        "group": "safety",
+        "passed": true,
+        "detail": "no fabricated profile strings",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N04",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 3,
+        "total": 3
+      },
+      "specifics": {
+        "passed": 5,
+        "total": 5
+      },
+      "safety": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['device_name']='iot-rpi-cm4-02'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "device_name"
+          ],
+          "equals": "iot-rpi-cm4-02"
+        }
+      },
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['device_profiles'] contains 'pi_gpio'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "device_profiles"
+          ],
+          "contains": "pi_gpio"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='ghcr.io/chameleoncloud/edge_sensehat_image:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "ghcr.io/chameleoncloud/edge_sensehat_image:latest"
+          ]
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['environment'] keys include ['RPI_LGPIO_REVISION', 'BLINKA_FORCECHIP', 'BLINKA_FORCEBOARD']",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "environment"
+          ],
+          "keys_include": [
+            "RPI_LGPIO_REVISION",
+            "BLINKA_FORCECHIP",
+            "BLINKA_FORCEBOARD"
+          ]
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'i2cdetect' in code",
+        "params": {
+          "s": "i2cdetect"
+        }
+      },
+      {
+        "check": "profiles_known_only",
+        "group": "safety",
+        "passed": true,
+        "detail": "no fabricated profile strings",
+        "params": {}
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N05",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 4,
+        "total": 4
+      },
+      "specifics": {
+        "passed": 3,
+        "total": 3
+      },
+      "safety": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['get_lease']: 1 (need >= 1)",
+        "params": {
+          "name": "get_lease"
+        }
+      },
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['runtime']='nvidia'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "runtime"
+          ],
+          "equals": "nvidia"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='docker.io/ollama/ollama:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "docker.io/ollama/ollama:latest"
+          ]
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['exposed_ports'] contains 11434",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "exposed_ports"
+          ],
+          "contains": 11434
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['associate_floating_ip']: 1 (need >= 1)",
+        "params": {
+          "name": "associate_floating_ip"
+        }
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      },
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N06",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 4,
+        "total": 4
+      },
+      "specifics": {
+        "passed": 5,
+        "total": 5
+      },
+      "safety": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['Lease']: 1 (need >= 1)",
+        "params": {
+          "name": "Lease"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['Container']: 1 (need >= 1)",
+        "params": {
+          "name": "Container"
+        }
+      },
+      {
+        "check": "forbidden_calls",
+        "group": "specifics",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "create_lease",
+            "create_container"
+          ]
+        }
+      },
+      {
+        "check": "lease_hours",
+        "group": "specifics",
+        "passed": true,
+        "detail": "duration = 10h",
+        "params": {
+          "hours": 10
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['machine_type', 'machine_name']='raspberrypi4-64'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "machine_type",
+            "machine_name"
+          ],
+          "equals": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['amount', 'count']=1",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "amount",
+            "count"
+          ],
+          "equals": 1
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['exposed_ports'] contains 22",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "exposed_ports"
+          ],
+          "contains": 22
+        }
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['submit']: 2 (need >= 1)",
+        "params": {
+          "name": "submit"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N07",
+    "all_passed": true,
+    "groups": {
+      "safety": {
+        "passed": 2,
+        "total": 2
+      },
+      "mechanism": {
+        "passed": 3,
+        "total": 3
+      },
+      "specifics": {
+        "passed": 4,
+        "total": 4
+      }
+    },
+    "results": [
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['machine_type', 'machine_name']='raspberrypi4-64'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "machine_type",
+            "machine_name"
+          ],
+          "equals": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['amount', 'count']=2",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "amount",
+            "count"
+          ],
+          "equals": 2
+        }
+      },
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='ghcr.io/chameleoncloud/edge_ssh_image:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "ghcr.io/chameleoncloud/edge_ssh_image:latest"
+          ]
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['exposed_ports'] contains 22",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "exposed_ports"
+          ],
+          "contains": 22
+        }
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N08",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 4,
+        "total": 4
+      },
+      "specifics": {
+        "passed": 3,
+        "total": 3
+      },
+      "safety": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['get_lease']: 1 (need >= 1)",
+        "params": {
+          "name": "get_lease"
+        }
+      },
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='quay.io/jupyter/minimal-notebook:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "quay.io/jupyter/minimal-notebook:latest"
+          ]
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['exposed_ports'] contains 8888",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "exposed_ports"
+          ],
+          "contains": 8888
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['associate_floating_ip']: 1 (need >= 1)",
+        "params": {
+          "name": "associate_floating_ip"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "specifics",
+        "passed": true,
+        "detail": "calls to ['get_logs']: 1 (need >= 1)",
+        "params": {
+          "name": "get_logs"
+        }
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N09",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 5,
+        "total": 5
+      },
+      "specifics": {
+        "passed": 7,
+        "total": 7
+      },
+      "safety": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "availability_query",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "get_devices(filter_reserved=True, ...) correct",
+        "params": {
+          "device_type": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['device_profiles'] contains 'pi_libcamera'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "device_profiles"
+          ],
+          "contains": "pi_libcamera"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='ghcr.io/chameleoncloud/edge-picamera-image:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "ghcr.io/chameleoncloud/edge-picamera-image:latest"
+          ]
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['exposed_ports'] contains 22",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "exposed_ports"
+          ],
+          "contains": 22
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['execute']: 6 (need >= 1)",
+        "params": {
+          "name": "execute"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'openssh-server' in code",
+        "params": {
+          "s": "openssh-server"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'authorized_keys' in code",
+        "params": {
+          "s": "authorized_keys"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'chmod 600' in code",
+        "params": {
+          "s": "chmod 600"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'service ssh start' in code",
+        "params": {
+          "any": [
+            "service ssh start",
+            "/usr/sbin/sshd"
+          ]
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['upload']: 1 (need >= 1)",
+        "params": {
+          "name": "upload"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['associate_floating_ip']: 1 (need >= 1)",
+        "params": {
+          "name": "associate_floating_ip"
+        }
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "profiles_known_only",
+        "group": "safety",
+        "passed": true,
+        "detail": "no fabricated profile strings",
+        "params": {}
+      },
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N10",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 4,
+        "total": 4
+      },
+      "specifics": {
+        "passed": 4,
+        "total": 4
+      },
+      "safety": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['device_name']='iot-rpi4-picam3'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "device_name"
+          ],
+          "equals": "iot-rpi4-picam3"
+        }
+      },
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['device_profiles'] contains all ['pi_libcamera', 'pi_sensehat']",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "device_profiles"
+          ],
+          "contains_all": [
+            "pi_libcamera",
+            "pi_sensehat"
+          ]
+        }
+      },
+      {
+        "check": "profiles_known_only",
+        "group": "safety",
+        "passed": true,
+        "detail": "no fabricated profile strings",
+        "params": {}
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['execute']: 2 (need >= 1)",
+        "params": {
+          "name": "execute"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'rpicam-hello' in code",
+        "params": {
+          "s": "rpicam-hello"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'i2cdetect' in code",
+        "params": {
+          "any": [
+            "i2cdetect",
+            "sense_hat",
+            "SenseHat"
+          ]
+        }
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N11",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 4,
+        "total": 4
+      },
+      "specifics": {
+        "passed": 4,
+        "total": 4
+      },
+      "safety": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['device_name']='nyu-rpi5-03'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "device_name"
+          ],
+          "equals": "nyu-rpi5-03"
+        }
+      },
+      {
+        "check": "lease_hours",
+        "group": "specifics",
+        "passed": true,
+        "detail": "duration = 2h",
+        "params": {
+          "hours": 2
+        }
+      },
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='quay.io/jupyter/minimal-notebook:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "quay.io/jupyter/minimal-notebook:latest"
+          ]
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['exposed_ports'] contains 8888",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "exposed_ports"
+          ],
+          "contains": 8888
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['associate_floating_ip']: 1 (need >= 1)",
+        "params": {
+          "name": "associate_floating_ip"
+        }
+      },
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N12",
+    "all_passed": true,
+    "groups": {
+      "specifics": {
+        "passed": 5,
+        "total": 5
+      },
+      "mechanism": {
+        "passed": 3,
+        "total": 3
+      },
+      "safety": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['device_profiles'] contains 'pi_libcamera'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "device_profiles"
+          ],
+          "contains": "pi_libcamera"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='ghcr.io/chameleoncloud/edge-picamera-image:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "ghcr.io/chameleoncloud/edge-picamera-image:latest"
+          ]
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'rpicam-still' in code",
+        "params": {
+          "s": "rpicam-still"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['upload']: 1 (need >= 1)",
+        "params": {
+          "name": "upload"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['execute']: 3 (need >= 1)",
+        "params": {
+          "name": "execute"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'tflite-runtime' in code",
+        "params": {
+          "s": "tflite-runtime"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'mobilenet_v2_1.0_224_quantized_1_default_1.tflite' in code",
+        "params": {
+          "s": "mobilenet_v2_1.0_224_quantized_1_default_1.tflite"
+        }
+      },
+      {
+        "check": "profiles_known_only",
+        "group": "safety",
+        "passed": true,
+        "detail": "no fabricated profile strings",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N13",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 4,
+        "total": 4
+      },
+      "specifics": {
+        "passed": 6,
+        "total": 6
+      },
+      "safety": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['create_lease']: 1 (need >= 1)",
+        "params": {
+          "name": "create_lease"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['create_container']: 1 (need >= 1)",
+        "params": {
+          "name": "create_container"
+        }
+      },
+      {
+        "check": "forbidden_calls",
+        "group": "specifics",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "Lease",
+            "Container"
+          ]
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "safety",
+        "passed": true,
+        "detail": "['platform_version'] present",
+        "params": {
+          "call": [
+            "create_container"
+          ],
+          "arg": [
+            "platform_version"
+          ],
+          "present": true
+        }
+      },
+      {
+        "check": "lease_hours",
+        "group": "specifics",
+        "passed": true,
+        "detail": "duration = 10h",
+        "params": {
+          "hours": 10
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['machine_type', 'machine_name']='raspberrypi4-64'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "machine_type",
+            "machine_name"
+          ],
+          "equals": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['amount', 'count']=1",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "amount",
+            "count"
+          ],
+          "equals": 1
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['exposed_ports'] contains 22",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "exposed_ports"
+          ],
+          "contains": 22
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'openssh-server' in code",
+        "params": {
+          "s": "openssh-server"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['associate_floating_ip']: 1 (need >= 1)",
+        "params": {
+          "name": "associate_floating_ip"
+        }
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N14",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "safety": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "abstain_or_discover",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "discovery path (get_devices / supported_device_profiles)",
+        "params": {}
+      },
+      {
+        "check": "profiles_known_only",
+        "group": "safety",
+        "passed": true,
+        "detail": "no fabricated profile strings",
+        "params": {}
+      },
+      {
+        "check": "forbidden_code_strings",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "strings": [
+            "pi_microphone",
+            "pi_audio",
+            "pi_mic",
+            "usb_audio",
+            "audio_profile"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N15",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      },
+      "safety": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['get_devices']: 1 (need >= 1)",
+        "params": {
+          "name": "get_devices"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "lease_hours",
+        "group": "specifics",
+        "passed": true,
+        "detail": "duration = 3h",
+        "params": {
+          "hours": 3
+        }
+      },
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N16",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 4,
+        "total": 4
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      },
+      "safety": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['get_devices']: 1 (need >= 1)",
+        "params": {
+          "name": "get_devices"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['runtime']='nvidia'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "runtime"
+          ],
+          "equals": "nvidia"
+        }
+      },
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N17",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "safety": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "abstain_or_discover",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "honest abstention detected",
+        "params": {}
+      },
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "extend_lease",
+            "renew_lease",
+            "update_lease",
+            "extend",
+            "renew",
+            "prolong"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "N18",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "safety": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "abstain_or_discover",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "discovery path (get_devices / supported_device_profiles)",
+        "params": {}
+      },
+      {
+        "check": "profiles_known_only",
+        "group": "safety",
+        "passed": true,
+        "detail": "no fabricated profile strings",
+        "params": {}
+      },
+      {
+        "check": "forbidden_code_strings",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "strings": [
+            "pi_webcam",
+            "usb_camera",
+            "pi_usb",
+            "uvc_camera",
+            "pi_uvc"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P01",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['choose_site', 'use_site']: 1 (need >= 1)",
+        "params": {
+          "any": [
+            "choose_site",
+            "use_site"
+          ]
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'CHI@Edge' in code",
+        "params": {
+          "s": "CHI@Edge"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['choose_project', 'set']: 1 (need >= 1)",
+        "params": {
+          "any": [
+            "choose_project",
+            "set"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P02",
+    "all_passed": true,
+    "groups": {
+      "safety": {
+        "passed": 1,
+        "total": 1
+      },
+      "mechanism": {
+        "passed": 3,
+        "total": 3
+      },
+      "specifics": {
+        "passed": 3,
+        "total": 3
+      }
+    },
+    "results": [
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['Lease', 'create_lease']: 1 (need >= 1)",
+        "params": {
+          "any": [
+            "Lease",
+            "create_lease"
+          ]
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['machine_type', 'machine_name']='raspberrypi4-64'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "machine_type",
+            "machine_name"
+          ],
+          "equals": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['amount', 'count']=1",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "amount",
+            "count"
+          ],
+          "equals": 1
+        }
+      },
+      {
+        "check": "lease_hours",
+        "group": "specifics",
+        "passed": true,
+        "detail": "duration = 2h",
+        "params": {
+          "hours": 2
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['submit', 'create_lease']: 1 (need >= 1)",
+        "params": {
+          "any": [
+            "submit",
+            "create_lease"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P03",
+    "all_passed": true,
+    "groups": {
+      "safety": {
+        "passed": 1,
+        "total": 1
+      },
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['machine_type', 'machine_name']='raspberrypi4-64'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "machine_type",
+            "machine_name"
+          ],
+          "equals": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "found 'device_reservations' in code",
+        "params": {
+          "any": [
+            "device_reservations",
+            "get_device_reservation"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P04",
+    "all_passed": true,
+    "groups": {
+      "safety": {
+        "passed": 1,
+        "total": 1
+      },
+      "mechanism": {
+        "passed": 3,
+        "total": 3
+      },
+      "specifics": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['Lease', 'create_lease']: 1 (need >= 1)",
+        "params": {
+          "any": [
+            "Lease",
+            "create_lease"
+          ]
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['machine_type', 'machine_name']='raspberrypi4-64'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "machine_type",
+            "machine_name"
+          ],
+          "equals": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['amount', 'count']=3",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "amount",
+            "count"
+          ],
+          "equals": 3
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['submit', 'create_lease']: 1 (need >= 1)",
+        "params": {
+          "any": [
+            "submit",
+            "create_lease"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P05",
+    "all_passed": true,
+    "groups": {
+      "safety": {
+        "passed": 2,
+        "total": 2
+      },
+      "mechanism": {
+        "passed": 3,
+        "total": 3
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      },
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'ubuntu' in code",
+        "params": {
+          "s": "ubuntu"
+        }
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['submit']: 1 (need >= 1)",
+        "params": {
+          "name": "submit"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P06",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "['command'] present",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "command"
+          ],
+          "present": true
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'sleep' in code",
+        "params": {
+          "s": "sleep"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P07",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "required_code_string",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "found 'exposed_ports' in code",
+        "params": {
+          "s": "exposed_ports"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '8080' in code",
+        "params": {
+          "s": "8080"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['associate_floating_ip']: 1 (need >= 1)",
+        "params": {
+          "name": "associate_floating_ip"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P08",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['execute']: 1 (need >= 1)",
+        "params": {
+          "name": "execute"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'ls /app' in code",
+        "params": {
+          "s": "ls /app"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "found ', code' in code",
+        "params": {
+          "any": [
+            ", code",
+            "['output']",
+            "[\"output\"]"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P09",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      },
+      "specifics": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['upload']: 1 (need >= 1)",
+        "params": {
+          "name": "upload"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['download']: 1 (need >= 1)",
+        "params": {
+          "name": "download"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'model.pt' in code",
+        "params": {
+          "s": "model.pt"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'results.csv' in code",
+        "params": {
+          "s": "results.csv"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P10",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "teardown",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "teardown complete",
+        "params": {
+          "container": true,
+          "lease": true
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P11",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 3,
+        "total": 3
+      },
+      "specifics": {
+        "passed": 3,
+        "total": 3
+      },
+      "safety": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='ghcr.io/chameleoncloud/edge_ssh_image:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "ghcr.io/chameleoncloud/edge_ssh_image:latest"
+          ]
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['exposed_ports'] contains 22",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "exposed_ports"
+          ],
+          "contains": 22
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['associate_floating_ip']: 1 (need >= 1)",
+        "params": {
+          "name": "associate_floating_ip"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'ssh root@' in code",
+        "params": {
+          "any": [
+            "ssh root@",
+            "root@"
+          ]
+        }
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P12",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      },
+      "specifics": {
+        "passed": 3,
+        "total": 3
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['upload']: 1 (need >= 1)",
+        "params": {
+          "name": "upload"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['execute']: 2 (need >= 1)",
+        "params": {
+          "name": "execute"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'authorized_keys' in code",
+        "params": {
+          "s": "authorized_keys"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'chmod 600' in code",
+        "params": {
+          "s": "chmod 600"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '/root/.ssh' in code",
+        "params": {
+          "s": "/root/.ssh"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P13",
+    "all_passed": true,
+    "groups": {
+      "specifics": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "required_text_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'ghcr.io/chameleoncloud/edge_ssh_image' in answer",
+        "params": {
+          "s": "ghcr.io/chameleoncloud/edge_ssh_image"
+        }
+      },
+      {
+        "check": "required_text_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '22' in answer",
+        "params": {
+          "s": "22"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P14",
+    "all_passed": true,
+    "groups": {
+      "safety": {
+        "passed": 2,
+        "total": 2
+      },
+      "mechanism": {
+        "passed": 5,
+        "total": 5
+      },
+      "specifics": {
+        "passed": 4,
+        "total": 4
+      }
+    },
+    "results": [
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['machine_type', 'machine_name']='raspberrypi4-64'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "machine_type",
+            "machine_name"
+          ],
+          "equals": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='ghcr.io/chameleoncloud/edge_ssh_image:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "ghcr.io/chameleoncloud/edge_ssh_image:latest"
+          ]
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['exposed_ports'] contains 22",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "exposed_ports"
+          ],
+          "contains": 22
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['upload']: 1 (need >= 1)",
+        "params": {
+          "name": "upload"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'authorized_keys' in code",
+        "params": {
+          "s": "authorized_keys"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['associate_floating_ip']: 1 (need >= 1)",
+        "params": {
+          "name": "associate_floating_ip"
+        }
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P15",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      },
+      "safety": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "availability_query",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "get_devices(filter_reserved=True, ...) correct",
+        "params": {
+          "device_type": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'iot-rpi4-picam' in code",
+        "params": {
+          "s": "iot-rpi4-picam"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P16",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 3,
+        "total": 3
+      },
+      "specifics": {
+        "passed": 3,
+        "total": 3
+      },
+      "safety": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['device_profiles'] contains 'pi_libcamera'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "device_profiles"
+          ],
+          "contains": "pi_libcamera"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='ghcr.io/chameleoncloud/edge-picamera-image:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "ghcr.io/chameleoncloud/edge-picamera-image:latest"
+          ]
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "['command'] present",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "command"
+          ],
+          "present": true
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'sleep' in code",
+        "params": {
+          "s": "sleep"
+        }
+      },
+      {
+        "check": "profiles_known_only",
+        "group": "safety",
+        "passed": true,
+        "detail": "no fabricated profile strings",
+        "params": {}
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P17",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      },
+      "specifics": {
+        "passed": 3,
+        "total": 3
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['execute']: 1 (need >= 1)",
+        "params": {
+          "name": "execute"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'rpicam-still' in code",
+        "params": {
+          "s": "rpicam-still"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '--width 1920' in code",
+        "params": {
+          "s": "--width 1920"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '--height 1080' in code",
+        "params": {
+          "s": "--height 1080"
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['download']: 1 (need >= 1)",
+        "params": {
+          "name": "download"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P18",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "specifics": {
+        "passed": 3,
+        "total": 3
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['execute']: 1 (need >= 1)",
+        "params": {
+          "name": "execute"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'rpicam-vid' in code",
+        "params": {
+          "s": "rpicam-vid"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '-t 5000' in code",
+        "params": {
+          "s": "-t 5000"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '--framerate' in code",
+        "params": {
+          "s": "--framerate"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P19",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "specifics": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['execute']: 1 (need >= 1)",
+        "params": {
+          "name": "execute"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'rpicam-hello' in code",
+        "params": {
+          "s": "rpicam-hello"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found '--list-cameras' in code",
+        "params": {
+          "s": "--list-cameras"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P20",
+    "all_passed": true,
+    "groups": {
+      "safety": {
+        "passed": 1,
+        "total": 1
+      },
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "specifics": {
+        "passed": 3,
+        "total": 3
+      }
+    },
+    "results": [
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['machine_type', 'machine_name']='raspberrypi4-64'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "machine_type",
+            "machine_name"
+          ],
+          "equals": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['amount', 'count']=1",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "amount",
+            "count"
+          ],
+          "equals": 1
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['device_name']='iot-rpi4-picam3'",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "device_name"
+          ],
+          "equals": "iot-rpi4-picam3"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P21",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 3,
+        "total": 3
+      },
+      "specifics": {
+        "passed": 3,
+        "total": 3
+      },
+      "safety": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['device_profiles'] contains 'pi_sensehat'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "device_profiles"
+          ],
+          "contains": "pi_sensehat"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['image_ref', 'image']='ghcr.io/chameleoncloud/edge_sensehat_image:latest'",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "image_ref",
+            "image"
+          ],
+          "equals_any": [
+            "ghcr.io/chameleoncloud/edge_sensehat_image:latest"
+          ]
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "['command'] present",
+        "params": {
+          "call": [
+            "Container",
+            "create_container"
+          ],
+          "arg": [
+            "command"
+          ],
+          "present": true
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'sleep' in code",
+        "params": {
+          "s": "sleep"
+        }
+      },
+      {
+        "check": "profiles_known_only",
+        "group": "safety",
+        "passed": true,
+        "detail": "no fabricated profile strings",
+        "params": {}
+      },
+      {
+        "check": "name_no_underscore",
+        "group": "safety",
+        "passed": true,
+        "detail": "container name k8s-safe (or statically undecidable -> pass)",
+        "params": {}
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P22",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "specifics": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['execute']: 1 (need >= 1)",
+        "params": {
+          "name": "execute"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'sense_hat' in code",
+        "params": {
+          "any": [
+            "sense_hat",
+            "SenseHat"
+          ]
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'get_humidity' in code",
+        "params": {
+          "any": [
+            "get_humidity",
+            "get_pressure",
+            "get_temperature"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P23",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['execute']: 1 (need >= 1)",
+        "params": {
+          "name": "execute"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'i2cdetect -y 1' in code",
+        "params": {
+          "s": "i2cdetect -y 1"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P24",
+    "all_passed": true,
+    "groups": {
+      "specifics": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "required_text_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'pi_sensehat' in answer",
+        "params": {
+          "s": "pi_sensehat"
+        }
+      },
+      {
+        "check": "required_text_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'ghcr.io/chameleoncloud/edge_sensehat_image' in answer",
+        "params": {
+          "s": "ghcr.io/chameleoncloud/edge_sensehat_image"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P25",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "availability_query",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "get_devices(filter_reserved=True, ...) correct",
+        "params": {}
+      },
+      {
+        "check": "required_code_string",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "found 'device_type' in code",
+        "params": {
+          "any": [
+            "device_type",
+            "device_name"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P26",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "results": [
+      {
+        "check": "availability_query",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "get_devices(filter_reserved=True, ...) correct",
+        "params": {
+          "device_type": "raspberrypi4-64"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "found 'device_name' in code",
+        "params": {
+          "any": [
+            "device_name"
+          ]
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P27",
+    "all_passed": true,
+    "groups": {
+      "mechanism": {
+        "passed": 1,
+        "total": 1
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['get_devices']: 1 (need >= 1)",
+        "params": {
+          "name": "get_devices"
+        }
+      },
+      {
+        "check": "required_code_string",
+        "group": "specifics",
+        "passed": true,
+        "detail": "found 'supported_device_profiles' in code",
+        "params": {
+          "s": "supported_device_profiles"
+        }
+      }
+    ],
+    "v1": null
+  },
+  {
+    "item": "P28",
+    "all_passed": true,
+    "groups": {
+      "safety": {
+        "passed": 1,
+        "total": 1
+      },
+      "mechanism": {
+        "passed": 3,
+        "total": 3
+      },
+      "specifics": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "results": [
+      {
+        "check": "forbidden_calls",
+        "group": "safety",
+        "passed": true,
+        "detail": "clean",
+        "params": {
+          "names": [
+            "add_node_reservation",
+            "create_server",
+            "Server",
+            "add_flavor_reservation",
+            "get_flavor_id",
+            "create_instance"
+          ]
+        }
+      },
+      {
+        "check": "required_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "calls to ['add_device_reservation']: 1 (need >= 1)",
+        "params": {
+          "name": "add_device_reservation"
+        }
+      },
+      {
+        "check": "kwarg",
+        "group": "specifics",
+        "passed": true,
+        "detail": "['machine_type', 'machine_name'] present",
+        "params": {
+          "call": [
+            "add_device_reservation"
+          ],
+          "arg": [
+            "machine_type",
+            "machine_name"
+          ],
+          "present": true
+        }
+      },
+      {
+        "check": "container_call",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "1 container-creation call(s), generation rules satisfied",
+        "params": {}
+      },
+      {
+        "check": "reservation_wiring",
+        "group": "mechanism",
+        "passed": true,
+        "detail": "reservation_id wired from lease",
+        "params": {}
+      }
+    ],
+    "v1": null
+  }
+]

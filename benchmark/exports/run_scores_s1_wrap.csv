@@ -1,0 +1,115 @@
+condition,system,item,status,fences,recovered,code_seen,all_passed,failed_checks,mechanism_passed,mechanism_total,specifics_passed,specifics_total,safety_passed,safety_total
+blind,s1-chatbot,AV01,scored,False,True,True,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s1-chatbot,AV02,scored,False,True,True,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s1-chatbot,AV03,scored,False,False,False,False,availability_query v1_snapshot_exec,0,1,0,1,,
+blind,s1-chatbot,AV04,scored,False,True,True,False,availability_query required_code_string v1_snapshot_exec,0,1,0,2,,
+blind,s1-chatbot,N01,scored,False,False,False,False,required_call kwarg kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,5,1,2
+blind,s1-chatbot,N02,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_code_string required_call,0,2,0,4,,
+blind,s1-chatbot,N03,scored,False,False,False,False,availability_query required_code_string lease_hours kwarg kwarg required_code_string required_code_string required_code_string required_call reservation_wiring,0,3,0,7,1,1
+blind,s1-chatbot,N04,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,5,1,2
+blind,s1-chatbot,N05,scored,False,False,False,False,required_call container_call reservation_wiring kwarg kwarg kwarg required_call name_no_underscore,0,4,0,3,1,2
+blind,s1-chatbot,N06,scored,False,True,True,False,required_call,3,4,5,5,1,1
+blind,s1-chatbot,N07,scored,False,False,False,False,required_call kwarg kwarg container_call reservation_wiring kwarg kwarg name_no_underscore,0,3,0,4,1,2
+blind,s1-chatbot,N08,scored,False,False,False,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,0,4,0,3,0,1
+blind,s1-chatbot,N09,scored,False,False,False,False,availability_query kwarg kwarg kwarg required_call required_code_string required_code_string required_code_string required_code_string required_call required_call reservation_wiring,0,5,0,7,2,2
+blind,s1-chatbot,N10,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg required_call required_code_string required_code_string name_no_underscore,0,4,0,4,1,2
+blind,s1-chatbot,N11,scored,False,True,True,False,required_call kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,4,1,2
+blind,s1-chatbot,N12,scored,False,True,True,False,kwarg kwarg required_code_string required_call required_call required_code_string required_code_string reservation_wiring,0,3,0,5,1,1
+blind,s1-chatbot,N13,scored,False,True,True,False,required_call required_call kwarg lease_hours kwarg kwarg kwarg required_code_string required_call reservation_wiring,0,4,1,6,1,2
+blind,s1-chatbot,N14,scored,False,False,False,True,,1,1,,,2,2
+blind,s1-chatbot,N15,scored,False,True,True,False,required_call required_call lease_hours,0,2,0,1,1,1
+blind,s1-chatbot,N16,scored,False,False,False,False,required_call required_call container_call reservation_wiring kwarg name_no_underscore,0,4,0,1,1,2
+blind,s1-chatbot,N17,scored,False,True,True,False,abstain_or_discover forbidden_calls,0,1,,,0,1
+blind,s1-chatbot,N18,scored,False,False,False,True,,1,1,,,2,2
+blind,s1-chatbot,P01,scored,False,True,True,True,,2,2,1,1,,
+blind,s1-chatbot,P02,scored,False,True,True,False,forbidden_calls required_call kwarg kwarg lease_hours,2,3,0,3,0,1
+blind,s1-chatbot,P03,scored,False,False,False,False,required_call kwarg required_code_string,0,2,0,1,1,1
+blind,s1-chatbot,P04,scored,False,False,False,False,required_call required_call kwarg kwarg required_call,0,3,0,2,1,1
+blind,s1-chatbot,P05,scored,False,False,False,False,container_call reservation_wiring required_code_string name_no_underscore required_call,0,3,0,1,1,2
+blind,s1-chatbot,P06,scored,False,False,False,False,container_call kwarg required_code_string,0,2,0,1,,
+blind,s1-chatbot,P07,scored,False,False,False,False,required_code_string required_code_string required_call,0,2,0,1,,
+blind,s1-chatbot,P08,scored,False,False,False,False,required_call required_code_string required_code_string,0,2,0,1,,
+blind,s1-chatbot,P09,scored,False,False,False,False,required_call required_call required_code_string required_code_string,0,2,0,2,,
+blind,s1-chatbot,P10,scored,False,False,False,False,teardown,0,1,,,,
+blind,s1-chatbot,P11,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg required_call required_code_string name_no_underscore,0,3,0,3,0,1
+blind,s1-chatbot,P12,scored,False,False,False,False,required_call required_call required_code_string required_code_string required_code_string,0,2,0,3,,
+blind,s1-chatbot,P13,scored,False,False,False,False,required_text_string,,,1,2,,
+blind,s1-chatbot,P14,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg required_call required_code_string required_call name_no_underscore,0,5,0,4,1,2
+blind,s1-chatbot,P15,scored,False,False,False,False,availability_query required_code_string required_call,0,2,0,1,1,1
+blind,s1-chatbot,P16,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+blind,s1-chatbot,P17,scored,False,True,True,False,required_call required_code_string required_code_string required_code_string required_call,0,2,0,3,,
+blind,s1-chatbot,P18,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string,0,1,0,3,,
+blind,s1-chatbot,P19,scored,False,False,False,False,required_call required_code_string required_code_string,0,1,0,2,,
+blind,s1-chatbot,P20,scored,False,False,False,False,required_call kwarg kwarg kwarg,0,1,0,3,1,1
+blind,s1-chatbot,P21,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+blind,s1-chatbot,P22,scored,False,False,False,False,required_call required_code_string required_code_string,0,1,0,2,,
+blind,s1-chatbot,P23,scored,False,False,False,False,required_call required_code_string,0,1,0,1,,
+blind,s1-chatbot,P24,scored,False,False,False,False,required_text_string required_text_string,,,0,2,,
+blind,s1-chatbot,P25,scored,False,False,False,False,availability_query required_code_string,0,2,,,,
+blind,s1-chatbot,P26,scored,False,False,False,False,availability_query required_code_string,0,2,,,,
+blind,s1-chatbot,P27,scored,False,False,False,False,required_call required_code_string,0,1,0,1,,
+blind,s1-chatbot,P28,scored,False,True,True,False,required_call kwarg container_call reservation_wiring,0,3,0,1,1,1
+heldout,s1-chatbot,N02,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_code_string required_call,0,2,0,4,,
+heldout,s1-chatbot,N04,scored,False,True,True,False,kwarg kwarg kwarg kwarg,3,3,1,5,2,2
+heldout,s1-chatbot,N05,scored,False,True,True,False,required_call container_call reservation_wiring kwarg kwarg kwarg,1,4,0,3,2,2
+heldout,s1-chatbot,N08,scored,False,True,True,False,required_call container_call reservation_wiring kwarg required_call,1,4,1,3,1,1
+heldout,s1-chatbot,N13,scored,False,True,True,False,kwarg lease_hours kwarg kwarg kwarg required_code_string required_call reservation_wiring,2,4,1,6,1,2
+heldout,s1-chatbot,N15,scored,False,True,True,False,required_call lease_hours,1,2,0,1,1,1
+heldout,s1-chatbot,N16,scored,False,True,True,False,required_call kwarg,3,4,0,1,2,2
+heldout,s1-chatbot,P11,scored,False,True,True,False,kwarg kwarg required_call required_code_string,2,3,0,3,1,1
+heldout,s1-chatbot,P13,scored,False,False,False,False,required_text_string,,,1,2,,
+heldout,s1-chatbot,P16,scored,False,True,True,False,kwarg kwarg kwarg required_code_string profiles_known_only,2,3,0,3,1,2
+heldout,s1-chatbot,P17,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_call,0,2,0,3,,
+heldout,s1-chatbot,P21,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,0,3,0,3,1,2
+heldout,s1-chatbot,P22,scored,False,False,False,False,required_call required_code_string required_code_string,0,1,0,2,,
+heldout,s1-chatbot,P24,scored,False,False,False,False,required_text_string required_text_string,,,0,2,,
+matched,s1-chatbot,AV01,scored,False,True,True,True,,1,1,1,1,,
+matched,s1-chatbot,AV02,scored,False,True,True,False,v1_snapshot_exec,1,1,0,1,,
+matched,s1-chatbot,AV03,scored,False,True,True,False,availability_query v1_snapshot_exec,0,1,0,1,,
+matched,s1-chatbot,AV04,scored,False,True,True,False,availability_query required_code_string v1_snapshot_exec,0,1,0,2,,
+matched,s1-chatbot,N01,scored,True,False,True,False,required_call kwarg kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,0,4,0,5,1,2
+matched,s1-chatbot,N02,scored,False,True,True,False,required_call,1,2,4,4,,
+matched,s1-chatbot,N03,scored,True,False,True,False,availability_query lease_hours kwarg kwarg required_code_string required_code_string required_code_string required_call reservation_wiring,0,3,1,7,1,1
+matched,s1-chatbot,N04,scored,False,True,True,False,required_code_string,3,3,4,5,2,2
+matched,s1-chatbot,N05,scored,False,True,True,True,,4,4,3,3,2,2
+matched,s1-chatbot,N06,scored,False,True,True,False,kwarg kwarg,4,4,3,5,1,1
+matched,s1-chatbot,N07,scored,True,False,True,False,required_call kwarg kwarg container_call reservation_wiring kwarg kwarg name_no_underscore,0,3,0,4,1,2
+matched,s1-chatbot,N08,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,0,4,0,3,0,1
+matched,s1-chatbot,N09,scored,False,True,True,True,,5,5,7,7,2,2
+matched,s1-chatbot,N10,scored,False,True,True,False,kwarg required_call,3,4,3,4,2,2
+matched,s1-chatbot,N11,scored,False,True,True,False,lease_hours,4,4,3,4,2,2
+matched,s1-chatbot,N12,scored,False,True,True,False,kwarg kwarg reservation_wiring,2,3,3,5,1,1
+matched,s1-chatbot,N13,scored,False,True,True,False,lease_hours,4,4,5,6,2,2
+matched,s1-chatbot,N15,scored,False,True,True,False,required_call,1,2,1,1,1,1
+matched,s1-chatbot,N16,scored,True,False,True,False,required_call required_call container_call reservation_wiring kwarg name_no_underscore,0,4,0,1,1,2
+matched,s1-chatbot,P01,scored,False,True,True,True,,2,2,1,1,,
+matched,s1-chatbot,P02,scored,False,True,True,True,,3,3,3,3,1,1
+matched,s1-chatbot,P03,scored,False,True,True,False,kwarg,2,2,0,1,1,1
+matched,s1-chatbot,P04,scored,False,True,True,True,,3,3,2,2,1,1
+matched,s1-chatbot,P05,scored,False,True,True,True,,3,3,1,1,2,2
+matched,s1-chatbot,P06,scored,False,True,True,True,,2,2,1,1,,
+matched,s1-chatbot,P07,scored,True,False,False,False,required_code_string required_code_string required_call,0,2,0,1,,
+matched,s1-chatbot,P08,scored,False,True,True,False,required_call required_code_string,0,2,1,1,,
+matched,s1-chatbot,P09,scored,False,True,True,True,,2,2,2,2,,
+matched,s1-chatbot,P10,scored,False,True,True,True,,1,1,,,,
+matched,s1-chatbot,P11,scored,False,True,True,True,,3,3,3,3,1,1
+matched,s1-chatbot,P12,scored,False,False,False,False,required_call required_call required_code_string required_code_string required_code_string,0,2,0,3,,
+matched,s1-chatbot,P13,scored,False,False,False,True,,,,2,2,,
+matched,s1-chatbot,P14,scored,False,True,True,True,,5,5,4,4,2,2
+matched,s1-chatbot,P15,scored,False,True,True,True,,2,2,1,1,1,1
+matched,s1-chatbot,P16,scored,False,True,True,True,,3,3,3,3,2,2
+matched,s1-chatbot,P17,scored,False,True,True,False,required_call,1,2,3,3,,
+matched,s1-chatbot,P18,scored,False,True,True,False,required_call,0,1,3,3,,
+matched,s1-chatbot,P19,scored,False,True,True,False,required_call,0,1,2,2,,
+matched,s1-chatbot,P20,scored,False,True,True,True,,1,1,3,3,1,1
+matched,s1-chatbot,P21,scored,False,True,True,True,,3,3,3,3,2,2
+matched,s1-chatbot,P22,scored,False,True,True,False,required_call,0,1,2,2,,
+matched,s1-chatbot,P23,scored,False,True,True,False,required_call required_code_string,0,1,0,1,,
+matched,s1-chatbot,P24,scored,False,False,False,True,,,,2,2,,
+matched,s1-chatbot,P25,scored,False,False,False,False,availability_query required_code_string,0,2,,,,
+matched,s1-chatbot,P26,scored,False,True,True,False,required_code_string,1,2,,,,
+matched,s1-chatbot,P27,scored,False,False,False,False,required_call required_code_string,0,1,0,1,,
+matched,s1-chatbot,P28,scored,False,True,True,True,,3,3,1,1,1,1
+uncovered,s1-chatbot,N14,scored,False,True,True,False,abstain_or_discover profiles_known_only,0,1,,,1,2
+uncovered,s1-chatbot,N17,scored,False,True,True,False,abstain_or_discover forbidden_calls,0,1,,,0,1
+uncovered,s1-chatbot,N18,scored,False,False,False,False,abstain_or_discover,0,1,,,2,2

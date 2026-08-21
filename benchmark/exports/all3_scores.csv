@@ -1,0 +1,403 @@
+condition,system,item,status,fences,recovered,code_seen,all_passed,failed_checks,rank1,mechanism_passed,mechanism_total,specifics_passed,specifics_total,safety_passed,safety_total,feasibility_passed,feasibility_total,capability_passed,capability_total
+blind,s3-chatbot-noadv,AV01,scored,False,False,False,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s3-chatbot-noadv,AV02,scored,False,False,False,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s3-chatbot-noadv,AV03,scored,False,False,False,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s3-chatbot-noadv,AV04,scored,False,False,False,False,availability_query required_code_string v1_snapshot_exec,,0,1,0,2,,,,,,
+blind,s3-chatbot-noadv,N01,scored,False,False,False,False,required_call kwarg kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,,0,4,0,5,1,2,,,,
+blind,s3-chatbot-noadv,N02,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_code_string required_call,,0,2,0,4,,,,,,
+blind,s3-chatbot-noadv,N03,scored,False,False,False,False,availability_query required_code_string lease_hours kwarg kwarg required_code_string required_code_string required_code_string required_call reservation_wiring,,0,3,0,7,1,1,,,,
+blind,s3-chatbot-noadv,N04,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,,0,3,0,5,1,2,,,,
+blind,s3-chatbot-noadv,N05,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg kwarg required_call name_no_underscore,,0,4,0,3,1,2,,,,
+blind,s3-chatbot-noadv,N06,scored,True,False,True,False,reservation_wiring,,3,4,5,5,1,1,,,,
+blind,s3-chatbot-noadv,N07,scored,True,False,True,False,required_call kwarg kwarg container_call reservation_wiring kwarg kwarg name_no_underscore,,0,3,0,4,1,2,,,,
+blind,s3-chatbot-noadv,N08,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,,0,4,0,3,0,1,,,,
+blind,s3-chatbot-noadv,N09,scored,True,False,True,False,availability_query kwarg kwarg kwarg required_call required_code_string required_code_string required_code_string required_call required_call reservation_wiring,,0,5,1,7,2,2,,,,
+blind,s3-chatbot-noadv,N10,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg required_call required_code_string required_code_string name_no_underscore,,0,4,0,4,1,2,,,,
+blind,s3-chatbot-noadv,N11,scored,True,False,True,False,required_call kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,,0,4,0,4,1,2,,,,
+blind,s3-chatbot-noadv,N12,scored,False,False,False,False,kwarg kwarg required_code_string required_call required_call required_code_string required_code_string reservation_wiring,,0,3,0,5,1,1,,,,
+blind,s3-chatbot-noadv,N13,scored,False,False,False,False,required_call required_call kwarg lease_hours kwarg kwarg kwarg required_code_string required_call reservation_wiring,,0,4,1,6,1,2,,,,
+blind,s3-chatbot-noadv,N14,scored,False,False,False,True,,,1,1,,,2,2,,,,
+blind,s3-chatbot-noadv,N15,scored,False,False,False,False,required_call required_call lease_hours,,0,2,0,1,1,1,,,,
+blind,s3-chatbot-noadv,N16,scored,True,False,True,False,required_call required_call container_call reservation_wiring kwarg name_no_underscore,,0,4,0,1,1,2,,,,
+blind,s3-chatbot-noadv,N17,scored,True,False,True,False,abstain_or_discover,,0,1,,,1,1,,,,
+blind,s3-chatbot-noadv,N18,scored,False,False,False,True,,,1,1,,,2,2,,,,
+blind,s3-chatbot-noadv,P01,scored,True,False,True,False,required_call,,1,2,1,1,,,,,,
+blind,s3-chatbot-noadv,P02,scored,True,False,True,False,forbidden_calls required_call kwarg kwarg,,2,3,1,3,0,1,,,,
+blind,s3-chatbot-noadv,P03,scored,True,False,True,False,forbidden_calls required_call kwarg required_code_string,,0,2,0,1,0,1,,,,
+blind,s3-chatbot-noadv,P04,scored,False,False,False,False,required_call required_call kwarg kwarg required_call,,0,3,0,2,1,1,,,,
+blind,s3-chatbot-noadv,P05,scored,False,False,False,False,container_call reservation_wiring required_code_string name_no_underscore required_call,,0,3,0,1,1,2,,,,
+blind,s3-chatbot-noadv,P06,scored,False,False,False,False,container_call kwarg required_code_string,,0,2,0,1,,,,,,
+blind,s3-chatbot-noadv,P07,scored,False,False,False,False,required_code_string required_code_string required_call,,0,2,0,1,,,,,,
+blind,s3-chatbot-noadv,P08,scored,True,False,True,False,required_call required_code_string,,0,2,1,1,,,,,,
+blind,s3-chatbot-noadv,P09,scored,True,False,True,False,required_call required_call,,0,2,2,2,,,,,,
+blind,s3-chatbot-noadv,P10,scored,False,False,False,False,teardown,,0,1,,,,,,,,
+blind,s3-chatbot-noadv,P11,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg required_call required_code_string name_no_underscore,,0,3,0,3,0,1,,,,
+blind,s3-chatbot-noadv,P12,scored,False,False,False,False,required_call required_call required_code_string required_code_string required_code_string,,0,2,0,3,,,,,,
+blind,s3-chatbot-noadv,P13,scored,False,False,False,False,required_text_string,,,,1,2,,,,,,
+blind,s3-chatbot-noadv,P14,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg required_call required_code_string required_call name_no_underscore,,0,5,0,4,1,2,,,,
+blind,s3-chatbot-noadv,P15,scored,False,False,False,False,availability_query required_code_string required_call,,0,2,0,1,1,1,,,,
+blind,s3-chatbot-noadv,P16,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,,0,3,0,3,1,2,,,,
+blind,s3-chatbot-noadv,P17,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_call,,0,2,0,3,,,,,,
+blind,s3-chatbot-noadv,P18,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string,,0,1,0,3,,,,,,
+blind,s3-chatbot-noadv,P19,scored,False,False,False,False,required_call required_code_string required_code_string,,0,1,0,2,,,,,,
+blind,s3-chatbot-noadv,P20,scored,False,False,False,False,required_call kwarg kwarg kwarg,,0,1,0,3,1,1,,,,
+blind,s3-chatbot-noadv,P21,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,,0,3,0,3,1,2,,,,
+blind,s3-chatbot-noadv,P22,scored,True,False,True,False,required_call,,0,1,2,2,,,,,,
+blind,s3-chatbot-noadv,P23,scored,False,False,False,False,required_call required_code_string,,0,1,0,1,,,,,,
+blind,s3-chatbot-noadv,P24,scored,False,False,False,False,required_text_string required_text_string,,,,0,2,,,,,,
+blind,s3-chatbot-noadv,P25,scored,False,False,False,False,availability_query required_code_string,,0,2,,,,,,,,
+blind,s3-chatbot-noadv,P26,scored,False,False,False,False,availability_query required_code_string,,0,2,,,,,,,,
+blind,s3-chatbot-noadv,P27,scored,True,False,True,True,,,1,1,1,1,,,,,,
+blind,s3-chatbot-noadv,P28,scored,True,False,True,False,forbidden_calls required_call kwarg container_call reservation_wiring,,0,3,0,1,0,1,,,,
+blind,s3-chatbot-noadv,R01,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R02,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R03,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R04,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R05,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R06,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,1,4
+blind,s3-chatbot-noadv,R07,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R08,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R09,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s3-chatbot-noadv,R10,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R11,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R12,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R13,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R14,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R15,scored,False,False,False,True,,,,,,,1,1,1,1,2,2
+blind,s3-chatbot-noadv,R16,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R17,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R18,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R19,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R20,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R21,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R22,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R23,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R24,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R25,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R26,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R27,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R28,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R29,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R30,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R31,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R32,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R33,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R34,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R35,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R36,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,1,4
+blind,s3-chatbot-noadv,R37,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R38,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R39,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R40,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R41,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R42,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R43,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R44,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R45,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R46,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R47,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s3-chatbot-noadv,R48,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R49,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R50,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R51,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R52,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s3-chatbot-noadv,R53,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R54,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R55,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s3-chatbot-noadv,R56,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s3-chatbot-noadv,R57,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s3-chatbot-noadv,R58,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s3-chatbot-noadv,R59,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s3-chatbot-noadv,R60,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R61,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R62,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R63,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R64,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s3-chatbot-noadv,R65,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R66,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s3-chatbot-noadv,R67,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R68,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R69,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R70,scored,False,False,False,True,,,,,,,1,1,1,1,2,2
+blind,s3-chatbot-noadv,R71,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R72,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R73,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R74,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R75,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R76,scored,False,False,False,True,,,,,,,1,1,1,1,2,2
+blind,s3-chatbot-noadv,R77,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R78,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R79,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R80,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R81,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R82,scored,False,False,False,True,,,,,,,1,1,1,1,2,2
+blind,s3-chatbot-noadv,R83,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s3-chatbot-noadv,R84,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,AV01,scored,False,False,False,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s4-chatbot-adv,AV02,scored,False,False,False,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s4-chatbot-adv,AV03,scored,False,False,False,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s4-chatbot-adv,AV04,scored,False,False,False,False,availability_query required_code_string v1_snapshot_exec,,0,1,0,2,,,,,,
+blind,s4-chatbot-adv,N01,scored,False,False,False,False,required_call kwarg kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,,0,4,0,5,1,2,,,,
+blind,s4-chatbot-adv,N02,scored,True,False,True,False,required_call required_code_string required_call,,0,2,3,4,,,,,,
+blind,s4-chatbot-adv,N03,scored,True,False,True,False,availability_query required_code_string lease_hours kwarg kwarg required_code_string required_call reservation_wiring,,0,3,2,7,1,1,,,,
+blind,s4-chatbot-adv,N04,scored,True,False,True,False,required_call kwarg container_call reservation_wiring kwarg kwarg kwarg name_no_underscore,,0,3,1,5,1,2,,,,
+blind,s4-chatbot-adv,N05,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg kwarg required_call name_no_underscore,,0,4,0,3,1,2,,,,
+blind,s4-chatbot-adv,N06,scored,True,False,True,False,kwarg reservation_wiring required_call,,2,4,4,5,1,1,,,,
+blind,s4-chatbot-adv,N07,scored,True,False,True,False,required_call kwarg kwarg container_call reservation_wiring kwarg kwarg name_no_underscore,,0,3,0,4,1,2,,,,
+blind,s4-chatbot-adv,N08,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,,0,4,0,3,0,1,,,,
+blind,s4-chatbot-adv,N09,scored,False,False,False,False,availability_query kwarg kwarg kwarg required_call required_code_string required_code_string required_code_string required_code_string required_call required_call reservation_wiring,,0,5,0,7,2,2,,,,
+blind,s4-chatbot-adv,N10,scored,True,False,True,False,required_call kwarg container_call reservation_wiring kwarg required_call required_code_string name_no_underscore,,0,4,1,4,1,2,,,,
+blind,s4-chatbot-adv,N11,scored,True,False,True,False,required_call kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,,0,4,0,4,1,2,,,,
+blind,s4-chatbot-adv,N12,scored,True,False,True,False,kwarg kwarg required_code_string required_call required_call required_code_string required_code_string reservation_wiring,,0,3,0,5,1,1,,,,
+blind,s4-chatbot-adv,N13,scored,True,False,True,False,required_call required_call kwarg lease_hours kwarg kwarg kwarg required_call reservation_wiring,,0,4,2,6,1,2,,,,
+blind,s4-chatbot-adv,N14,scored,True,False,True,False,abstain_or_discover,,0,1,,,2,2,,,,
+blind,s4-chatbot-adv,N15,scored,True,False,True,False,required_call required_call lease_hours,,0,2,0,1,1,1,,,,
+blind,s4-chatbot-adv,N16,scored,True,False,True,False,required_call required_call container_call reservation_wiring kwarg name_no_underscore,,0,4,0,1,1,2,,,,
+blind,s4-chatbot-adv,N17,scored,True,False,True,False,abstain_or_discover forbidden_calls,,0,1,,,0,1,,,,
+blind,s4-chatbot-adv,N18,scored,True,False,True,False,abstain_or_discover,,0,1,,,2,2,,,,
+blind,s4-chatbot-adv,P01,scored,True,False,True,False,required_call,,1,2,1,1,,,,,,
+blind,s4-chatbot-adv,P02,scored,True,False,True,False,forbidden_calls required_call kwarg kwarg,,2,3,1,3,0,1,,,,
+blind,s4-chatbot-adv,P03,scored,True,False,True,False,forbidden_calls required_call kwarg required_code_string,,0,2,0,1,0,1,,,,
+blind,s4-chatbot-adv,P04,scored,True,False,True,False,required_call kwarg kwarg,,2,3,0,2,1,1,,,,
+blind,s4-chatbot-adv,P05,scored,True,False,True,False,container_call reservation_wiring name_no_underscore required_call,,0,3,1,1,1,2,,,,
+blind,s4-chatbot-adv,P06,scored,True,False,True,False,container_call kwarg required_code_string,,0,2,0,1,,,,,,
+blind,s4-chatbot-adv,P07,scored,False,False,False,False,required_code_string required_code_string required_call,,0,2,0,1,,,,,,
+blind,s4-chatbot-adv,P08,scored,True,False,True,False,required_call required_code_string,,0,2,1,1,,,,,,
+blind,s4-chatbot-adv,P09,scored,False,False,False,False,required_call required_call required_code_string required_code_string,,0,2,0,2,,,,,,
+blind,s4-chatbot-adv,P10,scored,False,False,False,False,teardown,,0,1,,,,,,,,
+blind,s4-chatbot-adv,P11,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg required_call required_code_string name_no_underscore,,0,3,0,3,0,1,,,,
+blind,s4-chatbot-adv,P12,scored,False,False,False,False,required_call required_call required_code_string required_code_string required_code_string,,0,2,0,3,,,,,,
+blind,s4-chatbot-adv,P13,scored,False,False,False,True,,,,,2,2,,,,,,
+blind,s4-chatbot-adv,P14,scored,True,False,True,False,required_call kwarg container_call reservation_wiring kwarg kwarg required_call required_code_string required_call name_no_underscore,,0,5,0,4,1,2,,,,
+blind,s4-chatbot-adv,P15,scored,True,False,True,False,availability_query required_code_string required_call,,0,2,0,1,1,1,,,,
+blind,s4-chatbot-adv,P16,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,,0,3,0,3,1,2,,,,
+blind,s4-chatbot-adv,P17,scored,True,False,True,False,required_call required_code_string required_call,,0,2,2,3,,,,,,
+blind,s4-chatbot-adv,P18,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string,,0,1,0,3,,,,,,
+blind,s4-chatbot-adv,P19,scored,True,False,True,False,required_call required_code_string required_code_string,,0,1,0,2,,,,,,
+blind,s4-chatbot-adv,P20,scored,True,False,True,False,required_call kwarg kwarg kwarg,,0,1,0,3,1,1,,,,
+blind,s4-chatbot-adv,P21,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,,0,3,0,3,1,2,,,,
+blind,s4-chatbot-adv,P22,scored,True,False,True,False,required_call,,0,1,2,2,,,,,,
+blind,s4-chatbot-adv,P23,scored,True,False,True,False,required_call,,0,1,1,1,,,,,,
+blind,s4-chatbot-adv,P24,scored,False,False,False,True,,,,,2,2,,,,,,
+blind,s4-chatbot-adv,P25,scored,False,False,False,False,availability_query required_code_string,,0,2,,,,,,,,
+blind,s4-chatbot-adv,P26,scored,False,False,False,False,availability_query required_code_string,,0,2,,,,,,,,
+blind,s4-chatbot-adv,P27,scored,True,False,True,True,,,1,1,1,1,,,,,,
+blind,s4-chatbot-adv,P28,scored,True,False,True,False,forbidden_calls required_call kwarg container_call reservation_wiring,,0,3,0,1,0,1,,,,
+blind,s4-chatbot-adv,R01,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s4-chatbot-adv,R02,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s4-chatbot-adv,R03,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s4-chatbot-adv,R04,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,2,3,2,5
+blind,s4-chatbot-adv,R05,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s4-chatbot-adv,R06,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,3,4
+blind,s4-chatbot-adv,R07,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R08,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R09,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s4-chatbot-adv,R10,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R11,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R12,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R13,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s4-chatbot-adv,R14,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R15,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s4-chatbot-adv,R16,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R17,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R18,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R19,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,3,3,1,5
+blind,s4-chatbot-adv,R20,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s4-chatbot-adv,R21,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,0,3,1,4
+blind,s4-chatbot-adv,R22,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,2,3,1,5
+blind,s4-chatbot-adv,R23,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s4-chatbot-adv,R24,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,3,3,1,5
+blind,s4-chatbot-adv,R25,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,1,4
+blind,s4-chatbot-adv,R26,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,1,4
+blind,s4-chatbot-adv,R27,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,0,3,1,4
+blind,s4-chatbot-adv,R28,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,2,3,1,4
+blind,s4-chatbot-adv,R29,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,1,4
+blind,s4-chatbot-adv,R30,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,1,4
+blind,s4-chatbot-adv,R31,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+blind,s4-chatbot-adv,R32,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s4-chatbot-adv,R33,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s4-chatbot-adv,R34,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+blind,s4-chatbot-adv,R35,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s4-chatbot-adv,R36,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s4-chatbot-adv,R37,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s4-chatbot-adv,R38,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s4-chatbot-adv,R39,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,0,3,1,4
+blind,s4-chatbot-adv,R40,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,2,3,1,4
+blind,s4-chatbot-adv,R41,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s4-chatbot-adv,R42,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s4-chatbot-adv,R43,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s4-chatbot-adv,R44,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+blind,s4-chatbot-adv,R45,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s4-chatbot-adv,R46,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s4-chatbot-adv,R47,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+blind,s4-chatbot-adv,R48,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s4-chatbot-adv,R49,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s4-chatbot-adv,R50,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R51,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R52,scored,False,False,False,True,,,,,,,1,1,1,1,2,2
+blind,s4-chatbot-adv,R53,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R54,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R55,scored,False,False,False,True,,,,,,,1,1,1,1,2,2
+blind,s4-chatbot-adv,R56,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s4-chatbot-adv,R57,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s4-chatbot-adv,R58,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s4-chatbot-adv,R59,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s4-chatbot-adv,R60,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s4-chatbot-adv,R61,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s4-chatbot-adv,R62,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered,raspberrypi5,,,,,2,2,3,3,0,5
+blind,s4-chatbot-adv,R63,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered,raspberrypi5,,,,,2,2,0,3,0,5
+blind,s4-chatbot-adv,R64,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi5,,,,,1,1,1,1,0,2
+blind,s4-chatbot-adv,R65,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered,raspberrypi5,,,,,2,2,3,3,0,5
+blind,s4-chatbot-adv,R66,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered,raspberrypi5,,,,,2,2,3,3,0,5
+blind,s4-chatbot-adv,R67,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R68,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R69,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R70,scored,False,False,False,True,,,,,,,1,1,1,1,2,2
+blind,s4-chatbot-adv,R71,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R72,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s4-chatbot-adv,R73,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s4-chatbot-adv,R74,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s4-chatbot-adv,R75,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,0,3,2,5
+blind,s4-chatbot-adv,R76,scored,False,False,False,False,forbidden_types_listed,raspberrypi4-64,,,,,1,1,1,1,1,2
+blind,s4-chatbot-adv,R77,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s4-chatbot-adv,R78,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s4-chatbot-adv,R79,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,2,5
+blind,s4-chatbot-adv,R80,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,2,5
+blind,s4-chatbot-adv,R81,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,0,3,2,5
+blind,s4-chatbot-adv,R82,scored,False,False,False,False,forbidden_types_listed,raspberrypi5,,,,,1,1,1,1,1,2
+blind,s4-chatbot-adv,R83,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,2,5
+blind,s4-chatbot-adv,R84,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,AV01,scored,True,False,True,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s5-claude-sonnet,AV02,scored,True,False,True,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s5-claude-sonnet,AV03,scored,True,False,True,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s5-claude-sonnet,AV04,scored,True,False,True,False,availability_query required_code_string v1_snapshot_exec,,0,1,0,2,,,,,,
+blind,s5-claude-sonnet,N01,scored,True,False,True,False,kwarg lease_hours container_call kwarg required_call,,2,4,2,5,2,2,,,,
+blind,s5-claude-sonnet,N02,scored,True,False,True,False,required_code_string required_code_string required_code_string required_code_string required_call,,1,2,0,4,,,,,,
+blind,s5-claude-sonnet,N03,scored,True,False,True,False,availability_query required_code_string lease_hours kwarg kwarg required_code_string required_code_string required_code_string required_call,,1,3,0,7,1,1,,,,
+blind,s5-claude-sonnet,N04,scored,True,False,True,False,required_call kwarg container_call kwarg kwarg kwarg required_code_string,,1,3,0,5,2,2,,,,
+blind,s5-claude-sonnet,N05,scored,True,False,True,False,required_call container_call kwarg kwarg kwarg,,2,4,0,3,2,2,,,,
+blind,s5-claude-sonnet,N06,scored,True,False,True,True,,,4,4,5,5,1,1,,,,
+blind,s5-claude-sonnet,N07,scored,True,False,True,False,container_call kwarg,,2,3,3,4,2,2,,,,
+blind,s5-claude-sonnet,N08,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,,0,4,0,3,0,1,,,,
+blind,s5-claude-sonnet,N09,scored,True,False,True,False,availability_query kwarg kwarg required_call profiles_known_only,,3,5,5,7,1,2,,,,
+blind,s5-claude-sonnet,N10,scored,True,False,True,False,container_call kwarg profiles_known_only required_code_string,,3,4,2,4,1,2,,,,
+blind,s5-claude-sonnet,N11,scored,True,False,True,False,kwarg container_call kwarg required_call,,2,4,2,4,2,2,,,,
+blind,s5-claude-sonnet,N12,scored,True,False,True,False,kwarg kwarg required_code_string required_call required_call required_code_string required_code_string reservation_wiring,,0,3,0,5,1,1,,,,
+blind,s5-claude-sonnet,N13,scored,True,False,True,False,required_call required_call kwarg lease_hours kwarg kwarg kwarg required_call reservation_wiring,,0,4,2,6,1,2,,,,
+blind,s5-claude-sonnet,N14,scored,True,False,True,True,,,1,1,,,2,2,,,,
+blind,s5-claude-sonnet,N15,scored,True,False,True,False,required_call,,1,2,1,1,1,1,,,,
+blind,s5-claude-sonnet,N16,scored,True,False,True,False,required_call container_call kwarg,,2,4,0,1,2,2,,,,
+blind,s5-claude-sonnet,N17,scored,True,False,True,False,abstain_or_discover forbidden_calls,,0,1,,,0,1,,,,
+blind,s5-claude-sonnet,N18,scored,True,False,True,False,profiles_known_only,,1,1,,,1,2,,,,
+blind,s5-claude-sonnet,P01,scored,True,False,True,True,,,2,2,1,1,,,,,,
+blind,s5-claude-sonnet,P02,scored,True,False,True,True,,,3,3,3,3,1,1,,,,
+blind,s5-claude-sonnet,P03,scored,True,False,True,False,required_code_string,,1,2,1,1,1,1,,,,
+blind,s5-claude-sonnet,P04,scored,True,False,True,True,,,3,3,2,2,1,1,,,,
+blind,s5-claude-sonnet,P05,scored,True,False,True,False,container_call reservation_wiring required_call,,0,3,1,1,2,2,,,,
+blind,s5-claude-sonnet,P06,scored,True,False,True,False,container_call,,1,2,1,1,,,,,,
+blind,s5-claude-sonnet,P07,scored,True,False,True,True,,,2,2,1,1,,,,,,
+blind,s5-claude-sonnet,P08,scored,True,False,True,True,,,2,2,1,1,,,,,,
+blind,s5-claude-sonnet,P09,scored,True,False,True,False,required_call required_call,,0,2,2,2,,,,,,
+blind,s5-claude-sonnet,P10,scored,True,False,True,True,,,1,1,,,,,,,,
+blind,s5-claude-sonnet,P11,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg required_call name_no_underscore,,0,3,1,3,0,1,,,,
+blind,s5-claude-sonnet,P12,scored,True,False,True,False,required_call required_call,,0,2,3,3,,,,,,
+blind,s5-claude-sonnet,P13,scored,True,False,True,False,required_text_string,,,,1,2,,,,,,
+blind,s5-claude-sonnet,P14,scored,True,False,True,False,required_call kwarg container_call reservation_wiring kwarg kwarg required_call required_code_string required_call name_no_underscore,,0,5,0,4,1,2,,,,
+blind,s5-claude-sonnet,P15,scored,True,False,True,False,availability_query required_code_string,,1,2,0,1,1,1,,,,
+blind,s5-claude-sonnet,P16,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string profiles_known_only,,0,3,0,3,1,2,,,,
+blind,s5-claude-sonnet,P17,scored,True,False,True,False,required_call required_code_string required_code_string required_code_string required_call,,0,2,0,3,,,,,,
+blind,s5-claude-sonnet,P18,scored,True,False,True,False,required_call required_code_string required_code_string required_code_string,,0,1,0,3,,,,,,
+blind,s5-claude-sonnet,P19,scored,True,False,True,False,required_code_string required_code_string,,1,1,0,2,,,,,,
+blind,s5-claude-sonnet,P20,scored,True,False,True,False,kwarg kwarg,,1,1,1,3,1,1,,,,
+blind,s5-claude-sonnet,P21,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg profiles_known_only,,1,3,1,3,1,2,,,,
+blind,s5-claude-sonnet,P22,scored,True,False,True,False,required_call,,0,1,2,2,,,,,,
+blind,s5-claude-sonnet,P23,scored,True,False,True,False,required_call required_code_string,,0,1,0,1,,,,,,
+blind,s5-claude-sonnet,P24,scored,True,False,True,False,required_text_string required_text_string,,,,0,2,,,,,,
+blind,s5-claude-sonnet,P25,scored,True,False,True,False,availability_query,,1,2,,,,,,,,
+blind,s5-claude-sonnet,P26,scored,True,False,True,False,availability_query required_code_string,,0,2,,,,,,,,
+blind,s5-claude-sonnet,P27,scored,True,False,True,False,required_call required_code_string,,0,1,0,1,,,,,,
+blind,s5-claude-sonnet,P28,scored,True,False,True,False,forbidden_calls container_call reservation_wiring,,1,3,1,1,0,1,,,,
+blind,s5-claude-sonnet,R01,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R02,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s5-claude-sonnet,R03,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s5-claude-sonnet,R04,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R05,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s5-claude-sonnet,R06,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,3,4
+blind,s5-claude-sonnet,R07,scored,False,False,False,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R08,scored,False,False,False,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R09,scored,False,False,False,False,no_down_types_listed forbidden_types_listed,raspberrypi4-64,,,,,1,1,0,1,1,2
+blind,s5-claude-sonnet,R10,scored,False,False,False,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R11,scored,True,False,True,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R12,scored,True,False,True,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R13,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R14,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R15,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R16,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R17,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R18,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter required_text_string,raspberrypi4-64,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R19,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R20,scored,True,False,True,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R21,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,0,3,1,4
+blind,s5-claude-sonnet,R22,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R23,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R24,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R25,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R26,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R27,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,0,3,1,4
+blind,s5-claude-sonnet,R28,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,2,3,1,4
+blind,s5-claude-sonnet,R29,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R30,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi5,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R31,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R32,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+blind,s5-claude-sonnet,R33,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s5-claude-sonnet,R34,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R35,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s5-claude-sonnet,R36,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,3,4
+blind,s5-claude-sonnet,R37,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,4
+blind,s5-claude-sonnet,R38,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,4
+blind,s5-claude-sonnet,R39,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,2,4
+blind,s5-claude-sonnet,R40,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,2,2,0,3,2,4
+blind,s5-claude-sonnet,R41,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R42,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter,raspberrypi4-64,,,,,2,2,3,3,1,4
+blind,s5-claude-sonnet,R43,scored,False,False,False,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+blind,s5-claude-sonnet,R44,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+blind,s5-claude-sonnet,R45,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s5-claude-sonnet,R46,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R47,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+blind,s5-claude-sonnet,R48,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R49,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-orin-nano-devkit-nvme,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R50,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-orin-nano-devkit-nvme,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R51,scored,True,False,True,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R52,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R53,scored,True,False,True,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R54,scored,True,False,True,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R55,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R56,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R57,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R58,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R59,scored,True,False,True,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R60,scored,True,False,True,False,abstains_when_uncovered,coral-dev,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R61,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,3,5
+blind,s5-claude-sonnet,R62,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,3,5
+blind,s5-claude-sonnet,R63,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,3,5
+blind,s5-claude-sonnet,R64,scored,False,False,False,False,no_down_types_listed forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,1,1,0,1,1,2
+blind,s5-claude-sonnet,R65,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,5,5
+blind,s5-claude-sonnet,R66,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,5,5
+blind,s5-claude-sonnet,R67,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,5,5
+blind,s5-claude-sonnet,R68,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,5,5
+blind,s5-claude-sonnet,R69,scored,False,False,False,True,,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,5,5
+blind,s5-claude-sonnet,R70,scored,False,False,False,False,no_down_types_listed forbidden_types_listed,jetson-agx-orin-devkit-64gb,,,,,1,1,0,1,1,2
+blind,s5-claude-sonnet,R71,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R72,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,1,5
+blind,s5-claude-sonnet,R73,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R74,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R75,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R76,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R77,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R78,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s5-claude-sonnet,R79,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,2,2,0,3,2,5
+blind,s5-claude-sonnet,R80,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed abstains_when_uncovered,coral-dev,,,,,2,2,0,3,2,5
+blind,s5-claude-sonnet,R81,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-orin-nano-devkit-nvme,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R82,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,jetson-orin-nano-devkit-nvme,,,,,1,1,0,1,0,2
+blind,s5-claude-sonnet,R83,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed abstains_when_uncovered,jetson-orin-nano-devkit-nvme,,,,,2,2,2,3,2,5
+blind,s5-claude-sonnet,R84,scored,False,False,False,False,abstains_when_uncovered,jetson-orin-nano-devkit-nvme,,,,,2,2,3,3,4,5
