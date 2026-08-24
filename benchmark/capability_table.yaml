@@ -1,0 +1,202 @@
+# CHI@Edge device capability table (benchmark v5)
+#
+# HAND-AUTHORED GROUND TRUTH. This is the load-bearing assumption of the
+# reservation suite and must be stated as such in any writeup.
+#
+# Why it exists: Blazar reports device_type and reservation state but no
+# capabilities at all (see advisor/inventory/catalog.py, which merges curated
+# data precisely because "a live sweep on its own silently empties them").
+# Five of the seven types live on CHI@Edge have ZERO artifact coverage, so for
+# those items "correct" is defined by this file, not by the corpus.
+#
+# Facts are vendor hardware specifications, not measurements and not artifact
+# claims. Where an artifact does cover a type, `covered_by` names it; capability
+# fields still come from the vendor spec so the two sources cannot silently mix.
+#
+# accelerator is the field that does the most work in the solver:
+#   none     - CPU only. No CUDA, no TPU.
+#   cuda     - NVIDIA GPU. Needs runtime: nvidia.
+#   edgetpu  - Google Edge TPU. int8-quantised TFLite ONLY. CUDA code will not
+#              run on it; this is the accelerator-confusion trap.
+
+version: '5.0'
+site: CHI@Edge
+snapshot_basis: edge_2026-08-13   # node counts cross-checked against this capture
+
+device_types:
+
+  raspberrypi4-64:
+    architecture: arm64
+    soc: BCM2711 (Cortex-A72 quad @ 1.5GHz)
+    accelerator: none              # VideoCore VI is display/video, not compute
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    ram_gb: 8
+    precisions: [fp32, int8]       # int8 via TFLite on CPU
+    runtime: null
+    peripherals: [camera, gpio, i2c, sense_hat]
+    device_profiles: [pi_libcamera, pi_sensehat, pi_gpio]
+    storage: sdcard
+    platform_version: 2
+    node_count: 36
+    covered_by: [A1, A2, A3, A6]
+    notes: >-
+      The only well-documented type on the site. That makes it the artifact-bias
+      trap: an artifact-anchored system reaches for it even when the workload
+      needs an accelerator it does not have.
+
+  raspberrypi5:
+    architecture: arm64
+    soc: BCM2712 (Cortex-A76 quad @ 2.4GHz)
+    accelerator: none              # VideoCore VII, no compute API
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    ram_gb: 8
+    precisions: [fp32, int8]
+    runtime: null
+    peripherals: [camera, gpio, i2c]
+    device_profiles: []            # no profile strings verified for Pi 5
+    storage: sdcard
+    platform_version: 2
+    node_count: 10
+    covered_by: [A5]
+    notes: >-
+      Roughly 2-3x the CPU inference throughput of the Pi 4. No Sense HAT
+      profile is verified for this type - benchmark item N15 exists because
+      no artifact states the Pi 5 machine_type.
+
+  jetson-nano:
+    architecture: arm64
+    soc: Tegra X1 (Cortex-A57 quad)
+    accelerator: cuda
+    cuda_compute: '5.3'            # Maxwell, 128 CUDA cores
+    cuda_cores: 128
+    tensor_cores: 0                # Maxwell predates tensor cores
+    ram_gb: 4                      # shared CPU/GPU
+    precisions: [fp32, fp16]
+    runtime: nvidia
+    peripherals: [camera, gpio, i2c]
+    device_profiles: []
+    storage: sdcard
+    platform_version: 2
+    node_count: 12
+    covered_by: []                 # UNCOVERED
+    notes: >-
+      Entry-level CUDA. JetPack 4.x era, CUDA 10.2 - too old for recent
+      containers, and 4 GB shared memory rules out larger models.
+
+  jetson-xavier-nx-devkit-emmc:
+    architecture: arm64
+    soc: Xavier NX
+    accelerator: cuda
+    cuda_compute: '7.2'            # Volta
+    cuda_cores: 384
+    tensor_cores: 48
+    dla_cores: 2
+    ram_gb: 8
+    precisions: [fp32, fp16, int8]
+    runtime: nvidia
+    peripherals: [camera, gpio, i2c]
+    device_profiles: []
+    storage: emmc
+    platform_version: 2
+    node_count: 4
+    covered_by: []                 # UNCOVERED
+    notes: >-
+      Capable mid-range part, but all 4 units are down in the 13 Aug capture.
+      The feasibility trap: right hardware, zero reservable.
+
+  jetson-orin-nano-devkit-nvme:
+    architecture: arm64
+    soc: Orin Nano
+    accelerator: cuda
+    cuda_compute: '8.7'            # Ampere
+    cuda_cores: 1024
+    tensor_cores: 32
+    dla_cores: 0                   # Orin Nano has no DLA
+    ram_gb: 8
+    precisions: [fp32, fp16, int8]
+    runtime: nvidia
+    peripherals: [camera, gpio, i2c]
+    device_profiles: []
+    storage: nvme
+    platform_version: 2
+    node_count: 3
+    covered_by: []                 # UNCOVERED
+    notes: NVMe makes it the sane choice when model weights are large.
+
+  jetson-agx-orin-devkit-64gb:
+    architecture: arm64
+    soc: AGX Orin 64GB
+    accelerator: cuda
+    cuda_compute: '8.7'
+    cuda_cores: 2048
+    tensor_cores: 64
+    dla_cores: 2
+    ram_gb: 64
+    precisions: [fp32, fp16, int8]
+    runtime: nvidia
+    peripherals: [camera, gpio, i2c]
+    device_profiles: []
+    storage: nvme
+    platform_version: 2
+    node_count: 1
+    covered_by: []                 # UNCOVERED
+    notes: >-
+      Highest CUDA throughput and by far the most memory on the site, and the
+      only free accelerator in the 13 Aug capture. Single unit, so any item
+      requesting count > 1 of this type is infeasible.
+
+  coral-dev:
+    architecture: arm64
+    soc: NXP i.MX8M (Cortex-A53 quad)
+    accelerator: edgetpu           # NOT cuda
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    edge_tpu_tops: 4
+    ram_gb: 1
+    precisions: [int8]             # Edge TPU is int8-only, full stop
+    runtime: null                  # libedgetpu / PyCoral, not the nvidia runtime
+    peripherals: [camera, gpio, i2c]
+    device_profiles: []
+    storage: emmc
+    platform_version: 2
+    node_count: 2
+    covered_by: []                 # UNCOVERED
+    notes: >-
+      The accelerator-confusion trap. It IS an accelerator, so a system matching
+      on the word "accelerator" picks it - but CUDA code cannot run on an Edge
+      TPU, and anything not int8-quantised cannot run on it either. Both units
+      are also down in the 13 Aug capture.
+
+# ---------------------------------------------------------------------------
+# Ranking rule used by the solver. Documented here because it defines what
+# "correct" means for every generated gold.
+#
+# 1. HARD FILTER. A type is a candidate only if it satisfies every requirement
+#    a workload stem declares (accelerator, precision, peripheral, min_ram_gb,
+#    min_cuda_compute) AND has at least one free device in the graded snapshot.
+#    Capability is expressed as requirements, never as a tie-break, so a weak
+#    device is excluded rather than merely ranked lower.
+#
+# 2. ORDER. Surviving candidates sort by:
+#       a. free device count, descending   - the advisor's job is to recommend a
+#                                            reservation that will actually succeed
+#       b. capability_score, descending    - headroom, as a tie-break only
+#       c. machine_type, ascending         - determinism
+#
+# 3. capability_score = cuda_cores + 8 * tensor_cores + ram_gb, or for edgetpu
+#    parts 256 * edge_tpu_tops + ram_gb. A crude proxy, used ONLY to order
+#    candidates that already passed the hard filter. It never admits or rejects.
+ranking:
+  primary: free_count
+  tiebreak: capability_score
+  final: machine_type
+  capability_score:
+    cuda_cores: 1
+    tensor_cores: 8
+    edge_tpu_tops: 256
+    ram_gb: 1

@@ -1,0 +1,54 @@
+# run_bench.py configuration — models and params are pinned HERE, not in code.
+# Node paths refer to the Chameleon P100 node (integration-testbed).
+
+# RETIRED 2026-08-21: the P100 node is permanently gone (SSH times out). Kept as
+# the record of where s1-s5 were collected. Nothing in run_bench.py reads this
+# block; only node_sync.sh did, via BENCH_NODE.
+# node:
+#   host: cc@129.114.108.156
+#   key: vivek.pem  # at the chameleon-work repo root
+
+fork:
+  # Local paths since the node died. expanduser is applied (run_bench.py:137) but
+  # not resolution against the repo, so "~"-prefixed beats a bare relative path,
+  # which would depend on the caller's cwd.
+  root: "~/Desktop/Chameleon Fellowship/chameleon-work/RAG-docs-chameleon"
+  advisor_root: "~/Desktop/Chameleon Fellowship/chameleon-work/chi-edge-advisor"
+  advisor_grounding: "~/Desktop/Chameleon Fellowship/chameleon-work/grounding"
+  gate: 1.0
+  # PROVENANCE, NOT CURRENT CONFIG. These values are what the s3-chatbot-noadv and
+  # s4-chatbot-adv arms actually executed against: the node's local Ollama serving
+  # qwen2.5:32b. They are retained deliberately - deleting them would destroy the
+  # provenance of results we are keeping. Applied with setdefault
+  # (run_bench.py:130), so exported env wins; new Tejas arms export their own.
+  env:
+    LLM_API_BASE: http://localhost:11434/v1
+    LLM_API_KEY: not-needed
+    LLM_MODEL: qwen2.5:32b-instruct-q4_K_M
+    LLM_PROVIDER: tejas
+    TEJAS_BASE_URL: http://localhost:11434/v1
+    TEJAS_MODEL: qwen2.5:32b-instruct-q4_K_M
+    TEJAS_API_KEY: not-needed
+    GROUNDING_DIR: /home/cc/grounding
+    ADVISOR_OFFLINE: "false"
+
+# API adapters are CODE-ONLY for now (user decision, zero spend): no keys are
+# configured and run_bench refuses to run them without one; only --dry-run works.
+# Update the model strings before any future real run.
+anthropic:
+  system: s3-sonnet
+  model: claude-sonnet-5
+  params:
+    max_tokens: 2048
+    temperature: 0.0
+
+openai:
+  system: s2-gpt
+  model: gpt-4o # placeholder — set to the exact model used for s2-gpt before any real run
+  params:
+    max_tokens: 2048
+    temperature: 0.0
+
+pilot:
+  # setup / OO-API / multi-device ACT / edge ACT / V1 snapshot-exec spread
+  items: [P01, P16, N01, N06, AV01]

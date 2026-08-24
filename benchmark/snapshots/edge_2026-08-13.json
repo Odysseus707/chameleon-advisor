@@ -1,0 +1,907 @@
+{
+ "_meta": {
+  "SYNTHETIC": false,
+  "variant": "base",
+  "note": "Recorded CHI@Edge state via Blazar, reshaped from a probe_availability.py capture. Real data.",
+  "site": "CHI@Edge",
+  "recorded": "2026-08-14T01:08:29.313969+00:00",
+  "source_sha256": "e2ef1c75c02ecf8ceb3f4f5c8d4a5edebbd924951bf646ca048d5f47d1619bfa",
+  "schema": [
+   "device_name",
+   "device_type",
+   "status",
+   "free",
+   "reservable",
+   "uuid",
+   "supported_device_profiles",
+   "authorized_projects",
+   "owning_project"
+  ]
+ },
+ "devices": [
+  {
+   "device_name": "candlestick1-pi4",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "17665e4d-57ab-4fb5-8428-b28c2d081e41",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "ft-nano-1",
+   "device_type": "jetson-nano",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "da71d5c2-1f87-4917-9696-9d15b100cd55",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "ft-rpi4-3",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "13c3f341-8d15-4736-b604-eb93bd404942",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-agx-orin-01",
+   "device_type": "jetson-agx-orin-devkit-64gb",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "9f138b97-378c-495b-a51f-b470d0e9097a",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-jetson01",
+   "device_type": "jetson-nano",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "cfdbcedb-4e35-45cf-9a40-927d101e49f6",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-jetson02",
+   "device_type": "jetson-nano",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "b7c2a99b-ead2-4f2f-ba74-4bdcf1393e6d",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-jetson03",
+   "device_type": "jetson-nano",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "bb80fc02-5cb0-4244-bdfa-966c5987d033",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-jetson04",
+   "device_type": "jetson-nano",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "5984ce88-88bb-4b85-9dd9-d5c6d1b2c0b9",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-jetson05",
+   "device_type": "jetson-nano",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "cb81288a-b0c1-481d-9a66-74c953c032dd",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-jetson06",
+   "device_type": "jetson-nano",
+   "status": "busy",
+   "free": false,
+   "reservable": true,
+   "uuid": "c5adaf3f-3bd0-4352-ada1-282b89bba153",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-jetson07",
+   "device_type": "jetson-nano",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "756849dd-46d3-4a2e-9858-6971f0a5b02a",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-jetson08",
+   "device_type": "jetson-nano",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "080b200a-f6aa-4fb2-8057-37c584303546",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-jetson09",
+   "device_type": "jetson-nano",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "d12f8446-6b0c-4a57-90a0-9c0c1af7a53d",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-jetson10",
+   "device_type": "jetson-nano",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "303d4656-f099-426a-a26c-f548681a478a",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-jetson11",
+   "device_type": "jetson-nano",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "fad49167-d6a1-4fa1-ade3-3a6a6d30da2d",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-orin-nano-01",
+   "device_type": "jetson-orin-nano-devkit-nvme",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "5f4cd0da-0f07-440f-a97f-62387777f988",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-orin-nano-02",
+   "device_type": "jetson-orin-nano-devkit-nvme",
+   "status": "busy",
+   "free": false,
+   "reservable": true,
+   "uuid": "32a22229-dec9-41d1-8c8a-15108f085037",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-orin-nano-03",
+   "device_type": "jetson-orin-nano-devkit-nvme",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "0a6621bf-9bae-48b7-a29b-7a47ed6175de",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi-cm4-02",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "078b9626-4c85-4a10-9df7-84664b4c1ba7",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi-cm4-03",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "dcf1b94e-8051-4761-a2db-0d5b64ad1435",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi-cm4-04",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "99a7c792-484f-4965-b9ea-da12f9082ed2",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0007",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "ec0f36a9-98cb-4798-b775-7865e2c68756",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0008",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "75b9fe63-559c-433c-8a57-768ad8c73033",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0009",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "9ea1890f-d415-4d37-9394-a1a0a3e435f3",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0013",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "1faee4ba-04f8-45ff-847d-efbee7ee21b4",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0014",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "c8a29430-dfcd-4dad-a617-ea8286b45b91",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0015",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "1aa4e656-6863-496f-bede-3b79a5f36712",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0016",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "e206afdb-f057-4612-85b1-502381a41a8b",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0017",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "2cee137d-90c5-4652-be37-df9d8fd6fb4c",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0018",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "d2236f1d-96f8-4ab0-b574-a176f91b93f5",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0019",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "89cd8d93-d7a7-4f9c-b38d-0b700a050c93",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0020",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "f4a6ece3-90c2-48af-989e-967d40d4f42f",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0023",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "34731c33-be7f-48fc-ba27-42ce2c166ab9",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0025",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "f9922aa4-4f7f-4e57-a1bb-84113d42a7da",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0026",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "6657d744-f789-4a9c-9181-19d9335ec015",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0027",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "085665d0-00cc-452b-8ff7-6ac3b1ea9ea4",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0028",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "1faf0e21-7a3f-48bc-a94f-6db459837cd3",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0029",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "a42ee0de-8f53-4be0-bd58-1b57fb909eb5",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-0030",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "4db9a58f-f25b-4de5-a402-6a1282c7f043",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-01",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "b3437b33-048d-4809-ad7e-7b8d186195a4",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-02",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "4ece5ce4-6166-4d19-8de0-73819144b78c",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-03",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "df8be065-808e-41cd-b708-05b8c9be75ee",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-04",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "1db4a99d-0b08-4fc3-9700-73e00569da64",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-picam-ov5647",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "caac62ba-a50e-4d7d-b23b-b811236eb690",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-picam2",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "0594b0b2-01ea-40ee-b0ce-692528d3b934",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi4-picam3",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "0f80b54b-1ffc-406e-9148-81273f9a6bff",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi5-nvme-01",
+   "device_type": "raspberrypi5",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "ce739609-9134-4ad2-9f27-19c7aaf89405",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-rpi5-nvme-02",
+   "device_type": "raspberrypi5",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "5e0195bf-cb00-4bbf-9ef3-bdbc2700cf24",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-xavier-nx-01",
+   "device_type": "jetson-xavier-nx-devkit-emmc",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "99362e95-043f-4b13-99aa-de3951888342",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-xavier-nx-02",
+   "device_type": "jetson-xavier-nx-devkit-emmc",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "35dde260-8c21-4841-9d64-381cb3c1435b",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-xavier-nx-03",
+   "device_type": "jetson-xavier-nx-devkit-emmc",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "b70044df-0ece-4965-9fa6-41e54eb90420",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "iot-xavier-nx-04",
+   "device_type": "jetson-xavier-nx-devkit-emmc",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "4a9c3cce-d993-48f7-922c-1f6e0c9b6f86",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "michael-rpi4-2",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "73fa0504-ff50-47bc-ab2d-4d5f516a0e8e",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "nyu-coral-01",
+   "device_type": "coral-dev",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "146bbbb5-b1d4-493e-8a2a-05e554961d85",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "nyu-coral-02",
+   "device_type": "coral-dev",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "b75a24d5-da5f-4d76-9179-fc7b23a39090",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "nyu-rpi-01",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "d1f0d912-ce1c-40c7-b9e6-934b38498d11",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "nyu-rpi5-01",
+   "device_type": "raspberrypi5",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "c516acb2-4c88-42be-857f-2f9eb4139f99",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "nyu-rpi5-02",
+   "device_type": "raspberrypi5",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "8334d598-d25d-4dbb-a416-d90f8e93ccc4",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "nyu-rpi5-03",
+   "device_type": "raspberrypi5",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "a755b236-580e-4040-874c-80501f00f954",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "nyu-rpi5-04",
+   "device_type": "raspberrypi5",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "9a7823ea-bf40-4141-b7d7-943bfb389091",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "nyu-rpi5-05",
+   "device_type": "raspberrypi5",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "54a6e248-cbb2-472d-bde7-0b4ac3bd911a",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "nyu-rpi5-06",
+   "device_type": "raspberrypi5",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "52341ad4-ff91-4516-a3ec-88687a8d984b",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "nyu-rpi5-07",
+   "device_type": "raspberrypi5",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "7bfe3fe8-6f1e-41a4-8d9a-aa9668db8805",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "rpi-llc-2",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "32a7e232-271c-4cda-b1c0-2c4115c68f8f",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "rpi4-32",
+   "device_type": "raspberrypi4-64",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "89df3e86-0294-4abe-936c-8e874e38c5ca",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "soarm101-1",
+   "device_type": "raspberrypi5",
+   "status": "free",
+   "free": true,
+   "reservable": true,
+   "uuid": "eb17c73b-524d-4a33-9da0-fee0639708d4",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "yichi-rpi4-02",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "db6b265d-eafa-487d-b609-97ac12167cad",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  },
+  {
+   "device_name": "yichi-rpi4-03",
+   "device_type": "raspberrypi4-64",
+   "status": "down",
+   "free": false,
+   "reservable": false,
+   "uuid": "fd45b72a-410a-4bed-8ea4-038663332afb",
+   "supported_device_profiles": [],
+   "authorized_projects": [
+    "all"
+   ],
+   "owning_project": "chameleon"
+  }
+ ]
+}

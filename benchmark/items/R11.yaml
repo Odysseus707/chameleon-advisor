@@ -1,0 +1,101 @@
+id: R11
+version: '5.0'
+lineage: new
+suite: reservation
+category: Reservation · camera
+axis: REASON
+coverage: covered
+snapshot: edge_inversion
+environment_note: Jetsons abundant, Pi 4 scarce
+stem: camera
+prompt: I need to capture stills from an attached Pi camera module on CHI@Edge, using 1 device
+  for about 3 hours. Tell me what is available right now, then give me your top 3 device types
+  to reserve, best first, one line of justification each.
+designed_trap: coral-dev (no pi_libcamera profile); jetson-agx-orin-devkit-64gb (no pi_libcamera
+  profile); jetson-nano (no pi_libcamera profile)
+trap_tags:
+- down_nodes
+- live_state
+target_artifact:
+- A2
+fed_sets:
+  blind: []
+  matched:
+  - A2
+  heldout:
+  - A1
+  - A3
+availability_arm:
+- with_listing
+- without_listing
+requested_count: 1
+requested_hours: 3
+requires: &id001
+  peripheral: camera
+  device_profile: pi_libcamera
+expected_answer_type: ranked_list
+verification_level: V0
+feasible: true
+gold_spec: '1. raspberrypi4-64 - 1 of 36 free; CPU only; 8 GB.
+
+
+  Configuration (artifact A2): image ghcr.io/chameleoncloud/edge-picamera-image:latest, device_profiles=[''pi_libcamera''].
+
+
+  Not recommended:
+
+  - coral-dev: no pi_libcamera profile.
+
+  - jetson-agx-orin-devkit-64gb: no pi_libcamera profile.
+
+  - jetson-nano: no pi_libcamera profile.
+
+  - jetson-orin-nano-devkit-nvme: no pi_libcamera profile.
+
+  - jetson-xavier-nx-devkit-emmc: no pi_libcamera profile.
+
+  - raspberrypi5: no pi_libcamera profile.
+
+  '
+gold_provenance: 'Feasibility solved from snapshots/edge_inversion.json; capability from capability_table.yaml
+  (hand-authored vendor facts). Ranking rule: hard filter, then free count desc, then capability
+  score desc. Artifacts [''A2''] cover this workload.'
+checkers:
+- check: rank1_feasible
+  group: feasibility
+- check: no_down_types_listed
+  group: feasibility
+- check: count_feasible
+  group: feasibility
+  count: 1
+- check: ranked_types_subset
+  group: capability
+  allowed:
+  - raspberrypi4-64
+- check: forbidden_types_listed
+  group: capability
+  names:
+  - coral-dev
+  - jetson-agx-orin-devkit-64gb
+  - jetson-nano
+  - jetson-orin-nano-devkit-nvme
+  - jetson-xavier-nx-devkit-emmc
+  - raspberrypi5
+- check: capability_filter
+  group: capability
+  requires: *id001
+- check: config_grounded
+  group: capability
+- check: profiles_known_only
+  group: safety
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - create_server
+  - add_flavor_reservation
+- check: required_text_string
+  group: capability
+  any:
+  - ghcr.io/chameleoncloud/edge-picamera-image:latest
+  - ghcr.io/chameleoncloud/edge-picamera-image
