@@ -2329,17 +2329,11 @@
     },
     {
       "item": "R49",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R49",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2353,17 +2347,11 @@
     },
     {
       "item": "R50",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R50",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2377,17 +2365,11 @@
     },
     {
       "item": "R51",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R51",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2401,17 +2383,11 @@
     },
     {
       "item": "R52",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R52",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2425,17 +2401,11 @@
     },
     {
       "item": "R53",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R53",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2449,17 +2419,11 @@
     },
     {
       "item": "R54",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R54",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2473,17 +2437,11 @@
     },
     {
       "item": "R55",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R55",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2497,17 +2455,11 @@
     },
     {
       "item": "R56",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R56",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2521,17 +2473,11 @@
     },
     {
       "item": "R57",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R57",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2545,17 +2491,11 @@
     },
     {
       "item": "R58",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R58",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2569,17 +2509,11 @@
     },
     {
       "item": "R59",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R59",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2593,17 +2527,11 @@
     },
     {
       "item": "R60",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R60",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2617,17 +2545,11 @@
     },
     {
       "item": "R61",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R61",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2641,17 +2563,11 @@
     },
     {
       "item": "R62",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R62",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2665,17 +2581,11 @@
     },
     {
       "item": "R63",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R63",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2689,17 +2599,11 @@
     },
     {
       "item": "R64",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R64",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2713,17 +2617,11 @@
     },
     {
       "item": "R65",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R65",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2737,17 +2635,11 @@
     },
     {
       "item": "R66",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R66",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2761,17 +2653,11 @@
     },
     {
       "item": "R67",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R67",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2785,17 +2671,11 @@
     },
     {
       "item": "R68",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R68",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2809,17 +2689,11 @@
     },
     {
       "item": "R69",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R69",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2833,17 +2707,11 @@
     },
     {
       "item": "R70",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R70",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2857,17 +2725,11 @@
     },
     {
       "item": "R71",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R71",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2881,17 +2743,11 @@
     },
     {
       "item": "R72",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R72",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2905,17 +2761,11 @@
     },
     {
       "item": "R73",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R73",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2929,17 +2779,11 @@
     },
     {
       "item": "R74",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R74",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2953,17 +2797,11 @@
     },
     {
       "item": "R75",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R75",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -2977,17 +2815,11 @@
     },
     {
       "item": "R76",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R76",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -3001,17 +2833,11 @@
     },
     {
       "item": "R77",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R77",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -3025,17 +2851,11 @@
     },
     {
       "item": "R78",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R78",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -3049,17 +2869,11 @@
     },
     {
       "item": "R79",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R79",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -3073,17 +2887,11 @@
     },
     {
       "item": "R80",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R80",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -3097,17 +2905,11 @@
     },
     {
       "item": "R81",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R81",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -3121,17 +2923,11 @@
     },
     {
       "item": "R82",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R82",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -3145,17 +2941,11 @@
     },
     {
       "item": "R83",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R83",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true
@@ -3169,17 +2959,11 @@
     },
     {
       "item": "R84",
-      "condition": "matched",
-      "fed": [],
-      "tier": "blind",
-      "detail": "no fed artifacts"
-    },
-    {
-      "item": "R84",
-      "condition": "heldout",
+      "condition": "uncovered",
       "fed": [
         "A1",
-        "A2"
+        "A2",
+        "A3"
       ],
       "tier": "T1",
       "single_artifact_covers": true

@@ -217,7 +217,21 @@ class AnthropicAdapter:
                       "llm_s": round(time.time() - t0, 2)}
 
 
+#: Any endpoint other than this one is treated as self-hosted, where a key is
+#: usually not required (Ollama, vLLM) and a placeholder is correct.
+OPENAI_DEFAULT_BASE = "https://api.openai.com/v1"
+
+
 class OpenAIAdapter:
+    """Any endpoint that speaks /v1/chat/completions.
+
+    That is deliberately broader than OpenAI: with --base-url this reaches
+    Ollama, vLLM, LiteLLM gateways (the TACC Tejas endpoint among them) and
+    together.ai unchanged. It is the path that lets someone evaluate their own
+    model against this benchmark without an OpenAI account, so the key
+    requirement is enforced only for api.openai.com itself.
+    """
+
     name = "openai"
 
     def prepare(self, cfg: dict, dry_run: bool = False):
@@ -225,13 +239,25 @@ class OpenAIAdapter:
         self.model = c.get("model", "")
         self.params = dict(c.get("params") or {})
         self.system_dir = c.get("system", "s2-gpt")
+        self.base_url = (c.get("base_url")
+                         or os.environ.get("OPENAI_BASE_URL")
+                         or os.environ.get("LLM_API_BASE")
+                         or OPENAI_DEFAULT_BASE)
+        key = (os.environ.get("OPENAI_API_KEY")
+               or os.environ.get("LLM_API_KEY") or "")
+        self_hosted = self.base_url.rstrip("/") != OPENAI_DEFAULT_BASE
         if dry_run:
             return
-        if not os.environ.get("OPENAI_API_KEY"):
-            raise SystemExit("OPENAI_API_KEY not set — API runs are disabled by "
-                             "policy (zero spend); use --dry-run.")
+        if not key:
+            if not self_hosted:
+                raise SystemExit(
+                    "OPENAI_API_KEY not set. For a self-hosted or gateway "
+                    "endpoint pass --base-url; only api.openai.com requires a "
+                    "key here.")
+            # Ollama and vLLM ignore the key but the SDK insists on a string.
+            key = "not-needed"
         from openai import OpenAI  # noqa: PLC0415
-        self.client = OpenAI()
+        self.client = OpenAI(base_url=self.base_url, api_key=key)
 
     def answer(self, item_id: str, prompt_text: str):
         def call():
@@ -244,6 +270,7 @@ class OpenAIAdapter:
         t0 = time.time()
         text = with_retries(call)
         return text, {"model": self.model, "params": self.params,
+                      "base_url": self.base_url,
                       "llm_s": round(time.time() - t0, 2)}
 
 
@@ -424,7 +451,14 @@ def main():
     ap.add_argument("--advisor", default="on", choices=["on", "off"],
                     help="fork adapter: advisor room enabled? (-> s4/s5 system dir)")
     ap.add_argument("--conditions", default="blind",
-                    help="comma-separated (API adapters); fork is always blind")
+                    help="comma-separated; blind by default for every adapter "
+                         "(the fed conditions paste whole artifacts into the "
+                         "question, which collapses the advisor A/B - see "
+                         "collect_runs.py)")
+    ap.add_argument("--base-url", default="",
+                    help="openai adapter: any /v1 endpoint (Ollama, vLLM, "
+                         "LiteLLM, Tejas). Default is api.openai.com, the only "
+                         "endpoint for which a key is required.")
     ap.add_argument("--items", default="",
                     help="comma-separated item ids (default: all with prompts)")
     ap.add_argument("--system", default="", help="override target system dir")
@@ -437,6 +471,8 @@ def main():
     args = ap.parse_args()
 
     cfg = yaml.safe_load(Path(args.config).read_text()) or {}
+    if args.base_url:
+        cfg.setdefault("openai", {})["base_url"] = args.base_url
 
     if args.pilot:
         cmd_pilot(cfg, args)
@@ -447,17 +483,24 @@ def main():
     adapter = adapters[args.adapter]()
     adapter.prepare(cfg, dry_run=args.dry_run)
 
+    # Every adapter honours --conditions. This used to be hardcoded to
+    # ["blind"] for the fork adapter, which silently discarded the flag: asking
+    # for another condition appeared to work and quietly collected blind.
+    conditions = [c.strip() for c in args.conditions.split(",") if c.strip()]
+    for c in conditions:
+        if c not in CONDITIONS:
+            raise SystemExit(f"unknown condition {c!r} (choose from {CONDITIONS})")
+
     if args.adapter == "fork":
         adapter.advisor_on = args.advisor == "on"
         if adapter.advisor_on and not args.dry_run:
             adapter.warm_advisor()
-        conditions = ["blind"]
         system = args.system or FORK_SYSTEMS[adapter.advisor_on]
+        if conditions != ["blind"]:
+            print(f"NOTE: fork adapter with conditions={conditions}. The fed "
+                  "conditions paste artifacts into the question, which is not "
+                  "what the deployed chatbot sees; blind is the controlled arm.")
     else:
-        conditions = [c.strip() for c in args.conditions.split(",") if c.strip()]
-        for c in conditions:
-            if c not in CONDITIONS:
-                raise SystemExit(f"unknown condition {c!r} (choose from {CONDITIONS})")
         system = args.system or adapter.system_dir
 
     for condition in conditions:
