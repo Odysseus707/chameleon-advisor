@@ -1,4 +1,4 @@
-"""Router ablation: tree vs flat retrieval routing over the benchmark_v4 items.
+"""Router ablation: tree vs flat retrieval routing over the benchmark items.
 
 For every benchmark item, run the prompt through the flat RetrievalRouter and
 the hierarchical RouterTree, then score whether the item's source artifact
@@ -14,7 +14,7 @@ Items with no scoreable source — targets with no router counterpart (A4, the
 bare-metal distractor) or an empty ``target_artifact`` (designed no-source
 items) — are flagged ``covered=false`` and excluded from the aggregates.
 
-Emits Table A7 (tree vs flat) to benchmark_v4/exports/ablation_A7.{md,json}.
+Emits Table A7 (tree vs flat) to benchmark/exports/ablation_A7.{md,json}.
 
 Usage (from chi-edge-advisor/):
     .venv/bin/python tools/ablate_router.py [--l1-k 2] [--l2-k 3] [--embedder hashing|auto]
@@ -176,10 +176,10 @@ def render_markdown(config, agg, rows):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument(
-        "--items", default=str(_HERE.parent.parent / "benchmark_v4" / "items")
+        "--items", default=str(_HERE.parent.parent / "benchmark" / "items")
     )
     ap.add_argument(
-        "--out", default=str(_HERE.parent.parent / "benchmark_v4" / "exports")
+        "--out", default=str(_HERE.parent.parent / "benchmark" / "exports")
     )
     ap.add_argument("--l1-k", type=int, default=2, dest="l1_k")
     ap.add_argument("--l2-k", type=int, default=3, dest="l2_k")

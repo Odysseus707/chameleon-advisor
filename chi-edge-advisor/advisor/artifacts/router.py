@@ -9,12 +9,15 @@ Given a plain-language workload, the router:
 """
 from __future__ import annotations
 
+import logging
 import re
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
 from .registry import ARTIFACTS_BY_ID
 from .store import ArtifactStore, RetrievedChunk
+
+log = logging.getLogger(__name__)
 
 _TOKEN = re.compile(r"[a-z0-9]+")
 
@@ -127,11 +130,86 @@ class RetrievalRouter:
         return budget
 
     # -- 4. retrieve + assemble ------------------------------------------
+    def _llm_pick(self, workload: str) -> "str | None":
+        """Ask a model which artifact matches the user's intent.
+
+        classify() scores by literal word overlap with tags and titles, so it
+        cannot connect "I want to work with cameras" to the picamera artifact
+        when the words do not line up - it has been observed routing that
+        request to the SSH artifact instead. Intent matching is what a model is
+        good at, so it is asked directly.
+
+        Returns None when disabled or unreachable, in which case the caller
+        keeps the lexical ordering untouched. Off by default so collected
+        benchmark runs stay reproducible.
+        """
+        import json
+        import os
+        import urllib.request
+
+        if os.environ.get("ADVISOR_LLM_ROUTER", "false").lower() not in {
+                "1", "true", "yes", "on"}:
+            return None
+
+        catalog = "\n".join(
+            "%s: %s%s (tags: %s)" % (
+                aid, meta.title,
+                " - " + meta.use_case if getattr(meta, "use_case", "") else "",
+                ", ".join(meta.tags))
+            for aid, meta in ARTIFACTS_BY_ID.items()
+        )
+        prompt = (
+            "Pick the ONE reference artifact that best matches what the user "
+            "wants to do.\n\nArtifacts:\n" + catalog +
+            "\n\nReply with exactly one artifact id from the list above, or NONE "
+            "if none of them fit.\n\nUser request: " + workload
+        )
+        # Same resolution as rag.py and advisor_room.judge: LLM_* first, TEJAS_*
+        # as fallback, then the real gateway. No key default on purpose - a
+        # placeholder key turns a missing credential into a silent 401, and this
+        # path then falls back to lexical ordering without saying so.
+        base = (os.environ.get("LLM_API_BASE") or os.environ.get("TEJAS_BASE_URL")
+                or "https://ai.tejas.tacc.utexas.edu/v1").rstrip("/")
+        model = (os.environ.get("LLM_MODEL") or os.environ.get("TEJAS_MODEL")
+                 or "Meta-Llama-3.3-70B-Instruct")
+        key = os.environ.get("LLM_API_KEY") or os.environ.get("TEJAS_API_KEY") or ""
+        body = json.dumps({
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0,
+            "max_tokens": 16,
+        }).encode()
+        req = urllib.request.Request(
+            base + "/chat/completions", data=body,
+            headers={"Content-Type": "application/json",
+                     "Authorization": "Bearer " + key},
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                reply = json.load(resp)["choices"][0]["message"]["content"]
+        except Exception as err:
+            log.warning("llm router unreachable: %s", err)
+            return None
+
+        # Scan the whole reply rather than the first token: the model often
+        # answers "The best match is edge_ssh_image", and taking token[0] threw
+        # the answer away and silently fell back to lexical order. Earliest
+        # mentioned id wins. Matching against the registry means a hallucinated
+        # name can never enter provenance.
+        hits = [(reply.find(aid), aid) for aid in ARTIFACTS_BY_ID if aid in reply]
+        return min(hits)[1] if hits else None
+
     def route(self, workload: str) -> RetrievalResult:
         scores = self.classify(workload)
+        picked = self._llm_pick(workload)
+        if picked is not None:
+            # Lift the intent match above every lexical score so _select ranks it
+            # first, while leaving the relative order of the rest intact.
+            scores = dict(scores)
+            scores[picked] = max(scores.values(), default=0.0) + 1.0
         selected = self._select(scores)
         budget = self._budget(selected, scores)
-        return self._finish(workload, scores, selected, budget)
+        return self._finish(workload, scores, selected, budget, prefer=picked)
 
     def _finish(
         self,
@@ -139,6 +217,7 @@ class RetrievalRouter:
         scores: Dict[str, float],
         selected: List[str],
         budget: Dict[str, int],
+        prefer: Optional[str] = None,
     ) -> RetrievalResult:
         chunks: List[RetrievedChunk] = []
         for aid in selected:
@@ -151,6 +230,13 @@ class RetrievalRouter:
         for c in chunks:
             if c.artifact_id not in provenance:
                 provenance.append(c.artifact_id)
+
+        # provenance is ordered by chunk similarity, which is not the same as the
+        # selection order. The reasoner reads provenance[0], so an intent pick
+        # has to be lifted here or it never reaches the recommendation. Done
+        # before machine_types is derived below so both stay consistent.
+        if prefer and prefer in provenance:
+            provenance = [prefer] + [a for a in provenance if a != prefer]
 
         context_text = self._assemble(chunks)
         # Union over provenance order first (artifacts that actually grounded

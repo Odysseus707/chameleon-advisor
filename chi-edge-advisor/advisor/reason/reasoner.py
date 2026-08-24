@@ -138,6 +138,39 @@ class Reasoner:
 
     # -- deterministic fallback ------------------------------------------
     @staticmethod
+    def _parse_request(text: str) -> "tuple[int | None, float | None]":
+        """Pull the requested device count and lease length out of the question.
+
+        Returns (count, hours), either of which may be None when the user did not
+        say. Callers keep their own defaults for that case rather than inventing a
+        number the user never asked for.
+        """
+        import re
+
+        words = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6}
+        unit_hours = {"minute": 1 / 60, "min": 1 / 60,
+                      "hour": 1.0, "hr": 1.0, "day": 24.0, "week": 168.0}
+
+        count = None
+        # Allow a few words between the number and the noun so that phrasing like
+        # "40 raspberry pi devices" is not read as a request for one device.
+        m = re.search(r"(\d+)\s*(?:x\s*)?(?:[a-z0-9-]+\s+){0,3}?"
+                      r"(?:device|node|board|pi|unit)s?\b", text, re.I)
+        if m:
+            count = int(m.group(1))
+        else:
+            for word, n in words.items():
+                if re.search(rf"\b{word}\s+(?:device|node|board|pi|unit)s?\b", text, re.I):
+                    count = n
+                    break
+
+        hours = None
+        m = re.search(r"(\d+(?:\.\d+)?)\s*(minute|min|hour|hr|day|week)s?\b", text, re.I)
+        if m:
+            hours = float(m.group(1)) * unit_hours[m.group(2).lower()]
+        return count, hours
+
+    @staticmethod
     def _heuristic(
         workload: str,
         availability: List[DeviceAvailability],
@@ -145,9 +178,33 @@ class Reasoner:
         retrieval: RetrievalResult,
     ) -> Recommendation:
         """Explainable non-LLM recommendation driven by artifact provenance."""
-        aid = retrieval.provenance[0] if retrieval.provenance else None
-        meta = ARTIFACTS_BY_ID.get(aid) if aid else None
-        machine_type = meta.machine_types[0] if meta else "raspberrypi4-64"
+        import os
+        state_aware = os.environ.get("ADVISOR_STATE_AWARE", "false").lower() in {
+            "1", "true", "yes", "on"}
+
+        # Every (artifact, machine_type) the retrieval actually grounds, in rank
+        # order. Capability comes from here and only here: availability may
+        # filter this list but must never add a type no artifact supports.
+        pairs = [(pid, pmeta, mt)
+                 for pid in retrieval.provenance
+                 if (pmeta := ARTIFACTS_BY_ID.get(pid))
+                 for mt in pmeta.machine_types]
+        aid, meta, machine_type = pairs[0] if pairs else (None, None, "raspberrypi4-64")
+
+        free_by_type = {}
+        for d in availability:
+            if d.free_now:
+                free_by_type.setdefault(d.machine_type, []).append(d)
+
+        # The state-blind path fixed machine_type from provenance[0] and only
+        # then looked at availability, so the pick never moved with the site.
+        switched_from = None
+        if state_aware and free_by_type and machine_type not in free_by_type:
+            for pid, pmeta, mt in pairs:
+                if mt in free_by_type:
+                    switched_from = machine_type
+                    aid, meta, machine_type = pid, pmeta, mt
+                    break
 
         inv = {dt.machine_type: dt for dt in inventory}
         dt = inv.get(machine_type)
@@ -156,13 +213,52 @@ class Reasoner:
         )
         gpu = bool(meta.gpu) if meta else bool(dt.gpu if dt else False)
 
-        # Prefer a device that is free_now (or unknown) of the right type.
-        device_name = None
         candidates = [d for d in availability if d.machine_type == machine_type]
         free = [d for d in candidates if d.free_now]
-        chosen_pool = free or candidates
-        if chosen_pool:
-            device_name = chosen_pool[0].device_uid
+        if state_aware:
+            # Never name a device that is not free: a busy or down device yields
+            # a spec that cannot be submitted.
+            device_name = free[0].device_uid if free else None
+        else:
+            chosen_pool = free or candidates
+            device_name = chosen_pool[0].device_uid if chosen_pool else None
+
+        # How many, and for how long. Previously both were hardcoded (1 device,
+        # 3 hours) so the answer ignored what the user actually asked for.
+        req_count, req_hours = Reasoner._parse_request(workload)
+        count = (req_count or 1) if state_aware else 1
+        duration_hours = (req_hours or 3) if state_aware else 3
+
+        # A default the user never asked for must not read like a recommendation.
+        # Naming it as an assumption is the difference between a usable answer and
+        # a confident invention.
+        assumed = []
+        if state_aware and req_count is None:
+            assumed.append(f"{count} device" + ("s" if count != 1 else ""))
+        if state_aware and req_hours is None:
+            assumed.append(f"{duration_hours:g} h")
+        assume_note = ""
+        if assumed:
+            assume_note = ("You did not say how many or for how long, so this assumes "
+                           + " for ".join(assumed)
+                           + " - give a count and a duration and this can be redone. ")
+
+        count_note = ""
+        if state_aware and free_by_type and count > len(free):
+            count_note = (f"Requested {count} devices but only {len(free)} of "
+                          f"{machine_type} are free right now. ")
+
+        hold_note = ""
+        if state_aware and device_name:
+            # available_hours is None when nothing is booked after this device,
+            # so None means unbounded here, not unknown.
+            hold = free[0].available_hours if free else None
+            if hold is not None and hold < duration_hours:
+                hold_note = (f"It is free for only {hold:.1f} h, short of the "
+                             f"{duration_hours:g} h requested. ")
+            else:
+                hold_note = (f"Hold it for the {duration_hours:g} h requested; no "
+                             f"later reservation blocks it. ")
 
         runtime = "nvidia" if gpu else None
         exposed_ports = [22] if (meta and meta.artifact_id == "edge_ssh_image") else []
@@ -172,10 +268,17 @@ class Reasoner:
             f"'{aid}' -> machine_type {machine_type} ({architecture}"
             f"{', gpu' if gpu else ''}). "
             + (
+                f"Switched from {switched_from} (no free device) to {machine_type} "
+                f"on live availability. " if switched_from else ""
+            )
+            + (
                 f"Selected free device {device_name}. "
                 if device_name and free
                 else "No live-free device confirmed; verify availability. "
             )
+            + assume_note
+            + count_note
+            + hold_note
             + f"Image {meta.image if meta else 'n/a'} from the grounded artifact."
         )
         # Site and grammar come from the catalog, which observed them from
@@ -186,8 +289,8 @@ class Reasoner:
 
         return Recommendation(
             machine_type=machine_type,
-            count=1,
-            duration_hours=3,
+            count=count,
+            duration_hours=duration_hours,
             architecture=architecture,
             image=meta.image if meta else "",
             reasoning=reason,

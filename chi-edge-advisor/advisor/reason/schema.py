@@ -31,6 +31,11 @@ class Recommendation:
     site: Optional[str] = None
     api_family: str = "edge"  # "edge" | "kvm" | "baremetal"
 
+    # Ranked fallbacks, best first, excluding machine_type itself. The
+    # reservation benchmark grades a top-3 rather than a single pick, because a
+    # recommendation whose only option is unreservable is not actionable.
+    alternatives: List[str] = field(default_factory=list)
+
     # provenance: artifact_ids that grounded this recommendation
     grounded_by: List[str] = field(default_factory=list)
     # which reasoner produced it: "tejas" | "anthropic" | "heuristic"
@@ -60,6 +65,7 @@ class Recommendation:
             gpu=bool(pick("gpu", default=False)),
             site=pick("site"),
             api_family=pick("api_family", default="edge"),
+            alternatives=list(pick("alternatives", "fallbacks", default=[]) or []),
             grounded_by=list(pick("grounded_by", "artifact_ids", default=[]) or []),
             produced_by=pick("produced_by", default="unknown"),
         )

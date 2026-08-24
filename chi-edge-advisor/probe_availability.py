@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Live Chameleon availability with reservation windows, per node, per site.
 
-  python probe_availability.py --rc "~/Downloads/app-cred-*-openrc.sh"
-  python probe_availability.py --rc "..." --nodes            # per-node detail
-  python probe_availability.py --rc "..." --xlsx            # -> data/availability.xlsx
-  python probe_availability.py --rc "..." --json
+  python probe_availability.py                               # every site in credentials/
+  python probe_availability.py --nodes                       # per-node detail
+  python probe_availability.py --xlsx                        # -> data/availability.xlsx
+  python probe_availability.py --json
+  python probe_availability.py --rc "other/*openrc.sh"       # override the location
   python probe_availability.py --reference                   # static API check
 
 - Live state is in Blazar (one per site); the portal Host Calendar is a Blazar view.
@@ -38,6 +39,7 @@ sys.path.insert(0, __file__.rsplit("/", 1)[0])
 # whatever directory the command happened to run from.
 HERE = pathlib.Path(__file__).resolve().parent
 DEFAULT_XLSX = HERE / "data" / "availability.xlsx"
+DEFAULT_RC = HERE.parent / "credentials" / "*openrc.sh"
 
 from advisor.availability.blazar import (  # noqa: E402
     CONTIGUOUS_GAP, RESOURCES, fetch_sites, load_rc, probe_site, windows,
@@ -220,7 +222,8 @@ def reference_check():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--rc", help="glob of openrc files, one per site")
+    ap.add_argument("--rc", default=str(DEFAULT_RC),
+                    help="glob of openrc files, one per site")
     ap.add_argument("--nodes", action="store_true", help="per-node detail")
     ap.add_argument("--xlsx", nargs="?", const=str(DEFAULT_XLSX), default=None,
                     metavar="PATH",

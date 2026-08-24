@@ -270,6 +270,7 @@ class BlazarBackend(AvailabilityBackend):
                      else (site or settings.chi_site_name))
         self._cache: Optional[List[dict]] = None
         self._probed: List[str] = []
+        self._fetched_at = 0.0
 
     def _target_sites(self) -> Optional[List[str]]:
         """Sites worth contacting. None means "no idea, sweep everything"."""
@@ -286,10 +287,24 @@ class BlazarBackend(AvailabilityBackend):
         return [self.site] if self.site else None
 
     def _sites(self) -> List[dict]:
+        # The cache used to live for the lifetime of the process. That is fine
+        # for a one-shot CLI run and wrong for a long-running chatbot, which
+        # would answer every question from the state it saw at start-up while
+        # presenting it as current. A short TTL keeps a single question's
+        # several calls on one fetch without ever serving hour-old state.
+        import os
+        import time
+
+        ttl = float(os.environ.get("BLAZAR_CACHE_TTL", "60"))
+        now = time.monotonic()
+        if self._cache is not None and now - self._fetched_at > ttl:
+            self._cache = None
+            self._probed = []
         if self._cache is None:
             targets = self._target_sites()
             self._cache = fetch_sites(self.rc_glob, sites=targets)
             self._probed = [s["site"] for s in self._cache]
+            self._fetched_at = now
         return self._cache
 
     def _extend_for(self, machine_types: Iterable[str]) -> None:
