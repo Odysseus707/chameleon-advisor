@@ -19,6 +19,24 @@ docs RAG, same model, same hardware, same prompts. If this drifts from web_rag,
 the arms stop being the deployed system and the comparison is worthless; keep
 them in sync.
 
+WHY A FED PROMPT MOVES TWO THINGS AT ONCE, AND WHAT --retrieval-query DOES.
+build_context takes the whole prompt as its retrieval query, so pasting an
+artifact into the question also rewrites what the retriever returns. Measured
+over the 95 items that declare a matched condition: blind retrieves 0.86
+sources on average with 39 items retrieving none at all, while matched
+retrieves 6.00 (the k cap) with none empty, and 0 of 95 items retrieve the same
+count in both. The reranker threshold is 0.5; blind questions score 0.20-0.60
+against it and fed prompts 0.986-0.993, because the pasted artifact matches
+itself in the index.
+
+That is fine when the question is "how does the deployed chatbot behave", which
+is why full is the default. It is not fine when the question is "what does the
+artifact itself contribute", or when comparing against a model that has no
+retriever at all - there the fed condition changes two things for us and one
+for them. --retrieval-query bare holds retrieval at the blind behaviour while
+still giving the model the artifact, which makes those comparisons single
+variable.
+
 WHY blind BY DEFAULT. The fed conditions paste whole artifacts into the question.
 That would hand the baseline arm the very artifacts the advisor exists to supply,
 collapsing the variable under test - and a 39 KB artifact blob as a retrieval
@@ -93,6 +111,14 @@ def main() -> int:
                     default=workspace().parent / "RAG-docs-chameleon")
     ap.add_argument("--gate", type=float,
                     default=float(os.environ.get("ADVISOR_GATE", "1.0")))
+    ap.add_argument("--retrieval-query", choices=["full", "bare"], default="full",
+                    help="what the RAG retriever is given. full (default) = the "
+                         "whole prompt file, which is what the deployed chatbot "
+                         "does. bare = the item's question only, while the fed "
+                         "artifact still reaches the model as context. Use bare "
+                         "to isolate 'artifact in context' from the retrieval "
+                         "regime change a fed prompt otherwise causes - see the "
+                         "note in the module docstring.")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--dry-run", action="store_true",
                     help="list what would be collected, contact nothing")
@@ -172,11 +198,19 @@ def main() -> int:
     t_start = time.time()
     for i, (item, cond, prompt_file, out, _) in enumerate(pending, 1):
         question = prompt_file.read_text(encoding="utf-8")
+        # The retriever and the model can be given different things. By default
+        # they get the same text, matching the deployed chatbot. With
+        # --retrieval-query bare the retriever sees only the question, so the
+        # fed artifact changes the model's context without also changing which
+        # documents were retrieved.
+        retrieval_query = item["prompt"] if args.retrieval_query == "bare" \
+            else question
         t0 = time.time()
         fired = False
         try:
-            _sources, context, _dbg = build_context(question, vectorstore, parents)
-            if room is not None and room.should_fire(question, args.gate):
+            _sources, context, _dbg = build_context(retrieval_query, vectorstore,
+                                                    parents)
+            if room is not None and room.should_fire(retrieval_query, args.gate):
                 fired = True
                 context += ("\n\n=== EDGE RESOURCE ADVISORY ===\n\n"
                             + room.advise(question))
@@ -199,11 +233,13 @@ def main() -> int:
         record(out.parent, item["id"], item["prompt"],
                system=args.system, condition=cond, model=model,
                advisor=args.advisor, advisor_fired=fired,
+               retrieval_query=args.retrieval_query,
                seconds=round(dt, 1))
         with meta_path.open("a") as fh:
             fh.write(json.dumps({
                 "item": item["id"], "condition": cond, "advisor": args.advisor,
                 "advisor_fired": fired, "seconds": round(dt, 1), "model": model,
+                "retrieval_query": args.retrieval_query,
                 "chars": len(text),
                 "at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             }) + "\n")
