@@ -12,26 +12,26 @@ All commands below were verified against the code and the live node on 2026-07-1
 |---|---|
 | `RAG-docs-chameleon/` | The chatbot ("the fork"): FAISS retrieval + reranker + LLM, served by Streamlit (`web_rag.py`). `advisor_room.py` is the bridge that lets it call the advisor. |
 | `chi-edge-advisor/` | The edge advisor engine: routes a workload description to grounded artifacts, checks device availability, and emits a CHI@Edge resource recommendation. |
-| `benchmark_v4/` | The evaluation benchmark: 50 items, deterministic checkers, a scoring harness, and `tools/run_bench.py` to run models against it automatically. |
+| `benchmark/` | The evaluation benchmark: 50 items, deterministic checkers, a scoring harness, and `tools/run_bench.py` to run models against it automatically. |
 | `grounding/` | The advisor's grounding corpus (one folder of `.md` per artifact). |
 | `docs/` | All project docs: `usage/` (runbook, testing guide), `architecture/` (integration, harness, router designs), `reference/` (node env + systemd templates), `archive/` (historical plans and logs). |
 | `vivek.pem` | SSH key for the Chameleon node. |
 
 **The node** — everything heavy runs on a Chameleon bare-metal node:
 
-- Host: `cc@129.114.109.224` (`integration-testbed`, 2× Tesla P100)
+- Host: `cc@129.114.108.156` (`final`, 2× Tesla P100)
 - LLM: Ollama serving `qwen2.5:32b-instruct-q4_K_M` at `localhost:11434` (~9 tok/s — everything is slow, be patient)
 - App: systemd service `rag-app` running Streamlit on port **8501**
 
 ```bash
 # SSH in (from chameleon-work/)
-ssh -i vivek.pem cc@129.114.109.224
+ssh -i vivek.pem cc@129.114.108.156
 ```
 
 > Chameleon leases expire and the floating IP changes when they do (it already
 > changed once, from .237 to .224). If SSH times out, get the new IP from the
 > Chameleon dashboard, pass it to the sync script via `BENCH_NODE=cc@<new-ip>`,
-> and update `benchmark_v4/tools/bench_config.yaml`.
+> and update `benchmark/tools/bench_config.yaml`.
 
 ---
 
@@ -51,56 +51,78 @@ It auto-reconnects through brief Wi-Fi/network blips. After a full laptop sleep
 or reboot, just run it again. Other subcommands:
 
 ```bash
-./connect_chatbot.sh status   # is the REMOTE rag-app service up? (no tunnel; 5s check)
+./connect_chatbot.sh status   # is the REMOTE app up? reports process, port,
+                              # ADVISOR_ENABLED and LLM_MODEL (no tunnel; 5s check)
 ./connect_chatbot.sh stop     # kill our tunnel and free local port 8501
 ```
 
 Under the hood it is just this SSH local-forward (you can run it by hand too):
 
 ```bash
-ssh -i vivek.pem -L 8501:localhost:8501 cc@129.114.109.224
+ssh -i vivek.pem -L 8501:localhost:8501 cc@129.114.108.156
 # then open  http://localhost:8501   (NOT the node's IP)
 ```
 
 Notes:
-- Direct access (`http://129.114.109.224:8501`) does **not** work — the
+- Direct access (`http://129.114.108.156:8501`) does **not** work — the
   security group blocks port 8501 from outside (verified 2026-07-18); the
   browser shows "took too long to respond". Always use the tunnel.
 - **"Port in use" but the page won't load** = a leftover tunnel from a previous
   session is squatting on local :8501. `./connect_chatbot.sh` clears it
   automatically (or run `./connect_chatbot.sh stop`).
 - **"Server not found" after a while** = the SSH tunnel dropped (laptop slept,
-  network changed). The remote service stays up on its own (`Restart=always`);
-  just re-run `./connect_chatbot.sh`. Confirm the server side any time with
-  `./connect_chatbot.sh status`.
+  network changed). The remote app is unaffected by a dropped tunnel; just re-run
+  `./connect_chatbot.sh`. Confirm the server side any time with
+  `./connect_chatbot.sh status`. Note it runs as a bare process with **no
+  auto-restart** — if it dies it stays dead until relaunched (see below).
 - If the floating IP changed (new lease), pass it through:
   `NODE=cc@<new-ip> ./connect_chatbot.sh`.
 - If SSH asks "The authenticity of host ... can't be established. Are you sure
   you want to continue connecting?" — that's the normal first-connection
   prompt, not an error. Type `yes` and press Enter.
 
-### Manage the service (on the node)
+### Manage the app (on the node)
+
+The app currently runs as a bare `nohup`'d process, **not** a systemd unit — the
+`rag-app` unit is not installed, so every `systemctl`/`journalctl -u rag-app`
+command fails. A reference unit file exists at `docs/reference/rag-app.service.reference`
+if you ever want to install it.
 
 ```bash
-sudo systemctl status rag-app        # is it up?
-sudo systemctl restart rag-app       # restart (takes ~1 min to reload models)
-journalctl -u rag-app -f             # live logs (advisor errors print here)
+pgrep -af 'streamlit run web_rag.py'   # is it up?
+tail -f ~/chatbot.log                  # live logs (advisor errors print here)
 ```
 
-The unit runs `streamlit run web_rag.py --server.port=8501 --server.address=0.0.0.0`
-from `/home/cc/RAG-docs-chameleon` using its `.venv`.
+To restart it, relaunch with the environment it needs:
+
+```bash
+pkill -f 'streamlit run web_rag.py'
+cd /home/cc/RAG-docs-chameleon
+ADVISOR_ENABLED=true LLM_MODEL=qwen2.5:32b \
+LLM_API_BASE=http://localhost:11434/v1 LLM_API_KEY=ollama \
+setsid nohup .venv/bin/streamlit run web_rag.py \
+  --server.port 8501 --server.address 127.0.0.1 \
+  --server.headless true --browser.gatherUsageStats false \
+  > ~/chatbot.log 2>&1 < /dev/null &
+```
+
+It binds `127.0.0.1`, so the SSH tunnel is the only way in.
 
 ### Turn the advisor on/off
 
-The app reads its config from `/home/cc/RAG-docs-chameleon/.env` at startup
-(`load_dotenv()` in `web_rag.py`). The two knobs:
+The two knobs:
 
 ```bash
 ADVISOR_ENABLED=true    # false to disable the advisor entirely
 ADVISOR_GATE=1.0        # minimum tag score for the advisor to fire
 ```
 
-To toggle: edit `.env` on the node, then `sudo systemctl restart rag-app`.
+`web_rag.py` calls `load_dotenv()` with no arguments, which means
+**`override=False`: real environment variables beat anything in `.env`.** The
+running process was launched with `ADVISOR_ENABLED=true` in its environment, so
+editing `.env` will not change its behaviour. To toggle, relaunch with the value
+you want using the command above. Confirm which value actually took effect with
+`./connect_chatbot.sh status`.
 
 ### How the advisor decides to fire (so you can test it)
 
@@ -121,7 +143,7 @@ Try it in the UI:
   trigger edge advice.
 
 If the advisor errors, the app degrades gracefully: the error goes to
-`journalctl`, and the answer is produced without the advisory.
+`~/chatbot.log`, and the answer is produced without the advisory.
 
 ---
 
@@ -167,7 +189,7 @@ cd chi-edge-advisor
 .venv/bin/python tools/ablate_router.py            # optional: --l1-k 2 --l2-k 3
 ```
 
-Writes Table A7 to `benchmark_v4/exports/ablation_A7.{md,json}` — for each
+Writes Table A7 to `benchmark/exports/ablation_A7.{md,json}` — for each
 benchmark item, whether the correct source artifact survives each routing level
 (site gate → use-case top-k → artifact selection → chunk retrieval), comparing
 the hierarchical `RouterTree` against the flat `RetrievalRouter`.
@@ -180,7 +202,7 @@ the hierarchical `RouterTree` against the flat `RetrievalRouter`.
 
 ---
 
-## 4. The benchmark (benchmark_v4)
+## 4. The benchmark (benchmark)
 
 ### Anatomy
 
@@ -207,7 +229,7 @@ on/off).
 ### Score a single answer
 
 ```bash
-cd benchmark_v4
+cd benchmark
 ../chi-edge-advisor/.venv/bin/python -m harness.runner \
   --item items/N06.yaml \
   --answer runs/blind/s4-fork-on/N06.md \
@@ -234,14 +256,14 @@ vector store and Ollama live).
 **The full workflow, from your Mac:**
 
 ```bash
-cd benchmark_v4
+cd benchmark
 
 # 1. Push the benchmark to the node (items, prompts, harness, tools — never runs/)
 tools/node_sync.sh push
 
 # 2. On the node — the 5-item pilot (advisor on AND off + scorer-compat summary, ~13 min):
-ssh -i ../vivek.pem cc@129.114.109.224
-cd ~/benchmark_v4
+ssh -i ../vivek.pem cc@129.114.108.156
+cd ~/benchmark
 ~/RAG-docs-chameleon/.venv/bin/python tools/run_bench.py --adapter fork --pilot
 
 # 2b. Or the full 50-item run, one arm at a time (~60–75 min on, ~25 min off):
@@ -289,7 +311,7 @@ To do a real (paid) run later: set the exact model strings in
 ### Regenerate prompts (only after editing items/ or grounding/)
 
 ```bash
-cd benchmark_v4 && python3 tools/make_run_prompts.py
+cd benchmark && python3 tools/make_run_prompts.py
 ```
 
 ---
@@ -320,6 +342,6 @@ cd benchmark_v4 && python3 tools/make_run_prompts.py
 
 - `docs/architecture/harness-plan.md` — the benchmark harness design + scorer contract
 - `docs/architecture/router-refactor-plan.md` — RouterTree design + ablation results
-- `benchmark_v4/BENCHMARK_REPORT.md` — the benchmark's own report
-- `benchmark_v4/exports/ablation_A7.md` — tree-vs-flat routing table
+- `benchmark/BENCHMARK_REPORT.md` — the benchmark's own report
+- `benchmark/exports/ablation_A7.md` — tree-vs-flat routing table
 - `docs/archive/chi-edge-advisor_prototype-state.md` — advisor prototype state of the world (historical snapshot, 2026-07-01)

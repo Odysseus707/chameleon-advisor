@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # connect_chatbot.sh — reliable local access to the hosted Streamlit chatbot.
 #
-# The app (RAG-docs-chameleon/web_rag.py) runs as the systemd service `rag-app`
-# on the Chameleon node and listens on port 8501. The node's security group
+# The app (RAG-docs-chameleon/web_rag.py) runs on the Chameleon node — either as
+# the systemd service `rag-app` or as a bare nohup'd streamlit process, which is
+# how it is currently deployed — and listens on port 8501. The node's security group
 # blocks 8501 from outside, so the ONLY way in is an SSH local-port-forward.
 # That tunnel lives only as long as its SSH session: laptop sleep, a Wi-Fi
 # change, or an idle timeout drops it and the browser then says "server not
@@ -16,7 +17,7 @@
 # Usage:
 #   ./connect_chatbot.sh            # = connect (default)
 #   ./connect_chatbot.sh connect    # clean up + open the keepalive tunnel
-#   ./connect_chatbot.sh status     # is the remote rag-app service up? (no tunnel)
+#   ./connect_chatbot.sh status     # is the remote app up? (process, port, advisor)
 #   ./connect_chatbot.sh stop       # kill our local tunnel, free the port
 #
 # Env overrides (floating IP changes across Chameleon leases):
@@ -24,7 +25,7 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-NODE="${NODE:-${BENCH_NODE:-cc@129.114.109.224}}"
+NODE="${NODE:-${BENCH_NODE:-cc@129.114.108.156}}"
 KEY="${KEY:-${BENCH_KEY:-$HERE/vivek.pem}}"
 PORT="${PORT:-8501}"
 SSH_BASE=(ssh -i "$KEY" -o StrictHostKeyChecking=accept-new)
@@ -92,12 +93,30 @@ cmd_stop() {
   return 0
 }
 
+# The app may run either as the systemd unit or as a bare nohup'd process, so
+# look for the process first and fall back to systemd. Checking the unit alone
+# reports "inactive" for a perfectly healthy manually-started app.
 cmd_status() {
-  log "checking remote service on $NODE (5s connect timeout)…"
-  "${SSH_BASE[@]}" -o ConnectTimeout=5 "$NODE" \
-    'echo -n "rag-app: "; systemctl is-active rag-app; \
-     echo "--- last log lines ---"; \
-     journalctl -u rag-app -n 6 --no-pager 2>/dev/null || true'
+  log "checking remote app on $NODE (5s connect timeout)…"
+  "${SSH_BASE[@]}" -o ConnectTimeout=5 "$NODE" "PORT=$PORT bash -s" <<'REMOTE'
+pid=$(pgrep -f 'streamlit run web_rag.py' | head -1)
+if [ -n "$pid" ]; then
+  echo "rag-app: RUNNING (pid $pid, since $(ps -o lstart= -p "$pid" | sed 's/^ *//'))"
+  # Owned by us, so /proc is readable without sudo. Never print LLM_API_KEY.
+  for var in ADVISOR_ENABLED LLM_MODEL; do
+    echo "  $(tr '\0' '\n' < "/proc/$pid/environ" 2>/dev/null \
+              | grep -m1 "^$var=" || echo "$var=(unset)")"
+  done
+else
+  state=$(systemctl is-active rag-app 2>/dev/null || true)
+  [ -z "$state" ] && state='no unit installed'
+  echo "rag-app: NOT RUNNING (no streamlit process; systemd: $state)"
+fi
+printf 'port %s: ' "$PORT"
+if ss -ltn 2>/dev/null | grep -q ":$PORT "; then echo listening; else echo 'NOT listening'; fi
+echo '--- last log lines ---'
+tail -n 6 ~/chatbot.log 2>/dev/null || journalctl -u rag-app -n 6 --no-pager 2>/dev/null || true
+REMOTE
 }
 
 # Block until the local port answers a TCP connect, or time out.
