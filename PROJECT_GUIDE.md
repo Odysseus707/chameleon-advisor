@@ -12,7 +12,7 @@ All commands below were verified against the code and the live node on 2026-07-1
 |---|---|
 | `RAG-docs-chameleon/` | The chatbot ("the fork"): FAISS retrieval + reranker + LLM, served by Streamlit (`web_rag.py`). `advisor_room.py` is the bridge that lets it call the advisor. |
 | `chi-edge-advisor/` | The edge advisor engine: routes a workload description to grounded artifacts, checks device availability, and emits a CHI@Edge resource recommendation. |
-| `benchmark/` | The evaluation benchmark: 50 items, deterministic checkers, a scoring harness, and `tools/run_bench.py` to run models against it automatically. |
+| `benchmark/` | The evaluation benchmark, packaged as `chi-edge-bench`: 134 items in two suites, deterministic AST checkers, a scoring harness, and four ways to collect answers. `pip install`-able and usable outside this repo. |
 | `grounding/` | The advisor's grounding corpus (one folder of `.md` per artifact). |
 | `docs/` | All project docs: `usage/` (runbook, testing guide), `architecture/` (integration, harness, router designs), `reference/` (node env + systemd templates), `archive/` (historical plans and logs). |
 | `vivek.pem` | SSH key for the Chameleon node. |
@@ -31,7 +31,7 @@ ssh -i vivek.pem cc@129.114.108.156
 > Chameleon leases expire and the floating IP changes when they do (it already
 > changed once, from .237 to .224). If SSH times out, get the new IP from the
 > Chameleon dashboard, pass it to the sync script via `BENCH_NODE=cc@<new-ip>`,
-> and update `benchmark/tools/bench_config.yaml`.
+> and update `benchmark/chi_edge_bench/tools/bench_config.yaml`.
 
 ---
 
@@ -204,47 +204,70 @@ the hierarchical `RouterTree` against the flat `RetrievalRouter`.
 
 ## 4. The benchmark (benchmark)
 
+Since 2026-08-24 the benchmark is a **pip-installable package**, `chi-edge-bench`.
+It runs anywhere, not only in this tree:
+
+```bash
+pip install "git+https://github.com/<you>/chameleon-work.git#subdirectory=benchmark"
+chi-edge-bench selftest          # 134/134 golds pass their own checkers
+```
+
+`benchmark/README.md` is the full package documentation. This section covers
+only what is specific to working inside this repo.
+
 ### Anatomy
 
 ```
-items/<ID>.yaml                 50 items: prompt + deterministic checkers
-                                (P=positive, N=negative/edge, AV=availability;
-                                graded in groups: mechanism/specifics/safety)
-prompts/<condition>/<ID>.txt    generated run prompts
+chi_edge_bench/data/            SHIPPED, read-only: items (134), snapshots (7),
+                                grounding (6), extractions (6),
+                                capability_table.yaml, baselines/
+chi_edge_bench/harness/         checks.py, runner.py (the scorer), the two gates
+chi_edge_bench/tools/           score_runs, make_run_prompts, run_bench,
+                                collect_runs, provenance, ...
+chi_edge_bench/cli.py           the `chi-edge-bench` entry point
+.chi-edge-bench                 marker: makes benchmark/ the default workspace
 runs/<condition>/<system>/<ID>.md   model answers — THE scorer input layout
-harness/runner.py               the scorer (regex + AST checks; V1 items execute
-                                generated code against a stubbed python-chi +
-                                snapshots/snapshot_synthetic_2026-07-04.json)
-notebooks/validate_golds.ipynb  batch scorer (scores every runs/*/*/*.md)
-tools/run_bench.py              automated runner (the main tool)
-exports/ablation_A7.md          router ablation table
+prompts/, exports/              generated; regenerable, gitignored
+tests/                          203 tests, no network
 ```
+
+The read-only/writable split matters: `data/` ships inside the wheel and is
+never written; `runs/`, `exports/` and `prompts/` go to a workspace outside it.
+Because `benchmark/` carries a `.chi-edge-bench` marker, any command run from
+inside this repo finds the real record automatically. `chi-edge-bench where`
+prints which is which.
 
 **Conditions:** `blind` (bare question), `matched` / `heldout` / `uncovered`
 (question + fed reference material).
-**Systems:** `s1-chatbot` (production app, manual), `s2-gpt`, `s3-sonnet`
-(manual paste), `s4-fork-on` / `s5-fork-off` (the fork via run_bench, advisor
-on/off).
+**Systems collected so far:** `s1-chatbot`, `s2-sonnet`, `s3-chatbot-noadv` /
+`s4-chatbot-adv` (the node-era controlled pair), `s5-claude-sonnet`,
+`s10-llama70b-tejas-noadv` / `s10-llama70b-tejas-adv` (the Tejas A/B), and
+`s11-llama70b-heuristic-adv` (the reasoner-isolation arm).
 
 ### Score a single answer
 
 ```bash
-cd benchmark
-../chi-edge-advisor/.venv/bin/python -m harness.runner \
-  --item items/N06.yaml \
-  --answer runs/blind/s4-fork-on/N06.md \
-  --snapshot snapshots/snapshot_synthetic_2026-07-04.json
+chi-edge-bench score --item N06 --answer runs/blind/s4-chatbot-adv/N06.md
+chi-edge-bench score --item R01 --gold      # self-check an item
 ```
-
-Prints the verdict and per-group check counts. Any Python 3.10+ with `pyyaml`
-works; the advisor venv has it.
 
 ### Score everything (batch)
 
-Open `notebooks/validate_golds.ipynb` (VS Code or Jupyter) and run all cells.
-The batch cell globs `runs/*/*/*.md`, scores each file against its item, and
-prints per-system tallies. It sees `s4-fork-on`/`s5-fork-off` automatically —
-no changes needed.
+```bash
+chi-edge-bench score-runs                          # every arm
+chi-edge-bench score-runs --systems s10-llama70b-tejas-adv
+chi-edge-bench compare --csv exports/run_scores.csv   # vs the reference arms
+```
+
+### Check the record is still valid
+
+```bash
+chi-edge-bench provenance     # every answer still matches its item's prompt
+```
+
+Every answer is bound to `sha256(prompt)`, so editing an item's wording
+invalidates the runs that answered it instead of silently changing what a
+number means.
 
 ### Run models against the benchmark automatically (run_bench.py)
 
@@ -259,7 +282,7 @@ vector store and Ollama live).
 cd benchmark
 
 # 1. Push the benchmark to the node (items, prompts, harness, tools — never runs/)
-tools/node_sync.sh push
+scripts/node_sync.sh push
 
 # 2. On the node — the 5-item pilot (advisor on AND off + scorer-compat summary, ~13 min):
 ssh -i ../vivek.pem cc@129.114.108.156
@@ -272,7 +295,7 @@ cd ~/benchmark
 # (long: run inside tmux, or with nohup ... > run.log 2>&1 &)
 
 # 3. Back on your Mac — pull results (ONLY s4-fork-on/s5-fork-off; never other systems)
-tools/node_sync.sh pull
+scripts/node_sync.sh pull
 
 # 4. Score: notebook, or per-item harness.runner as above
 ```
@@ -327,7 +350,7 @@ cd benchmark && python3 tools/make_run_prompts.py
   flags (`--delete-excluded` was already removed from the script). If rsync
   errors with "buffer overflow: recv_rules", an incompatible flag came back.
 - **Node IP changes** on lease renewal — override with
-  `BENCH_NODE=cc@<ip> tools/node_sync.sh push` and update `bench_config.yaml`.
+  `BENCH_NODE=cc@<ip> scripts/node_sync.sh push` and update `bench_config.yaml`.
 - **Advisor tests** need `LLM_PROVIDER=none`; the **advisor CLI** offline needs
   `ADVISOR_OFFLINE=1 AVAILABILITY_BACKEND=reference_api`.
 - **Never hand-edit files under `runs/`** that contain answers — they are the

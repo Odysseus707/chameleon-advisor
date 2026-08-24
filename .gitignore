@@ -75,7 +75,9 @@ docs/architecture/
 docs/archive/
 docs/usage/
 benchmark/reports/
-benchmark/README.md
+# NOT benchmark/README.md: it is the package readme that pyproject.toml
+# declares, so ignoring it shipped a description-less package over
+# `pip install git+...` while local wheel builds looked fine.
 benchmark/BENCHMARK_REPORT.md
 benchmark/benchmark_v3.xlsx
 chi-edge-advisor/README.md
@@ -87,3 +89,8 @@ chi-edge-advisor/README.md
 CLAUDE.md
 **/CLAUDE.md
 .claude/
+
+# Wheel build artifacts
+benchmark/dist/
+benchmark/build/
+benchmark/*.egg-info/

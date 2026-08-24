@@ -1,3 +1,11 @@
-et_xmlfile==2.0.0
-openpyxl==3.1.5
-PyYAML==6.0.3
+# Superseded by pyproject.toml, kept so the workspace venv recipe in the root
+# README keeps working. Dependencies are declared per-extra there:
+#
+#   pip install -e .            core scoring (PyYAML only)
+#   pip install -e ".[xlsx]"    the spreadsheet exporters
+#   pip install -e ".[openai]"  the OpenAI-compatible collection adapter
+#   pip install -e ".[dev]"     pytest + build
+#
+# This file installs the core plus xlsx, which is what the repo workflow uses.
+PyYAML>=6.0
+openpyxl>=3.1
