@@ -32,11 +32,17 @@ fork:
     GROUNDING_DIR: /home/cc/grounding
     ADVISOR_OFFLINE: "false"
 
-# API adapters are CODE-ONLY for now (user decision, zero spend): no keys are
-# configured and run_bench refuses to run them without one; only --dry-run works.
-# Update the model strings before any future real run.
+# The zero-spend policy that kept these adapters dry-run-only was lifted on
+# 2026-08-24 for the Claude arm of the artifacts A/B. Keys still come from the
+# environment only, never from this file.
 anthropic:
-  system: s3-sonnet
+  # One system across both conditions, matching every other arm: the 2x2 is
+  # (system x condition), so putting the condition in the system name would
+  # stop score_runs pairing blind against matched.
+  #
+  # Supersedes s5-claude-sonnet, which was hand-pasted and is the only arm with
+  # no prompt binding. That arm stays on disk as the historical record.
+  system: s12-claude-sonnet-api
   model: claude-sonnet-5
   params:
     max_tokens: 2048

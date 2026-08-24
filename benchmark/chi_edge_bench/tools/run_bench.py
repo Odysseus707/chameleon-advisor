@@ -40,6 +40,7 @@ import yaml
 
 from chi_edge_bench.paths import (default_snapshot, grounding_dir, items_dir,
                                   prompts_dir, runs_dir, workspace)
+from chi_edge_bench.tools.provenance import record
 
 HERE = Path(__file__).resolve().parent
 CONDITIONS = ("blind", "matched", "heldout", "uncovered")
@@ -326,6 +327,25 @@ def run_batch(adapter, items: list[str], condition: str, system: str,
                         "n_code_fences": resp.count("```") // 2})
             (out_dir / f"{item_id}.telemetry.json").write_text(
                 json.dumps(tel, indent=2, default=str), encoding="utf-8")
+            # Bind the answer to the item's prompt, as collect_runs does.
+            # Without this an API-collected arm carries telemetry but no way to
+            # detect that a later item edit invalidated it - the one thing
+            # s5-claude-sonnet cannot prove about itself.
+            #
+            # It must be item["prompt"], NOT the rendered `prompt` above:
+            # provenance.check compares against the item YAML, so hashing the
+            # rendered file would report drift for every fed condition, whose
+            # prompt file also carries the artifact text. That text is covered
+            # separately by rendered_sha256.
+            item_yaml = yaml.safe_load(
+                (items_dir() / f"{item_id}.yaml").read_text())
+            record(out_dir, item_id, item_yaml["prompt"],
+                   system=system, condition=condition,
+                   model=getattr(adapter, "model", None),
+                   adapter=adapter.name,
+                   rendered_sha256=hashlib.sha256(
+                       prompt.encode("utf-8")).hexdigest(),
+                   seconds=round(time.time() - t0, 1))
             statuses[item_id] = "written"
             print(f"  {item_id}: written ({len(resp)} chars, "
                   f"{tel.get('total_s')}s, fired={tel.get('fired')})")
