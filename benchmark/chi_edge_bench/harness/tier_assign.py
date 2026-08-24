@@ -97,7 +97,7 @@ def main():
         print(f"{r['item']:<6} {r['condition']:<8} fed={','.join(r['fed']) or '-':<14} "
               f"-> {r['tier']}{flag}")
     print(f"\n{len(rows)} (item, condition) pairs; {len(mismatches)} mismatches "
-          f"-> {out.relative_to(ROOT)}")
+          f"-> {out}")
     sys.exit(1 if mismatches else 0)
 
 
