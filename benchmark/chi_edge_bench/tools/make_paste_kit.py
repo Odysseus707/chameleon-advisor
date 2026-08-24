@@ -16,8 +16,7 @@ import argparse
 import html
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent
+from chi_edge_bench.paths import exports_dir, prompts_dir, runs_dir
 CONDITIONS = ("blind", "matched", "heldout", "uncovered")
 PILOT = ("P16", "N17", "AV01")
 
@@ -93,7 +92,7 @@ def build(system: str) -> str:
              "<main>", PROTOCOL]
     total = done_n = 0
     for cond in CONDITIONS:
-        prompt_files = sorted((ROOT / "prompts" / cond).glob("*.txt"))
+        prompt_files = sorted((prompts_dir() / cond).glob("*.txt"))
         if not prompt_files:
             continue
         parts.append(f"<h2>{cond} — {len(prompt_files)} prompts</h2>")
@@ -102,7 +101,7 @@ def build(system: str) -> str:
         for pf in prompt_files:
             stem = pf.stem
             text = pf.read_text(encoding="utf-8")
-            target = ROOT / "runs" / cond / system / f"{stem}.md"
+            target = runs_dir() / cond / system / f"{stem}.md"
             done = target.exists() and target.stat().st_size > 0
             total += 1
             done_n += done
@@ -133,7 +132,7 @@ def main():
                     help="target system dir under runs/ (default s6-opus)")
     ap.add_argument("--out", default="")
     args = ap.parse_args()
-    out = Path(args.out) if args.out else ROOT / "exports" / f"paste_kit_{args.system}.html"
+    out = Path(args.out) if args.out else exports_dir() / f"paste_kit_{args.system}.html"
     out.write_text(build(args.system), encoding="utf-8")
     print(f"[written] {out}")
 

@@ -33,13 +33,14 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-SNAPSHOTS = ROOT / "snapshots"
+from chi_edge_bench.paths import snapshots_dir, workspace
+
+SNAPSHOTS = snapshots_dir()
 BASE = SNAPSHOTS / "edge_2026-08-13.json"
 
 # The probe output this was recorded from. Gitignored (presentation_assets is
 # generated), so the committed BASE is the fallback source for perturbations.
-DEFAULT_CAPTURE = (ROOT.parent / "chi-edge-advisor" / "presentation_assets"
+DEFAULT_CAPTURE = (workspace() / "captures"
                    / "fig2_probe_all_sites_2026-08-13.json")
 
 SITE = "CHI@Edge"

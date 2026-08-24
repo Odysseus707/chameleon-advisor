@@ -16,11 +16,15 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
-ITEMS_DIR = ROOT / "items"
-GROUNDING_DIR = ROOT / "grounding"
-PROMPTS_DIR = ROOT / "prompts"
-SNAPSHOTS_DIR = ROOT / "snapshots"
+from chi_edge_bench.paths import (grounding_dir, items_dir, prompts_dir,
+                                  snapshots_dir, workspace)
+
+# Shipped data: fixed for the life of the process, safe as module constants.
+ITEMS_DIR = items_dir()
+GROUNDING_DIR = grounding_dir()
+SNAPSHOTS_DIR = snapshots_dir()
+# The output directory is NOT a module constant: prompts_dir() must be read
+# after the CLI applies --workspace, or the flag is silently ignored.
 
 INTRO = ("Here is reference material about CHI@Edge on Chameleon Cloud that may "
          "be relevant to my question.")
@@ -108,11 +112,11 @@ def main() -> int:
                 content = prompt
             else:
                 content = build_fed(prompt, artifacts)
-            out_dir = PROMPTS_DIR / condition
+            out_dir = prompts_dir() / condition
             out_dir.mkdir(parents=True, exist_ok=True)
             out_path = out_dir / f"{item_id}.txt"
             out_path.write_text(content)
-            manifest.append((out_path.relative_to(ROOT).as_posix(),
+            manifest.append((out_path.relative_to(workspace()).as_posix(),
                              len(content.encode("utf-8"))))
 
         # Availability arm, written to its own condition directory so that no
@@ -120,15 +124,15 @@ def main() -> int:
         # sha256(prompt), and rewriting one would invalidate every existing run.
         if "with_listing" in (item.get("availability_arm") or []) and item.get("snapshot"):
             content = build_listing(prompt, item["snapshot"])
-            out_dir = PROMPTS_DIR / LISTING_CONDITION
+            out_dir = prompts_dir() / LISTING_CONDITION
             out_dir.mkdir(parents=True, exist_ok=True)
             out_path = out_dir / f"{item_id}.txt"
             out_path.write_text(content)
-            manifest.append((out_path.relative_to(ROOT).as_posix(),
+            manifest.append((out_path.relative_to(workspace()).as_posix(),
                              len(content.encode("utf-8"))))
 
     width = max((len(p) for p, _ in manifest), default=0)
-    print(f"Wrote {len(manifest)} prompt files under {PROMPTS_DIR.relative_to(ROOT)}/\n")
+    print(f"Wrote {len(manifest)} prompt files under {prompts_dir()}/\n")
     for rel, size in manifest:
         print(f"  {rel:<{width}}  {size:>7,} bytes")
     print(f"\nTotal: {sum(s for _, s in manifest):,} bytes across {len(manifest)} files")

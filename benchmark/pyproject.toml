@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chi-edge-bench"
+version = "0.1.0"
+description = "Executable-checker benchmark for CHI@Edge (Chameleon Cloud) coding assistance."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+keywords = ["chameleon-cloud", "chi-at-edge", "benchmark", "llm-evaluation", "rag"]
+classifiers = [
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering",
+]
+# Scoring is deliberately dependency-light: items are YAML and the checkers are
+# stdlib `ast`. Everything that needs a network or a spreadsheet is an extra, so
+# the answer-file workflow installs with one dependency and no SDK.
+dependencies = ["PyYAML>=6.0"]
+
+[project.optional-dependencies]
+openai = ["openai>=1.30.0"]
+anthropic = ["anthropic>=0.34.0"]
+xlsx = ["openpyxl>=3.1"]
+fork = ["chi-edge-advisor"]
+dev = ["pytest>=8.0", "build>=1.0"]
+
+[project.scripts]
+chi-edge-bench = "chi_edge_bench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["chi_edge_bench*"]
+
+[tool.setuptools.package-data]
+# data/ is the benchmark itself (items, snapshots, grounding, capability table).
+# stub_chi is not importable as a subpackage on purpose - runner.exec_v1 puts it
+# on PYTHONPATH so model code can `import chi` - so it ships as data, not code.
+"chi_edge_bench" = [
+  "data/**/*",
+  "harness/stub_chi/**/*.py",
+  "tools/*.yaml",
+  "tools/*.jsonl",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

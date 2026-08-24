@@ -29,7 +29,7 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
+from chi_edge_bench.paths import exports_dir, items_dir
 GROUPS = ("mechanism", "specifics", "safety", "feasibility", "capability")
 
 # The advisor gate cannot fire on these (P12 has no edge cue; P27 says
@@ -42,7 +42,7 @@ BASE, ADV = "s3-chatbot-noadv", "s4-chatbot-adv"
 
 def load_items() -> dict:
     out = {}
-    for p in sorted((ROOT / "items").glob("*.yaml")):
+    for p in sorted(items_dir().glob("*.yaml")):
         it = yaml.safe_load(p.read_text())
         out[it["id"]] = it
     return out
@@ -110,7 +110,7 @@ def ab_table(rows, items, keep, title, note=""):
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--scores", type=Path,
-                    default=ROOT / "exports" / "ab_scores.csv")
+                    default=exports_dir() / "ab_scores.csv")
     ap.add_argument("--out", type=Path)
     args = ap.parse_args()
 

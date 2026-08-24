@@ -17,7 +17,9 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
+from chi_edge_bench.paths import items_dir
+
+HERE = Path(__file__).resolve().parent
 CC = ["Container", "create_container"]      # container creators
 ADR = ["add_device_reservation"]
 
@@ -1311,13 +1313,13 @@ def emit(item, path):
 
 
 def main():
-    out = ROOT / "items"
+    out = items_dir()
     out.mkdir(exist_ok=True)
     for p in out.glob("*.yaml"):
         p.unlink()
 
     v3 = {json.loads(l)["id"]: json.loads(l)
-          for l in (ROOT / "tools" / "v3_prompts.jsonl").read_text().splitlines()
+          for l in (HERE / "v3_prompts.jsonl").read_text().splitlines()
           if l.strip() and '"id"' in l}
 
     count = 0

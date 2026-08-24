@@ -348,14 +348,12 @@ def check_abstain_or_discover(ctx):
 # The two never mix, and score_runs reports them as separate columns, because a
 # blended rate would be dominated by feasibility - the easy, deterministic half.
 
-_V5_ROOT = __import__("pathlib").Path(__file__).resolve().parent.parent
-CAPABILITY_TABLE = _V5_ROOT / "capability_table.yaml"
-
-
 @__import__("functools").lru_cache(maxsize=1)
 def _captable() -> dict:
     import yaml
-    with open(CAPABILITY_TABLE) as f:
+
+    from chi_edge_bench.paths import capability_table
+    with open(capability_table()) as f:
         return yaml.safe_load(f)["device_types"]
 
 

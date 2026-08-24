@@ -30,16 +30,26 @@ import sys
 import textwrap
 from pathlib import Path
 
+try:
+    import openpyxl  # noqa: F401
+except ImportError as exc:  # pragma: no cover
+    # ImportError, not SystemExit: score_runs imports calibrate_v3 behind
+    # `except ImportError` to make fence recovery optional, and a SystemExit
+    # here would take the scorer down over an optional extra.
+    raise ImportError(
+        "this tool needs openpyxl:  pip install 'chi-edge-bench[xlsx]'"
+    ) from exc
+
 import openpyxl
 
-ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
+from chi_edge_bench.harness.runner import evaluate, load_item
+from chi_edge_bench.paths import exports_dir, items_dir, workspace
 
-from harness.runner import evaluate, load_item  # noqa: E402
-
-WORKBOOK = ROOT / "benchmark_v3.xlsx"
-ITEMS_DIR = ROOT / "items"
-OUT_CSV = ROOT / "exports" / "calibration_v3.csv"
+# The v3 grading workbook is a local research artifact, not shipped data: it is
+# the source of the human scores this calibration compares checkers against.
+WORKBOOK = workspace() / "benchmark_v3.xlsx"
+ITEMS_DIR = items_dir()
+OUT_CSV = exports_dir() / "calibration_v3.csv"
 
 GROUPS = ("mechanism", "specifics", "safety")
 
@@ -357,7 +367,7 @@ def main():
     strict = [(c["checker_verdict"] == "PASS", c["human_score"] == 2) for c in cells]
     lenient = [(c["checker_verdict"] == "PASS", c["human_score"] >= 1) for c in cells]
 
-    print(f"Wrote {OUT_CSV.relative_to(ROOT)}  ({len(cells)} cells)")
+    print(f"Wrote {OUT_CSV}  ({len(cells)} cells)")
     if args.wrap_code:
         recovered = sum(1 for c in cells if c["_n_blocks"])
         print(f"--wrap-code: ON  (recovered code fences in {recovered}/"

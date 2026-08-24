@@ -25,7 +25,6 @@ Pilot (on the node):
 from __future__ import annotations
 
 import argparse
-import glob
 import hashlib
 import json
 import os
@@ -39,10 +38,12 @@ from pathlib import Path
 
 import yaml
 
+from chi_edge_bench.paths import (default_snapshot, grounding_dir, items_dir,
+                                  prompts_dir, runs_dir, workspace)
+
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent  # benchmark/
 CONDITIONS = ("blind", "matched", "heldout", "uncovered")
-SNAPSHOT = ROOT / "snapshots" / "snapshot_synthetic_2026-07-04.json"
+# NOTE: a function, not a constant - see chi_edge_bench.paths.workspace().
 FORK_SYSTEMS = {True: "s4-fork-on", False: "s5-fork-off"}
 PILOT_DEFAULT = ["P01", "P16", "N01", "N06", "AV01"]
 
@@ -86,19 +87,19 @@ def provenance_hashes(cfg: dict) -> dict:
         if p.is_dir():
             adv = sha256_paths(p.rglob("*.md"))
     return {
-        "item_bank_sha256": sha256_paths(ROOT.glob("items/*.yaml")),
-        "bench_grounding_sha256": sha256_paths(ROOT.glob("grounding/*.md")),
+        "item_bank_sha256": sha256_paths(items_dir().glob("*.yaml")),
+        "bench_grounding_sha256": sha256_paths(grounding_dir().glob("*.md")),
         "advisor_grounding_sha256": adv,
-        "snapshot_sha256": sha256_paths([SNAPSHOT]),
+        "snapshot_sha256": sha256_paths([default_snapshot()]),
     }
 
 
 def read_prompt(condition: str, item_id: str) -> str:
-    return (ROOT / "prompts" / condition / f"{item_id}.txt").read_text(encoding="utf-8")
+    return (prompts_dir() / condition / f"{item_id}.txt").read_text(encoding="utf-8")
 
 
 def items_for_condition(condition: str) -> list[str]:
-    return sorted(p.stem for p in (ROOT / "prompts" / condition).glob("*.txt"))
+    return sorted(p.stem for p in (prompts_dir() / condition).glob("*.txt"))
 
 
 def with_retries(fn, tries: int = 5, base: float = 2.0):
@@ -264,7 +265,7 @@ class ProductionStubAdapter:
 # --------------------------------------------------------------------------
 def run_batch(adapter, items: list[str], condition: str, system: str,
               cfg: dict, dry_run: bool) -> dict:
-    out_dir = ROOT / "runs" / condition / system
+    out_dir = runs_dir() / condition / system
     statuses: dict[str, str] = {}
     started = now_iso()
     print(f"== batch: adapter={adapter.name} condition={condition} "
@@ -329,27 +330,31 @@ def run_batch(adapter, items: list[str], condition: str, system: str,
 # pilot: fork adapter, advisor on + off, then a scorer-compat summary
 # --------------------------------------------------------------------------
 def hash_other_runs(exclude: set[str]) -> str:
-    files = [p for p in (ROOT / "runs").rglob("*.md")
-             if not (len(p.relative_to(ROOT / "runs").parts) >= 2
-                     and p.relative_to(ROOT / "runs").parts[1] in exclude)]
+    files = [p for p in runs_dir().rglob("*.md")
+             if not (len(p.relative_to(runs_dir()).parts) >= 2
+                     and p.relative_to(runs_dir()).parts[1] in exclude)]
     return sha256_paths(files) or "empty"
 
 
 def pilot_summary(items: list[str], baseline_ok: bool):
-    os.chdir(ROOT)  # replicate the notebook batch cell's relative glob exactly
-    sys.path.insert(0, str(ROOT))
-    from harness.runner import evaluate, extract_code, load_item  # noqa: PLC0415
+    from chi_edge_bench.harness.runner import (evaluate,  # noqa: PLC0415
+                                               extract_code, load_item)
 
-    matched = sorted(glob.glob("runs/*/*/*.md"))
+    # Paths are reported workspace-relative, which is what the notebook
+    # contract below is stated in ("runs/<cond>/<system>/<ITEM>.md"). This used
+    # to rely on an os.chdir into the benchmark root; it now globs an absolute
+    # directory and relativises afterwards.
+    matched = sorted(p.relative_to(workspace()).as_posix()
+                     for p in runs_dir().rglob("*.md"))
     ours, bad_depth, bad_stems = [], [], []
     for path in matched:
-        parts = path.split(os.sep)
+        parts = path.split("/")
         if len(parts) != 4:
             bad_depth.append(path)
             continue
         _, cond, system, fname = parts
         stem = fname[:-3]
-        if not (ROOT / "items" / f"{stem}.yaml").exists():
+        if not (items_dir() / f"{stem}.yaml").exists():
             bad_stems.append(path)
             continue
         if system in ("s4-fork-on", "s5-fork-off") and stem in items:
@@ -368,7 +373,8 @@ def pilot_summary(items: list[str], baseline_ok: bool):
     for cond, system, stem, path in sorted(ours, key=lambda r: (r[2], r[1])):
         text = Path(path).read_text(encoding="utf-8")
         fences = "yes" if "```" in text else "no"
-        rep = evaluate(load_item(ROOT / "items" / f"{stem}.yaml"), text, SNAPSHOT)
+        rep = evaluate(load_item(items_dir() / f"{stem}.yaml"), text,
+                       default_snapshot())
         groups = " ".join(f"{g[:4]}={v['passed']}/{v['total']}"
                           for g, v in sorted(rep["groups"].items()))
         tel_file = Path(str(Path(path))[:-3] + ".telemetry.json")

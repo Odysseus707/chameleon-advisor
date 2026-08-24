@@ -28,11 +28,14 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
-TROVI = ROOT / "compendium" / "trovi_records.json"
-RANKING = ROOT / "compendium" / "advisor_artifact_ranking.xlsx"
-SNAPSHOT = ROOT / "snapshots" / "edge_2026-08-13.json"
-CAPTABLE = ROOT / "capability_table.yaml"
+from chi_edge_bench.paths import capability_table, snapshots_dir, workspace
+
+# The Trovi compendium is 1.4 MB of scraped records: a local research input,
+# not part of the benchmark, so it is read from the workspace.
+TROVI = workspace() / "compendium" / "trovi_records.json"
+RANKING = workspace() / "compendium" / "advisor_artifact_ranking.xlsx"
+SNAPSHOT = snapshots_dir() / "edge_2026-08-13.json"
+CAPTABLE = capability_table()
 
 EDGE_HW = re.compile(
     r"chi@edge|raspberry|jetson|coral|edge device|add_device_reservation|"

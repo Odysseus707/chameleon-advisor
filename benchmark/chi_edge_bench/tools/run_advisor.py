@@ -32,9 +32,32 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
-ADVISOR = ROOT.parent / "chi-edge-advisor"
-sys.path.insert(0, str(ADVISOR))
+from chi_edge_bench.paths import (capability_table, items_dir, runs_dir,
+                                  snapshots_dir, workspace)
+
+
+def _attach_advisor() -> None:
+    """Make the `advisor` package importable.
+
+    Normally it is an installed dependency (`pip install chi-edge-bench[fork]`).
+    In the source repo it is an uninstalled sibling directory, so fall back to
+    that - and say so, because a silent fallback here is how you end up unsure
+    which advisor produced a run.
+    """
+    try:
+        import advisor  # noqa: F401  PLC0415
+        return
+    except ImportError:
+        pass
+    sibling = workspace().parent / "chi-edge-advisor"
+    if not sibling.is_dir():
+        raise SystemExit(
+            "the `advisor` package is not importable and no sibling "
+            f"chi-edge-advisor/ exists at {sibling}.\n"
+            "Install it with:  pip install 'chi-edge-bench[fork]'")
+    print(f"[run_advisor] using uninstalled advisor at {sibling}", file=sys.stderr)
+    sys.path.insert(0, str(sibling))
+
 
 
 def availability_from_snapshot(snapshot: str, captable: dict):
@@ -44,9 +67,10 @@ def availability_from_snapshot(snapshot: str, captable: dict):
     signal that distinguishes a down device from a busy one, and dropping it
     would hide the trap the suite is built around.
     """
+    _attach_advisor()
     from advisor.availability.base import DeviceAvailability
 
-    devices = json.loads((ROOT / "snapshots" / f"{snapshot}.json").read_text())["devices"]
+    devices = json.loads((snapshots_dir() / f"{snapshot}.json").read_text())["devices"]
     out = []
     for d in devices:
         spec = captable.get(d["device_type"], {})
@@ -102,15 +126,15 @@ def main() -> int:
     from advisor.inventory.catalog import InventoryCache  # noqa: E402
     from advisor.reason.reasoner import Reasoner  # noqa: E402
 
-    items = sorted((ROOT / "items").glob("R*.yaml"))
+    items = sorted(items_dir().glob("R*.yaml"))
     if args.limit:
         items = items[:args.limit]
 
-    outdir = ROOT / "runs" / args.condition / args.system
+    outdir = runs_dir() / args.condition / args.system
     outdir.mkdir(parents=True, exist_ok=True)
 
     captable = yaml.safe_load(
-        (ROOT / "capability_table.yaml").read_text())["device_types"]
+        capability_table().read_text())["device_types"]
     store = ArtifactStore().build()
     router = RetrievalRouter(store)
     inventory = InventoryCache().load()
@@ -138,7 +162,7 @@ def main() -> int:
             err += 1
         (outdir / f"{item['id']}.md").write_text(text)
 
-    print(f"{len(items)} items -> {outdir.relative_to(ROOT.parent)}")
+    print(f"{len(items)} items -> {outdir}")
     print(f"  answered {ok}   errored {err}")
     print("\nScore with:\n  ../.venv/bin/python tools/score_runs.py --suite reservation \\\n"
           "    --csv exports/reservation_scores.csv --md exports/reservation_summary.md")

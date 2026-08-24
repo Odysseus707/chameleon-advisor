@@ -2,19 +2,29 @@
 import json
 from pathlib import Path
 import yaml
+try:
+    import openpyxl  # noqa: F401
+except ImportError as exc:  # pragma: no cover
+    # ImportError, not SystemExit: score_runs imports calibrate_v3 behind
+    # `except ImportError` to make fence recovery optional, and a SystemExit
+    # here would take the scorer down over an optional extra.
+    raise ImportError(
+        "this tool needs openpyxl:  pip install 'chi-edge-bench[xlsx]'"
+    ) from exc
+
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 
-ROOT = Path(__file__).resolve().parent.parent
+from chi_edge_bench.paths import exports_dir, items_dir
 HDR = Font(bold=True, color="FFFFFF", name="Arial")
 FILL = PatternFill("solid", start_color="1F6F5C")
 BODY = Font(name="Arial")
 
 tiers = {}
-for row in json.load(open(ROOT / "exports" / "tier_report.json"))["rows"]:
+for row in json.load(open(exports_dir() / "tier_report.json"))["rows"]:
     tiers[(row["item"], row["condition"])] = row["tier"]
 
-items = [yaml.safe_load(p.read_text()) for p in sorted((ROOT / "items").glob("*.yaml"))]
+items = [yaml.safe_load(p.read_text()) for p in sorted(items_dir().glob("*.yaml"))]
 
 wb = Workbook()
 
@@ -54,7 +64,7 @@ for col, w in zip("ABCDEFGH", [7, 11, 18, 70, 20, 10, 16, 40]):
 
 ws3 = wb.create_sheet("RunMatrix")
 ws3.append(["ID", "Condition", "Fed artifacts", "Computed tier"])
-for row in json.load(open(ROOT / "exports" / "tier_report.json"))["rows"]:
+for row in json.load(open(exports_dir() / "tier_report.json"))["rows"]:
     ws3.append([row["item"], row["condition"], ", ".join(row["fed"]), row["tier"]])
 for c in ws3[1]:
     c.font, c.fill = HDR, FILL
@@ -77,5 +87,5 @@ for i, cond in enumerate(["blind", "matched", "heldout", "uncovered"], start=5):
 for col, w in zip("BCDE", [12, 12, 16, 14]):
     ws4.column_dimensions[col].width = w
 
-wb.save(ROOT / "exports" / "benchmark.xlsx")
+wb.save(exports_dir() / "benchmark.xlsx")
 print("wrote exports/benchmark.xlsx")

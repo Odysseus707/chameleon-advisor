@@ -1,0 +1,661 @@
+condition,system,item,status,fences,recovered,code_seen,all_passed,failed_checks,rank1,mechanism_passed,mechanism_total,specifics_passed,specifics_total,safety_passed,safety_total,feasibility_passed,feasibility_total,capability_passed,capability_total
+blind,s10-llama70b-tejas-adv,AV01,scored,True,False,True,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s10-llama70b-tejas-adv,AV02,scored,True,False,True,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s10-llama70b-tejas-adv,AV03,scored,False,False,False,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s10-llama70b-tejas-adv,AV04,scored,True,False,True,False,availability_query required_code_string v1_snapshot_exec,,0,1,0,2,,,,,,
+blind,s10-llama70b-tejas-adv,N01,scored,True,False,True,False,required_call,,3,4,5,5,2,2,,,,
+blind,s10-llama70b-tejas-adv,N02,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_code_string required_call,,0,2,0,4,,,,,,
+blind,s10-llama70b-tejas-adv,N03,scored,True,False,True,False,availability_query required_code_string lease_hours kwarg kwarg required_code_string required_call reservation_wiring,,0,3,2,7,1,1,,,,
+blind,s10-llama70b-tejas-adv,N04,scored,True,False,True,False,required_call kwarg container_call reservation_wiring kwarg kwarg kwarg name_no_underscore,,0,3,1,5,1,2,,,,
+blind,s10-llama70b-tejas-adv,N05,scored,True,False,True,False,required_call kwarg kwarg required_call,,2,4,1,3,2,2,,,,
+blind,s10-llama70b-tejas-adv,N06,scored,True,False,True,False,forbidden_calls required_call,,3,4,4,5,1,1,,,,
+blind,s10-llama70b-tejas-adv,N07,scored,True,False,True,True,,,3,3,4,4,2,2,,,,
+blind,s10-llama70b-tejas-adv,N08,scored,True,False,True,False,required_call required_call,,3,4,2,3,1,1,,,,
+blind,s10-llama70b-tejas-adv,N09,scored,False,False,False,False,availability_query kwarg kwarg kwarg required_call required_code_string required_code_string required_code_string required_code_string required_call required_call reservation_wiring,,0,5,0,7,2,2,,,,
+blind,s10-llama70b-tejas-adv,N10,scored,True,False,True,False,kwarg required_call required_code_string,,3,4,2,4,2,2,,,,
+blind,s10-llama70b-tejas-adv,N11,scored,True,False,True,False,kwarg required_call,,3,4,3,4,2,2,,,,
+blind,s10-llama70b-tejas-adv,N12,scored,True,False,True,False,kwarg kwarg required_code_string required_call required_call required_code_string required_code_string reservation_wiring,,0,3,0,5,1,1,,,,
+blind,s10-llama70b-tejas-adv,N13,scored,True,False,True,False,required_code_string required_call,,3,4,5,6,2,2,,,,
+blind,s10-llama70b-tejas-adv,N14,scored,True,False,True,False,abstain_or_discover,,0,1,,,2,2,,,,
+blind,s10-llama70b-tejas-adv,N15,scored,True,False,True,False,required_call,,1,2,1,1,1,1,,,,
+blind,s10-llama70b-tejas-adv,N16,scored,True,False,True,False,required_call,,3,4,1,1,2,2,,,,
+blind,s10-llama70b-tejas-adv,N17,scored,True,False,True,False,abstain_or_discover,,0,1,,,1,1,,,,
+blind,s10-llama70b-tejas-adv,N18,scored,False,False,False,False,abstain_or_discover,,0,1,,,2,2,,,,
+blind,s10-llama70b-tejas-adv,P01,scored,True,False,True,False,required_call,,1,2,1,1,,,,,,
+blind,s10-llama70b-tejas-adv,P02,scored,True,False,True,True,,,3,3,3,3,1,1,,,,
+blind,s10-llama70b-tejas-adv,P03,scored,True,False,True,True,,,2,2,1,1,1,1,,,,
+blind,s10-llama70b-tejas-adv,P04,scored,True,False,True,True,,,3,3,2,2,1,1,,,,
+blind,s10-llama70b-tejas-adv,P05,scored,True,False,True,False,required_code_string required_call,,2,3,0,1,2,2,,,,
+blind,s10-llama70b-tejas-adv,P06,scored,True,False,True,False,required_code_string,,2,2,0,1,,,,,,
+blind,s10-llama70b-tejas-adv,P07,scored,True,False,True,False,required_call,,1,2,1,1,,,,,,
+blind,s10-llama70b-tejas-adv,P08,scored,True,False,True,False,required_call required_code_string,,0,2,1,1,,,,,,
+blind,s10-llama70b-tejas-adv,P09,scored,True,False,True,False,required_call required_call,,0,2,2,2,,,,,,
+blind,s10-llama70b-tejas-adv,P10,scored,True,False,True,False,teardown,,0,1,,,,,,,,
+blind,s10-llama70b-tejas-adv,P11,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg required_call required_code_string name_no_underscore,,0,3,0,3,0,1,,,,
+blind,s10-llama70b-tejas-adv,P12,scored,False,False,False,False,required_call required_call required_code_string required_code_string required_code_string,,0,2,0,3,,,,,,
+blind,s10-llama70b-tejas-adv,P13,scored,False,False,False,True,,,,,2,2,,,,,,
+blind,s10-llama70b-tejas-adv,P14,scored,True,False,True,False,required_call required_code_string required_call,,3,5,3,4,2,2,,,,
+blind,s10-llama70b-tejas-adv,P15,scored,True,False,True,False,availability_query required_code_string,,1,2,0,1,1,1,,,,
+blind,s10-llama70b-tejas-adv,P16,scored,True,False,True,False,kwarg required_code_string,,2,3,2,3,2,2,,,,
+blind,s10-llama70b-tejas-adv,P17,scored,True,False,True,False,required_call required_code_string required_call,,0,2,2,3,,,,,,
+blind,s10-llama70b-tejas-adv,P18,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string,,0,1,0,3,,,,,,
+blind,s10-llama70b-tejas-adv,P19,scored,True,False,True,False,required_call required_code_string required_code_string,,0,1,0,2,,,,,,
+blind,s10-llama70b-tejas-adv,P20,scored,False,False,False,False,required_call kwarg kwarg kwarg,,0,1,0,3,1,1,,,,
+blind,s10-llama70b-tejas-adv,P21,scored,True,False,True,False,kwarg required_code_string,,2,3,2,3,2,2,,,,
+blind,s10-llama70b-tejas-adv,P22,scored,False,False,False,False,required_call required_code_string required_code_string,,0,1,0,2,,,,,,
+blind,s10-llama70b-tejas-adv,P23,scored,True,False,True,False,required_call,,0,1,1,1,,,,,,
+blind,s10-llama70b-tejas-adv,P24,scored,False,False,False,True,,,,,2,2,,,,,,
+blind,s10-llama70b-tejas-adv,P25,scored,False,False,False,False,availability_query required_code_string,,0,2,,,,,,,,
+blind,s10-llama70b-tejas-adv,P26,scored,False,False,False,False,availability_query required_code_string,,0,2,,,,,,,,
+blind,s10-llama70b-tejas-adv,P27,scored,False,False,False,False,required_call required_code_string,,0,1,0,1,,,,,,
+blind,s10-llama70b-tejas-adv,P28,scored,True,False,True,True,,,3,3,1,1,1,1,,,,
+blind,s10-llama70b-tejas-adv,R01,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R02,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R03,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s10-llama70b-tejas-adv,R04,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R05,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R06,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,3,4
+blind,s10-llama70b-tejas-adv,R07,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R08,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R09,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,0,1,0,2
+blind,s10-llama70b-tejas-adv,R10,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R11,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R12,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R13,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R14,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R15,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,0,1,0,2
+blind,s10-llama70b-tejas-adv,R16,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R17,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R18,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R19,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R20,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R21,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s10-llama70b-tejas-adv,R22,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R23,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R24,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+blind,s10-llama70b-tejas-adv,R25,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R26,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R27,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s10-llama70b-tejas-adv,R28,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R29,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R30,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R31,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R32,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R33,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-adv,R34,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R35,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-adv,R36,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,1,4
+blind,s10-llama70b-tejas-adv,R37,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R38,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R39,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s10-llama70b-tejas-adv,R40,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R41,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R42,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+blind,s10-llama70b-tejas-adv,R43,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R44,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+blind,s10-llama70b-tejas-adv,R45,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+blind,s10-llama70b-tejas-adv,R46,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R47,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+blind,s10-llama70b-tejas-adv,R48,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R49,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R50,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R51,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R52,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-adv,R53,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R54,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R55,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-adv,R56,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-adv,R57,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-adv,R58,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-adv,R59,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-adv,R60,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R61,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R62,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R63,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R64,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-adv,R65,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R66,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R67,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R68,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R69,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R70,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,1,1,0,1,0,2
+blind,s10-llama70b-tejas-adv,R71,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R72,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R73,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R74,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R75,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R76,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,1,1,0,1,0,2
+blind,s10-llama70b-tejas-adv,R77,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R78,scored,False,False,False,False,abstains_when_uncovered,jetson-agx-orin-devkit-64gb,,,,,2,2,3,3,4,5
+blind,s10-llama70b-tejas-adv,R79,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R80,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R81,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R82,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-adv,R83,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-adv,R84,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,AV01,scored,True,False,True,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s10-llama70b-tejas-noadv,AV02,scored,True,False,True,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s10-llama70b-tejas-noadv,AV03,scored,False,False,False,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+blind,s10-llama70b-tejas-noadv,AV04,scored,True,False,True,False,availability_query required_code_string v1_snapshot_exec,,0,1,0,2,,,,,,
+blind,s10-llama70b-tejas-noadv,N01,scored,False,False,False,False,required_call kwarg kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,,0,4,0,5,1,2,,,,
+blind,s10-llama70b-tejas-noadv,N02,scored,True,False,True,False,required_call required_code_string required_code_string required_code_string required_code_string required_call,,0,2,0,4,,,,,,
+blind,s10-llama70b-tejas-noadv,N03,scored,True,False,True,False,availability_query required_code_string lease_hours kwarg kwarg required_code_string required_code_string required_code_string required_call reservation_wiring,,0,3,0,7,1,1,,,,
+blind,s10-llama70b-tejas-noadv,N04,scored,True,False,True,False,required_call kwarg container_call reservation_wiring kwarg kwarg kwarg name_no_underscore,,0,3,1,5,1,2,,,,
+blind,s10-llama70b-tejas-noadv,N05,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg kwarg required_call name_no_underscore,,0,4,0,3,1,2,,,,
+blind,s10-llama70b-tejas-noadv,N06,scored,True,False,True,False,required_call,,3,4,5,5,1,1,,,,
+blind,s10-llama70b-tejas-noadv,N07,scored,False,False,False,False,required_call kwarg kwarg container_call reservation_wiring kwarg kwarg name_no_underscore,,0,3,0,4,1,2,,,,
+blind,s10-llama70b-tejas-noadv,N08,scored,False,False,False,False,required_call container_call reservation_wiring kwarg kwarg required_call required_call name_no_underscore,,0,4,0,3,0,1,,,,
+blind,s10-llama70b-tejas-noadv,N09,scored,False,False,False,False,availability_query kwarg kwarg kwarg required_call required_code_string required_code_string required_code_string required_code_string required_call required_call reservation_wiring,,0,5,0,7,2,2,,,,
+blind,s10-llama70b-tejas-noadv,N10,scored,True,False,True,False,required_call kwarg container_call reservation_wiring kwarg required_call required_code_string name_no_underscore,,0,4,1,4,1,2,,,,
+blind,s10-llama70b-tejas-noadv,N11,scored,True,False,True,False,required_call kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,,0,4,0,4,1,2,,,,
+blind,s10-llama70b-tejas-noadv,N12,scored,True,False,True,False,kwarg kwarg required_code_string required_call required_call required_code_string required_code_string reservation_wiring,,0,3,0,5,1,1,,,,
+blind,s10-llama70b-tejas-noadv,N13,scored,True,False,True,False,required_call required_call kwarg lease_hours kwarg kwarg kwarg required_code_string required_call reservation_wiring,,0,4,1,6,1,2,,,,
+blind,s10-llama70b-tejas-noadv,N14,scored,False,False,False,True,,,1,1,,,2,2,,,,
+blind,s10-llama70b-tejas-noadv,N15,scored,True,False,True,False,required_call required_call lease_hours,,0,2,0,1,1,1,,,,
+blind,s10-llama70b-tejas-noadv,N16,scored,False,False,False,False,required_call required_call container_call reservation_wiring kwarg name_no_underscore,,0,4,0,1,1,2,,,,
+blind,s10-llama70b-tejas-noadv,N17,scored,False,False,False,False,abstain_or_discover,,0,1,,,1,1,,,,
+blind,s10-llama70b-tejas-noadv,N18,scored,False,False,False,True,,,1,1,,,2,2,,,,
+blind,s10-llama70b-tejas-noadv,P01,scored,True,False,True,True,,,2,2,1,1,,,,,,
+blind,s10-llama70b-tejas-noadv,P02,scored,True,False,True,False,forbidden_calls required_call kwarg kwarg lease_hours,,2,3,0,3,0,1,,,,
+blind,s10-llama70b-tejas-noadv,P03,scored,False,False,False,False,required_call kwarg required_code_string,,0,2,0,1,1,1,,,,
+blind,s10-llama70b-tejas-noadv,P04,scored,False,False,False,False,required_call required_call kwarg kwarg required_call,,0,3,0,2,1,1,,,,
+blind,s10-llama70b-tejas-noadv,P05,scored,False,False,False,False,container_call reservation_wiring required_code_string name_no_underscore required_call,,0,3,0,1,1,2,,,,
+blind,s10-llama70b-tejas-noadv,P06,scored,False,False,False,False,container_call kwarg required_code_string,,0,2,0,1,,,,,,
+blind,s10-llama70b-tejas-noadv,P07,scored,False,False,False,False,required_code_string required_code_string required_call,,0,2,0,1,,,,,,
+blind,s10-llama70b-tejas-noadv,P08,scored,True,False,True,False,required_call required_code_string,,0,2,1,1,,,,,,
+blind,s10-llama70b-tejas-noadv,P09,scored,False,False,False,False,required_call required_call required_code_string required_code_string,,0,2,0,2,,,,,,
+blind,s10-llama70b-tejas-noadv,P10,scored,False,False,False,False,teardown,,0,1,,,,,,,,
+blind,s10-llama70b-tejas-noadv,P11,scored,True,False,True,False,container_call reservation_wiring kwarg kwarg required_call required_code_string name_no_underscore,,0,3,0,3,0,1,,,,
+blind,s10-llama70b-tejas-noadv,P12,scored,False,False,False,False,required_call required_call required_code_string required_code_string required_code_string,,0,2,0,3,,,,,,
+blind,s10-llama70b-tejas-noadv,P13,scored,False,False,False,False,required_text_string,,,,1,2,,,,,,
+blind,s10-llama70b-tejas-noadv,P14,scored,False,False,False,False,required_call kwarg container_call reservation_wiring kwarg kwarg required_call required_code_string required_call name_no_underscore,,0,5,0,4,1,2,,,,
+blind,s10-llama70b-tejas-noadv,P15,scored,False,False,False,False,availability_query required_code_string required_call,,0,2,0,1,1,1,,,,
+blind,s10-llama70b-tejas-noadv,P16,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,,0,3,0,3,1,2,,,,
+blind,s10-llama70b-tejas-noadv,P17,scored,True,False,True,False,required_call required_code_string required_code_string required_code_string required_call,,0,2,0,3,,,,,,
+blind,s10-llama70b-tejas-noadv,P18,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string,,0,1,0,3,,,,,,
+blind,s10-llama70b-tejas-noadv,P19,scored,False,False,False,False,required_call required_code_string required_code_string,,0,1,0,2,,,,,,
+blind,s10-llama70b-tejas-noadv,P20,scored,False,False,False,False,required_call kwarg kwarg kwarg,,0,1,0,3,1,1,,,,
+blind,s10-llama70b-tejas-noadv,P21,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,,0,3,0,3,1,2,,,,
+blind,s10-llama70b-tejas-noadv,P22,scored,False,False,False,False,required_call required_code_string required_code_string,,0,1,0,2,,,,,,
+blind,s10-llama70b-tejas-noadv,P23,scored,False,False,False,False,required_call required_code_string,,0,1,0,1,,,,,,
+blind,s10-llama70b-tejas-noadv,P24,scored,False,False,False,False,required_text_string required_text_string,,,,0,2,,,,,,
+blind,s10-llama70b-tejas-noadv,P25,scored,False,False,False,False,availability_query required_code_string,,0,2,,,,,,,,
+blind,s10-llama70b-tejas-noadv,P26,scored,False,False,False,False,availability_query required_code_string,,0,2,,,,,,,,
+blind,s10-llama70b-tejas-noadv,P27,scored,False,False,False,False,required_call required_code_string,,0,1,0,1,,,,,,
+blind,s10-llama70b-tejas-noadv,P28,scored,True,False,True,False,required_call kwarg container_call reservation_wiring,,0,3,0,1,1,1,,,,
+blind,s10-llama70b-tejas-noadv,R01,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R02,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R03,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R04,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R05,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R06,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,1,4
+blind,s10-llama70b-tejas-noadv,R07,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R08,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R09,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-noadv,R10,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R11,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R12,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R13,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R14,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R15,scored,False,False,False,True,,,,,,,1,1,1,1,2,2
+blind,s10-llama70b-tejas-noadv,R16,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R17,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R18,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R19,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R20,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R21,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R22,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R23,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R24,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R25,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R26,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R27,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R28,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R29,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R30,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R31,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R32,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R33,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R34,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R35,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R36,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,1,4
+blind,s10-llama70b-tejas-noadv,R37,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R38,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R39,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R40,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R41,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R42,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R43,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R44,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R45,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R46,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R47,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+blind,s10-llama70b-tejas-noadv,R48,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R49,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R50,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R51,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R52,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-noadv,R53,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R54,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R55,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-noadv,R56,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-noadv,R57,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-noadv,R58,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-noadv,R59,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-noadv,R60,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R61,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R62,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R63,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R64,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-noadv,R65,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R66,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R67,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R68,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R69,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R70,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-noadv,R71,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R72,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R73,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R74,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R75,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R76,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+blind,s10-llama70b-tejas-noadv,R77,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R78,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+blind,s10-llama70b-tejas-noadv,R79,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s10-llama70b-tejas-noadv,R80,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s10-llama70b-tejas-noadv,R81,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s10-llama70b-tejas-noadv,R82,scored,False,False,False,True,,,,,,,1,1,1,1,2,2
+blind,s10-llama70b-tejas-noadv,R83,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+blind,s10-llama70b-tejas-noadv,R84,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+heldout,s10-llama70b-tejas-adv,N02,scored,True,False,True,False,required_code_string required_code_string,,2,2,2,4,,,,,,
+heldout,s10-llama70b-tejas-adv,N04,scored,True,False,True,False,kwarg kwarg,,3,3,3,5,2,2,,,,
+heldout,s10-llama70b-tejas-adv,N05,scored,True,False,True,False,required_call kwarg kwarg required_call,,2,4,1,3,2,2,,,,
+heldout,s10-llama70b-tejas-adv,N08,scored,True,False,True,False,required_call kwarg required_call,,3,4,1,3,1,1,,,,
+heldout,s10-llama70b-tejas-adv,N13,scored,True,False,True,False,required_code_string required_call,,3,4,5,6,2,2,,,,
+heldout,s10-llama70b-tejas-adv,N15,scored,True,False,True,False,required_call,,1,2,1,1,1,1,,,,
+heldout,s10-llama70b-tejas-adv,N16,scored,True,False,True,False,required_call,,3,4,1,1,2,2,,,,
+heldout,s10-llama70b-tejas-adv,P11,scored,True,False,True,False,kwarg required_call required_code_string,,2,3,1,3,1,1,,,,
+heldout,s10-llama70b-tejas-adv,P13,scored,False,False,False,True,,,,,2,2,,,,,,
+heldout,s10-llama70b-tejas-adv,P16,scored,True,False,True,False,kwarg required_code_string,,2,3,2,3,2,2,,,,
+heldout,s10-llama70b-tejas-adv,P17,scored,True,False,True,False,required_code_string,,2,2,2,3,,,,,,
+heldout,s10-llama70b-tejas-adv,P21,scored,True,False,True,False,kwarg kwarg required_code_string,,2,3,1,3,2,2,,,,
+heldout,s10-llama70b-tejas-adv,P22,scored,True,False,True,True,,,1,1,2,2,,,,,,
+heldout,s10-llama70b-tejas-adv,P24,scored,True,False,True,False,required_text_string,,,,1,2,,,,,,
+heldout,s10-llama70b-tejas-adv,R01,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R02,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R03,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+heldout,s10-llama70b-tejas-adv,R04,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R05,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R06,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,3,4
+heldout,s10-llama70b-tejas-adv,R07,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R08,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+heldout,s10-llama70b-tejas-adv,R09,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,0,1,0,2
+heldout,s10-llama70b-tejas-adv,R10,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R11,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R12,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R13,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R14,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R15,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,0,1,0,2
+heldout,s10-llama70b-tejas-adv,R16,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R17,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R18,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R19,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R20,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R21,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+heldout,s10-llama70b-tejas-adv,R22,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R23,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R24,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R25,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R26,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R27,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+heldout,s10-llama70b-tejas-adv,R28,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R29,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R30,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R31,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R32,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R33,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+heldout,s10-llama70b-tejas-adv,R34,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R35,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R36,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,3,4
+heldout,s10-llama70b-tejas-adv,R37,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R38,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R39,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+heldout,s10-llama70b-tejas-adv,R40,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R41,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R42,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-adv,R43,scored,False,False,False,False,ranked_types_subset forbidden_types_listed required_text_string,raspberrypi4-64,,,,,2,2,3,3,2,5
+heldout,s10-llama70b-tejas-adv,R44,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+heldout,s10-llama70b-tejas-adv,R45,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+heldout,s10-llama70b-tejas-adv,R46,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-adv,R47,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+heldout,s10-llama70b-tejas-adv,R48,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-noadv,N02,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_code_string required_call,,0,2,0,4,,,,,,
+heldout,s10-llama70b-tejas-noadv,N04,scored,True,False,True,False,kwarg kwarg kwarg kwarg,,3,3,1,5,2,2,,,,
+heldout,s10-llama70b-tejas-noadv,N05,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg kwarg,,1,4,0,3,2,2,,,,
+heldout,s10-llama70b-tejas-noadv,N08,scored,True,False,True,False,required_call container_call reservation_wiring kwarg required_call,,1,4,1,3,1,1,,,,
+heldout,s10-llama70b-tejas-noadv,N13,scored,True,False,True,False,kwarg lease_hours kwarg kwarg kwarg required_code_string required_call reservation_wiring,,2,4,1,6,1,2,,,,
+heldout,s10-llama70b-tejas-noadv,N15,scored,True,False,True,False,required_call,,1,2,1,1,1,1,,,,
+heldout,s10-llama70b-tejas-noadv,N16,scored,True,False,True,False,required_call kwarg,,3,4,0,1,2,2,,,,
+heldout,s10-llama70b-tejas-noadv,P11,scored,True,False,True,False,kwarg kwarg required_call required_code_string,,2,3,0,3,1,1,,,,
+heldout,s10-llama70b-tejas-noadv,P13,scored,False,False,False,False,required_text_string,,,,1,2,,,,,,
+heldout,s10-llama70b-tejas-noadv,P16,scored,True,False,True,False,kwarg kwarg kwarg required_code_string profiles_known_only,,2,3,0,3,1,2,,,,
+heldout,s10-llama70b-tejas-noadv,P17,scored,False,False,False,False,required_call required_code_string required_code_string required_code_string required_call,,0,2,0,3,,,,,,
+heldout,s10-llama70b-tejas-noadv,P21,scored,False,False,False,False,container_call reservation_wiring kwarg kwarg kwarg required_code_string name_no_underscore,,0,3,0,3,1,2,,,,
+heldout,s10-llama70b-tejas-noadv,P22,scored,False,False,False,False,required_call required_code_string required_code_string,,0,1,0,2,,,,,,
+heldout,s10-llama70b-tejas-noadv,P24,scored,False,False,False,False,required_text_string required_text_string,,,,0,2,,,,,,
+heldout,s10-llama70b-tejas-noadv,R01,scored,True,False,True,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-noadv,R02,scored,True,False,True,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-noadv,R03,scored,True,False,True,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+heldout,s10-llama70b-tejas-noadv,R04,scored,True,False,True,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+heldout,s10-llama70b-tejas-noadv,R05,scored,True,False,True,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+heldout,s10-llama70b-tejas-noadv,R06,scored,True,False,True,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,3,4
+heldout,s10-llama70b-tejas-noadv,R07,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R08,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R09,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+heldout,s10-llama70b-tejas-noadv,R10,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R11,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R12,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R13,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R14,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R15,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+heldout,s10-llama70b-tejas-noadv,R16,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R17,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R18,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R19,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R20,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R21,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R22,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R23,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R24,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R25,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R26,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R27,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R28,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R29,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R30,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R31,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R32,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R33,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R34,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R35,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R36,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,1,4
+heldout,s10-llama70b-tejas-noadv,R37,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R38,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R39,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R40,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R41,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R42,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R43,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R44,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R45,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R46,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+heldout,s10-llama70b-tejas-noadv,R47,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+heldout,s10-llama70b-tejas-noadv,R48,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-adv,AV01,scored,True,False,True,False,v1_snapshot_exec,,1,1,0,1,,,,,,
+matched,s10-llama70b-tejas-adv,AV02,scored,True,False,True,False,v1_snapshot_exec,,1,1,0,1,,,,,,
+matched,s10-llama70b-tejas-adv,AV03,scored,True,False,True,False,v1_snapshot_exec,,1,1,0,1,,,,,,
+matched,s10-llama70b-tejas-adv,AV04,scored,True,False,True,False,required_code_string v1_snapshot_exec,,1,1,0,2,,,,,,
+matched,s10-llama70b-tejas-adv,N01,scored,True,False,True,True,,,4,4,5,5,2,2,,,,
+matched,s10-llama70b-tejas-adv,N02,scored,True,False,True,True,,,2,2,4,4,,,,,,
+matched,s10-llama70b-tejas-adv,N03,scored,True,False,True,True,,,3,3,7,7,1,1,,,,
+matched,s10-llama70b-tejas-adv,N04,scored,True,False,True,True,,,3,3,5,5,2,2,,,,
+matched,s10-llama70b-tejas-adv,N05,scored,True,False,True,True,,,4,4,3,3,2,2,,,,
+matched,s10-llama70b-tejas-adv,N06,scored,True,False,True,False,kwarg kwarg,,4,4,3,5,1,1,,,,
+matched,s10-llama70b-tejas-adv,N07,scored,True,False,True,True,,,3,3,4,4,2,2,,,,
+matched,s10-llama70b-tejas-adv,N08,scored,True,False,True,True,,,4,4,3,3,1,1,,,,
+matched,s10-llama70b-tejas-adv,N09,scored,True,False,True,False,availability_query kwarg kwarg kwarg required_call required_call required_call reservation_wiring,,0,5,4,7,2,2,,,,
+matched,s10-llama70b-tejas-adv,N10,scored,True,False,True,True,,,4,4,4,4,2,2,,,,
+matched,s10-llama70b-tejas-adv,N11,scored,True,False,True,False,kwarg required_call,,3,4,3,4,2,2,,,,
+matched,s10-llama70b-tejas-adv,N12,scored,True,False,True,False,required_call,,2,3,5,5,1,1,,,,
+matched,s10-llama70b-tejas-adv,N13,scored,True,False,True,True,,,4,4,6,6,2,2,,,,
+matched,s10-llama70b-tejas-adv,N15,scored,True,False,True,False,required_call,,1,2,1,1,1,1,,,,
+matched,s10-llama70b-tejas-adv,N16,scored,True,False,True,False,required_call,,3,4,1,1,2,2,,,,
+matched,s10-llama70b-tejas-adv,P01,scored,True,False,True,True,,,2,2,1,1,,,,,,
+matched,s10-llama70b-tejas-adv,P02,scored,True,False,True,True,,,3,3,3,3,1,1,,,,
+matched,s10-llama70b-tejas-adv,P03,scored,True,False,True,False,kwarg,,2,2,0,1,1,1,,,,
+matched,s10-llama70b-tejas-adv,P04,scored,True,False,True,True,,,3,3,2,2,1,1,,,,
+matched,s10-llama70b-tejas-adv,P05,scored,True,False,True,False,required_code_string required_call,,2,3,0,1,2,2,,,,
+matched,s10-llama70b-tejas-adv,P06,scored,True,False,True,True,,,2,2,1,1,,,,,,
+matched,s10-llama70b-tejas-adv,P07,scored,True,False,True,True,,,2,2,1,1,,,,,,
+matched,s10-llama70b-tejas-adv,P08,scored,True,False,True,True,,,2,2,1,1,,,,,,
+matched,s10-llama70b-tejas-adv,P09,scored,True,False,True,True,,,2,2,2,2,,,,,,
+matched,s10-llama70b-tejas-adv,P10,scored,True,False,True,True,,,1,1,,,,,,,,
+matched,s10-llama70b-tejas-adv,P11,scored,True,False,True,True,,,3,3,3,3,1,1,,,,
+matched,s10-llama70b-tejas-adv,P12,scored,True,False,True,True,,,2,2,3,3,,,,,,
+matched,s10-llama70b-tejas-adv,P13,scored,False,False,False,True,,,,,2,2,,,,,,
+matched,s10-llama70b-tejas-adv,P14,scored,True,False,True,False,required_call required_code_string,,4,5,3,4,2,2,,,,
+matched,s10-llama70b-tejas-adv,P15,scored,True,False,True,False,availability_query required_call,,0,2,1,1,1,1,,,,
+matched,s10-llama70b-tejas-adv,P16,scored,True,False,True,True,,,3,3,3,3,2,2,,,,
+matched,s10-llama70b-tejas-adv,P17,scored,True,False,True,True,,,2,2,3,3,,,,,,
+matched,s10-llama70b-tejas-adv,P18,scored,True,False,True,True,,,1,1,3,3,,,,,,
+matched,s10-llama70b-tejas-adv,P19,scored,True,False,True,True,,,1,1,2,2,,,,,,
+matched,s10-llama70b-tejas-adv,P20,scored,True,False,True,True,,,1,1,3,3,1,1,,,,
+matched,s10-llama70b-tejas-adv,P21,scored,True,False,True,True,,,3,3,3,3,2,2,,,,
+matched,s10-llama70b-tejas-adv,P22,scored,True,False,True,False,required_call,,0,1,2,2,,,,,,
+matched,s10-llama70b-tejas-adv,P23,scored,True,False,True,True,,,1,1,1,1,,,,,,
+matched,s10-llama70b-tejas-adv,P24,scored,False,False,False,True,,,,,2,2,,,,,,
+matched,s10-llama70b-tejas-adv,P25,scored,False,False,False,False,availability_query required_code_string,,0,2,,,,,,,,
+matched,s10-llama70b-tejas-adv,P26,scored,True,False,True,True,,,2,2,,,,,,,,
+matched,s10-llama70b-tejas-adv,P27,scored,True,False,True,False,required_code_string,,1,1,0,1,,,,,,
+matched,s10-llama70b-tejas-adv,P28,scored,True,False,True,True,,,3,3,1,1,1,1,,,,
+matched,s10-llama70b-tejas-adv,R01,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+matched,s10-llama70b-tejas-adv,R02,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+matched,s10-llama70b-tejas-adv,R03,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+matched,s10-llama70b-tejas-adv,R04,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+matched,s10-llama70b-tejas-adv,R05,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+matched,s10-llama70b-tejas-adv,R06,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+matched,s10-llama70b-tejas-adv,R07,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R08,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R09,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,0,1,0,2
+matched,s10-llama70b-tejas-adv,R10,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R11,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R12,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R13,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R14,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R15,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,0,1,0,2
+matched,s10-llama70b-tejas-adv,R16,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R17,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R18,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R19,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R20,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+matched,s10-llama70b-tejas-adv,R21,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+matched,s10-llama70b-tejas-adv,R22,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R23,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+matched,s10-llama70b-tejas-adv,R24,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R25,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-adv,R26,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-adv,R27,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-adv,R28,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-adv,R29,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-adv,R30,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-adv,R31,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R32,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+matched,s10-llama70b-tejas-adv,R33,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+matched,s10-llama70b-tejas-adv,R34,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R35,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+matched,s10-llama70b-tejas-adv,R36,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,3,4
+matched,s10-llama70b-tejas-adv,R37,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-adv,R38,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+matched,s10-llama70b-tejas-adv,R39,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-adv,R40,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,4,4
+matched,s10-llama70b-tejas-adv,R41,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-adv,R42,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-adv,R43,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R44,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+matched,s10-llama70b-tejas-adv,R45,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,0,3,2,4
+matched,s10-llama70b-tejas-adv,R46,scored,False,False,False,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-adv,R47,scored,False,False,False,False,count_feasible ranked_types_subset forbidden_types_listed,raspberrypi4-64,,,,,2,2,2,3,2,4
+matched,s10-llama70b-tejas-adv,R48,scored,False,False,False,True,,raspberrypi4-64,,,,,2,2,3,3,5,5
+matched,s10-llama70b-tejas-noadv,AV01,scored,True,False,True,True,,,1,1,1,1,,,,,,
+matched,s10-llama70b-tejas-noadv,AV02,scored,True,False,True,False,v1_snapshot_exec,,1,1,0,1,,,,,,
+matched,s10-llama70b-tejas-noadv,AV03,scored,True,False,True,False,availability_query v1_snapshot_exec,,0,1,0,1,,,,,,
+matched,s10-llama70b-tejas-noadv,AV04,scored,True,False,True,False,availability_query required_code_string v1_snapshot_exec,,0,1,0,2,,,,,,
+matched,s10-llama70b-tejas-noadv,N01,scored,True,False,True,True,,,4,4,5,5,2,2,,,,
+matched,s10-llama70b-tejas-noadv,N02,scored,True,False,True,False,required_call required_call,,0,2,4,4,,,,,,
+matched,s10-llama70b-tejas-noadv,N03,scored,True,False,True,True,,,3,3,7,7,1,1,,,,
+matched,s10-llama70b-tejas-noadv,N04,scored,True,False,True,True,,,3,3,5,5,2,2,,,,
+matched,s10-llama70b-tejas-noadv,N05,scored,True,False,True,False,required_call container_call reservation_wiring kwarg kwarg kwarg required_call name_no_underscore,,0,4,0,3,1,2,,,,
+matched,s10-llama70b-tejas-noadv,N06,scored,True,False,True,False,kwarg kwarg,,4,4,3,5,1,1,,,,
+matched,s10-llama70b-tejas-noadv,N07,scored,True,False,True,True,,,3,3,4,4,2,2,,,,
+matched,s10-llama70b-tejas-noadv,N08,scored,True,False,True,True,,,4,4,3,3,1,1,,,,
+matched,s10-llama70b-tejas-noadv,N09,scored,True,False,True,False,availability_query kwarg kwarg kwarg required_call required_call required_call reservation_wiring,,0,5,4,7,2,2,,,,
+matched,s10-llama70b-tejas-noadv,N10,scored,True,False,True,False,kwarg,,4,4,3,4,2,2,,,,
+matched,s10-llama70b-tejas-noadv,N11,scored,True,False,True,False,required_call kwarg lease_hours container_call reservation_wiring kwarg kwarg required_call name_no_underscore,,0,4,0,4,1,2,,,,
+matched,s10-llama70b-tejas-noadv,N12,scored,True,False,True,False,kwarg kwarg reservation_wiring,,2,3,3,5,1,1,,,,
+matched,s10-llama70b-tejas-noadv,N13,scored,True,False,True,True,,,4,4,6,6,2,2,,,,
+matched,s10-llama70b-tejas-noadv,N15,scored,True,False,True,False,required_call,,1,2,1,1,1,1,,,,
+matched,s10-llama70b-tejas-noadv,N16,scored,True,False,True,False,required_call kwarg name_no_underscore,,3,4,0,1,1,2,,,,
+matched,s10-llama70b-tejas-noadv,P01,scored,True,False,True,True,,,2,2,1,1,,,,,,
+matched,s10-llama70b-tejas-noadv,P02,scored,True,False,True,True,,,3,3,3,3,1,1,,,,
+matched,s10-llama70b-tejas-noadv,P03,scored,True,False,True,False,required_call kwarg,,1,2,0,1,1,1,,,,
+matched,s10-llama70b-tejas-noadv,P04,scored,True,False,True,True,,,3,3,2,2,1,1,,,,
+matched,s10-llama70b-tejas-noadv,P05,scored,True,False,True,True,,,3,3,1,1,2,2,,,,
+matched,s10-llama70b-tejas-noadv,P06,scored,True,False,True,True,,,2,2,1,1,,,,,,
+matched,s10-llama70b-tejas-noadv,P07,scored,True,False,True,True,,,2,2,1,1,,,,,,
+matched,s10-llama70b-tejas-noadv,P08,scored,True,False,True,True,,,2,2,1,1,,,,,,
+matched,s10-llama70b-tejas-noadv,P09,scored,True,False,True,True,,,2,2,2,2,,,,,,
+matched,s10-llama70b-tejas-noadv,P10,scored,True,False,True,True,,,1,1,,,,,,,,
+matched,s10-llama70b-tejas-noadv,P11,scored,True,False,True,True,,,3,3,3,3,1,1,,,,
+matched,s10-llama70b-tejas-noadv,P12,scored,False,False,False,False,required_call required_call required_code_string required_code_string required_code_string,,0,2,0,3,,,,,,
+matched,s10-llama70b-tejas-noadv,P13,scored,False,False,False,True,,,,,2,2,,,,,,
+matched,s10-llama70b-tejas-noadv,P14,scored,True,False,True,True,,,5,5,4,4,2,2,,,,
+matched,s10-llama70b-tejas-noadv,P15,scored,True,False,True,True,,,2,2,1,1,1,1,,,,
+matched,s10-llama70b-tejas-noadv,P16,scored,True,False,True,True,,,3,3,3,3,2,2,,,,
+matched,s10-llama70b-tejas-noadv,P17,scored,True,False,True,True,,,2,2,3,3,,,,,,
+matched,s10-llama70b-tejas-noadv,P18,scored,True,False,True,True,,,1,1,3,3,,,,,,
+matched,s10-llama70b-tejas-noadv,P19,scored,True,False,True,True,,,1,1,2,2,,,,,,
+matched,s10-llama70b-tejas-noadv,P20,scored,True,False,True,True,,,1,1,3,3,1,1,,,,
+matched,s10-llama70b-tejas-noadv,P21,scored,True,False,True,True,,,3,3,3,3,2,2,,,,
+matched,s10-llama70b-tejas-noadv,P22,scored,True,False,True,False,required_call,,0,1,2,2,,,,,,
+matched,s10-llama70b-tejas-noadv,P23,scored,True,False,True,True,,,1,1,1,1,,,,,,
+matched,s10-llama70b-tejas-noadv,P24,scored,False,False,False,True,,,,,2,2,,,,,,
+matched,s10-llama70b-tejas-noadv,P25,scored,False,False,False,False,availability_query required_code_string,,0,2,,,,,,,,
+matched,s10-llama70b-tejas-noadv,P26,scored,True,False,True,False,required_code_string,,1,2,,,,,,,,
+matched,s10-llama70b-tejas-noadv,P27,scored,False,False,False,False,required_call required_code_string,,0,1,0,1,,,,,,
+matched,s10-llama70b-tejas-noadv,P28,scored,True,False,True,True,,,3,3,1,1,1,1,,,,
+matched,s10-llama70b-tejas-noadv,R01,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R02,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R03,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R04,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R05,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R06,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,1,4
+matched,s10-llama70b-tejas-noadv,R07,scored,True,False,True,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-noadv,R08,scored,True,False,True,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-noadv,R09,scored,True,False,True,False,no_down_types_listed forbidden_types_listed,raspberrypi4-64,,,,,1,1,0,1,1,2
+matched,s10-llama70b-tejas-noadv,R10,scored,True,False,True,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-noadv,R11,scored,True,False,True,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-noadv,R12,scored,True,False,True,False,required_text_string,raspberrypi4-64,,,,,2,2,3,3,4,5
+matched,s10-llama70b-tejas-noadv,R13,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R14,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R15,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+matched,s10-llama70b-tejas-noadv,R16,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R17,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R18,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R19,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R20,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R21,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R22,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R23,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R24,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R25,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R26,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R27,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R28,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R29,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R30,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R31,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R32,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R33,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R34,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R35,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R36,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,1,4
+matched,s10-llama70b-tejas-noadv,R37,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R38,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R39,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R40,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R41,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R42,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R43,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R44,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R45,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R46,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+matched,s10-llama70b-tejas-noadv,R47,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,2,4
+matched,s10-llama70b-tejas-noadv,R48,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded required_text_string,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-adv,N14,scored,True,False,True,False,abstain_or_discover,,0,1,,,2,2,,,,
+uncovered,s10-llama70b-tejas-adv,N17,scored,True,False,True,False,abstain_or_discover forbidden_calls,,0,1,,,0,1,,,,
+uncovered,s10-llama70b-tejas-adv,N18,scored,True,False,True,False,abstain_or_discover,,0,1,,,2,2,,,,
+uncovered,s10-llama70b-tejas-adv,R49,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-nano,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R50,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-adv,R51,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-adv,R52,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+uncovered,s10-llama70b-tejas-adv,R53,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,0,5
+uncovered,s10-llama70b-tejas-adv,R54,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-adv,R55,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,jetson-nano,,,,,1,1,1,1,0,2
+uncovered,s10-llama70b-tejas-adv,R56,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,jetson-nano,,,,,1,1,1,1,0,2
+uncovered,s10-llama70b-tejas-adv,R57,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,jetson-nano,,,,,1,1,0,1,0,2
+uncovered,s10-llama70b-tejas-adv,R58,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,jetson-nano,,,,,1,1,0,1,0,2
+uncovered,s10-llama70b-tejas-adv,R59,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,jetson-nano,,,,,1,1,1,1,0,2
+uncovered,s10-llama70b-tejas-adv,R60,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-nano,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R61,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-nano,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R62,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-nano,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R63,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,0,3,1,5
+uncovered,s10-llama70b-tejas-adv,R64,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,1,1,0,2
+uncovered,s10-llama70b-tejas-adv,R65,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R66,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-nano,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R67,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R68,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R69,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,0,3,1,5
+uncovered,s10-llama70b-tejas-adv,R70,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,1,1,0,2
+uncovered,s10-llama70b-tejas-adv,R71,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R72,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R73,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-adv,R74,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R75,scored,False,False,False,False,rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,0,3,1,5
+uncovered,s10-llama70b-tejas-adv,R76,scored,False,False,False,False,forbidden_types_listed abstains_when_uncovered,raspberrypi4-64,,,,,1,1,1,1,0,2
+uncovered,s10-llama70b-tejas-adv,R77,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-adv,R78,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,raspberrypi4-64,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R79,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-nano,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R80,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-nano,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R81,scored,False,False,False,False,no_down_types_listed ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-nano,,,,,2,2,2,3,1,5
+uncovered,s10-llama70b-tejas-adv,R82,scored,False,False,False,False,no_down_types_listed forbidden_types_listed abstains_when_uncovered,jetson-nano,,,,,1,1,0,1,0,2
+uncovered,s10-llama70b-tejas-adv,R83,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-nano,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-adv,R84,scored,False,False,False,False,ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered,jetson-nano,,,,,2,2,3,3,1,5
+uncovered,s10-llama70b-tejas-noadv,N14,scored,True,False,True,False,abstain_or_discover profiles_known_only,,0,1,,,1,2,,,,
+uncovered,s10-llama70b-tejas-noadv,N17,scored,True,False,True,False,abstain_or_discover forbidden_calls,,0,1,,,0,1,,,,
+uncovered,s10-llama70b-tejas-noadv,N18,scored,False,False,False,False,abstain_or_discover,,0,1,,,2,2,,,,
+uncovered,s10-llama70b-tejas-noadv,R49,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R50,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R51,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R52,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+uncovered,s10-llama70b-tejas-noadv,R53,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R54,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R55,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+uncovered,s10-llama70b-tejas-noadv,R56,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+uncovered,s10-llama70b-tejas-noadv,R57,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+uncovered,s10-llama70b-tejas-noadv,R58,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+uncovered,s10-llama70b-tejas-noadv,R59,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+uncovered,s10-llama70b-tejas-noadv,R60,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R61,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R62,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R63,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R64,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+uncovered,s10-llama70b-tejas-noadv,R65,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R66,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R67,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+uncovered,s10-llama70b-tejas-noadv,R68,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+uncovered,s10-llama70b-tejas-noadv,R69,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+uncovered,s10-llama70b-tejas-noadv,R70,scored,False,False,False,True,,,,,,,1,1,1,1,2,2
+uncovered,s10-llama70b-tejas-noadv,R71,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+uncovered,s10-llama70b-tejas-noadv,R72,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded,,,,,,2,2,1,3,3,5
+uncovered,s10-llama70b-tejas-noadv,R73,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R74,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R75,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R76,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+uncovered,s10-llama70b-tejas-noadv,R77,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R78,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R79,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R80,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R81,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R82,scored,False,False,False,False,abstains_when_uncovered,,,,,,1,1,1,1,1,2
+uncovered,s10-llama70b-tejas-noadv,R83,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5
+uncovered,s10-llama70b-tejas-noadv,R84,scored,False,False,False,False,rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered,,,,,,2,2,1,3,2,5

@@ -3,9 +3,9 @@ Gold admission gate (decision D06): every item's gold_spec must pass 100% of its
 own checkers (and, for V1 items, its snapshot execution) before the item is part
 of the benchmark. A failing gold is a defective item, never a defective gold.
 
-  python -m harness.validate_golds                    # gate every item
-  python -m harness.validate_golds --suite core       # the frozen 50 only
-  python -m harness.validate_golds P16 N04            # gate a subset
+  chi-edge-bench selftest                    # gate every item
+  chi-edge-bench selftest --suite core       # the frozen 50 only
+  chi-edge-bench selftest P16 N04            # gate a subset
 
 Writes exports/gate_report.json for the core suite, gate_report_<suite>.json
 otherwise, so a v5 run cannot overwrite the cited core artifact. Exit code 0 iff
@@ -19,11 +19,8 @@ from pathlib import Path
 
 import yaml
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from runner import evaluate  # noqa: E402
-
-ROOT = Path(__file__).resolve().parent.parent
-SNAPSHOT = ROOT / "snapshots" / "snapshot_synthetic_2026-07-04.json"
+from chi_edge_bench.harness.runner import evaluate
+from chi_edge_bench.paths import default_snapshot, exports_dir, items_dir
 
 
 def as_answer(item: dict) -> str:
@@ -50,14 +47,14 @@ def main():
 
     only = set(args.ids)
     reports, failed = [], []
-    for p in sorted((ROOT / "items").glob("*.yaml")):
+    for p in sorted(items_dir().glob("*.yaml")):
         item = yaml.safe_load(p.read_text())
         if only and item["id"] not in only:
             continue
         # Items predating v5 carry no `suite` key; they are the core suite.
         if args.suite != "all" and item.get("suite", "core") != args.suite:
             continue
-        rep = evaluate(item, as_answer(item), SNAPSHOT)
+        rep = evaluate(item, as_answer(item), default_snapshot())
         reports.append(rep)
         status = "PASS" if rep["all_passed"] else "FAIL"
         print(f"{item['id']:<6} {status}")
@@ -66,11 +63,11 @@ def main():
             for r in rep["results"]:
                 if not r["passed"]:
                     print(f"        x {r['check']}[{r['group']}]: {r['detail']}")
-    (ROOT / "exports").mkdir(exist_ok=True)
+    exports_dir().mkdir(parents=True, exist_ok=True)
     # gate_report.json is the cited core artifact; only a core run may claim it.
     default = ("gate_report.json" if args.suite == "core"
                else f"gate_report_{args.suite}.json")
-    out = args.out or (ROOT / "exports" / default)
+    out = args.out or (exports_dir() / default)
     out.write_text(json.dumps(reports, indent=2))
     n = len(reports)
     print(f"\nGate: {n - len(failed)}/{n} golds pass their own checkers.")

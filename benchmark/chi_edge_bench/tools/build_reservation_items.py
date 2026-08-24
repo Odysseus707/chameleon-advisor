@@ -25,10 +25,11 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
-ITEMS = ROOT / "items"
-SNAPSHOTS = ROOT / "snapshots"
-CAPTABLE = ROOT / "capability_table.yaml"
+from chi_edge_bench.paths import capability_table, items_dir, snapshots_dir
+
+ITEMS = items_dir()
+SNAPSHOTS = snapshots_dir()
+CAPTABLE = capability_table()
 
 # Environments, in ID order. The base capture first so R01 is the real world.
 ENVIRONMENTS = [

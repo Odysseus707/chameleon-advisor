@@ -3,8 +3,8 @@ Benchmark v4 runner: load items, evaluate an answer (or the gold) against checke
 optionally execute V1 availability items against a snapshot via the stub chi module.
 
 Usage:
-  python -m harness.runner --item items/P02.yaml --answer path/to/answer.md
-  python -m harness.runner --item items/AV01.yaml --gold           # self-check
+  chi-edge-bench score --item P02 --answer path/to/answer.md
+  chi-edge-bench score --item AV01 --gold           # self-check
 """
 
 import argparse
@@ -18,10 +18,10 @@ from pathlib import Path
 
 import yaml
 
+from chi_edge_bench.harness.checks import run_checks
+from chi_edge_bench.paths import default_snapshot, snapshots_dir
+
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent
-sys.path.insert(0, str(HERE))
-from checks import run_checks  # noqa: E402
 
 FENCE = re.compile(r"```[a-zA-Z0-9_]*\n(.*?)```", re.DOTALL)
 
@@ -67,7 +67,7 @@ def resolve_snapshot(item: dict, default: Path | None) -> Path | None:
     item wins over the CLI default rather than the other way round.
     """
     name = item.get("snapshot")
-    return (ROOT / "snapshots" / f"{name}.json") if name else default
+    return (snapshots_dir() / f"{name}.json") if name else default
 
 
 def evaluate(item: dict, answer_text: str, snapshot: Path | None = None) -> dict:
@@ -111,8 +111,7 @@ def main():
     ap.add_argument("--item", required=True)
     ap.add_argument("--answer", help="path to a model answer (markdown/text)")
     ap.add_argument("--gold", action="store_true", help="evaluate the item's own gold")
-    ap.add_argument("--snapshot", default=str(ROOT / "snapshots" /
-                                              "snapshot_synthetic_2026-07-04.json"))
+    ap.add_argument("--snapshot", default=str(default_snapshot()))
     args = ap.parse_args()
     item = load_item(Path(args.item))
     if args.gold:

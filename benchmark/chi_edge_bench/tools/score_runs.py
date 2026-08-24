@@ -16,9 +16,9 @@ batch cell (harness.runner.evaluate on the verbatim text), then aggregates:
 scored from recovered text has recovered=True in the CSV.
 
 Usage:
-  .venv/bin/python tools/score_runs.py                 # score + summary
-  .venv/bin/python tools/score_runs.py --wrap-code     # with fence recovery
-  .venv/bin/python tools/score_runs.py --conditions blind --systems s4-fork-on,s5-fork-off
+  chi-edge-bench score-runs                 # score + summary
+  chi-edge-bench score-runs --wrap-code     # with fence recovery
+  chi-edge-bench score-runs --conditions blind --systems s10-... ,s11-...
 """
 from __future__ import annotations
 
@@ -28,20 +28,15 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent  # benchmark/
-sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(HERE))
-
-from harness.checks import extract_ranked_types  # noqa: E402
-from harness.runner import evaluate, extract_code, load_item  # noqa: E402
+from chi_edge_bench.harness.checks import extract_ranked_types
+from chi_edge_bench.harness.runner import evaluate, extract_code, load_item
+from chi_edge_bench.paths import (default_snapshot, exports_dir, items_dir,
+                                  runs_dir, workspace, workspace_source)
 
 try:  # calibrate_v3 imports openpyxl at module level; recovery is optional
-    from calibrate_v3 import wrap_code_blocks  # noqa: E402
+    from chi_edge_bench.tools.calibrate_v3 import wrap_code_blocks
 except ImportError:  # pragma: no cover
     wrap_code_blocks = None
-
-SNAPSHOT = ROOT / "snapshots" / "snapshot_synthetic_2026-07-04.json"
 # Reservation items name their own snapshot, which runner.resolve_snapshot
 # honours over this default.
 CORE_GROUPS = ("mechanism", "specifics", "safety")
@@ -73,8 +68,8 @@ def sort_key(name, order):
 
 def score_all(conditions, systems, wrap_code, suite=""):
     rows, items_cache = [], {}
-    for path in sorted(ROOT.glob("runs/*/*/*.md")):
-        parts = path.relative_to(ROOT / "runs").parts
+    for path in sorted(runs_dir().glob("*/*/*.md")):
+        parts = path.relative_to(runs_dir()).parts
         if len(parts) != 3:
             print(f"  WARN: {path} is not runs/<cond>/<system>/<ITEM>.md — skipped",
                   file=sys.stderr)
@@ -85,7 +80,7 @@ def score_all(conditions, systems, wrap_code, suite=""):
             continue
         if systems and system not in systems:
             continue
-        item_path = ROOT / "items" / f"{stem}.yaml"
+        item_path = items_dir() / f"{stem}.yaml"
         if not item_path.exists():
             print(f"  WARN: {path} has no items/{stem}.yaml — skipped", file=sys.stderr)
             continue
@@ -118,7 +113,7 @@ def score_all(conditions, systems, wrap_code, suite=""):
             # environments is what makes state-sensitivity measurable.
             picks = extract_ranked_types(scored_text)
             row["rank1"] = picks[0] if picks else ""
-        rep = evaluate(items_cache[stem], scored_text, SNAPSHOT)
+        rep = evaluate(items_cache[stem], scored_text, default_snapshot())
         row["all_passed"] = rep["all_passed"]
         row["failed_checks"] = " ".join(r["check"] for r in rep["results"]
                                         if not r["passed"])
@@ -246,7 +241,7 @@ def summarize(rows, items_cache=None):
         import yaml as _yaml
         meta = {}
         for stem in {r["item"] for r in res}:
-            it = _yaml.safe_load((ROOT / "items" / f"{stem}.yaml").read_text())
+            it = _yaml.safe_load((items_dir() / f"{stem}.yaml").read_text())
             gold = extract_ranked_types(it["gold_spec"])
             meta[stem] = (it.get("stem"), gold[0] if gold else "")
         out.append("## State-sensitivity (does the pick track the environment?)\n")
@@ -354,18 +349,18 @@ def main():
     ap.add_argument("--systems", default="", help="comma-separated filter (default: all)")
     ap.add_argument("--suite", default="", choices=["", "core", "reservation"],
                     help="core = the frozen 50; reservation = the v5 R items")
-    ap.add_argument("--csv", default=str(ROOT / "exports" / "run_scores.csv"))
-    ap.add_argument("--md", default=str(ROOT / "exports" / "run_summary.md"))
+    ap.add_argument("--csv", default=str(exports_dir() / "run_scores.csv"))
+    ap.add_argument("--md", default=str(exports_dir() / "run_summary.md"))
     ap.add_argument("--todo", action="store_true",
                     help="just list the empty answer files (paste worklist) and exit")
     args = ap.parse_args()
 
     if args.todo:
-        empties = [p for p in sorted(ROOT.glob("runs/*/*/*.md"))
-                   if len(p.relative_to(ROOT / "runs").parts) == 3
+        empties = [p for p in sorted(runs_dir().glob("*/*/*.md"))
+                   if len(p.relative_to(runs_dir()).parts) == 3
                    and not p.read_text(encoding="utf-8").strip()]
         for p in empties:
-            print(p.relative_to(ROOT))
+            print(p.relative_to(workspace()))
         print(f"[{len(empties)} empty answer files]")
         return
 
@@ -376,9 +371,14 @@ def main():
 
     rows = score_all(conditions, systems, args.wrap_code, args.suite)
     if not rows:
-        raise SystemExit("no answer files matched under runs/")
+        raise SystemExit(
+            f"no answer files matched under {runs_dir()}\n"
+            f"(workspace chosen by: {workspace_source()})")
 
     fields = list(rows[0].keys())
+    # A fresh workspace has no exports/ yet; the repo one already does.
+    Path(args.csv).parent.mkdir(parents=True, exist_ok=True)
+    Path(args.md).parent.mkdir(parents=True, exist_ok=True)
     with open(args.csv, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fields)
         w.writeheader()

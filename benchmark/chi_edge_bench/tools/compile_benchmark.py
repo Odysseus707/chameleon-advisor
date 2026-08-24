@@ -27,12 +27,23 @@ from collections import Counter
 from pathlib import Path
 
 import yaml
+try:
+    import openpyxl  # noqa: F401
+except ImportError as exc:  # pragma: no cover
+    # ImportError, not SystemExit: score_runs imports calibrate_v3 behind
+    # `except ImportError` to make fence recovery optional, and a SystemExit
+    # here would take the scorer down over an optional extra.
+    raise ImportError(
+        "this tool needs openpyxl:  pip install 'chi-edge-bench[xlsx]'"
+    ) from exc
+
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 
-ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_OUT = ROOT / "exports" / "benchmark_complete.xlsx"
+from chi_edge_bench.paths import exports_dir, items_dir
+
+DEFAULT_OUT = exports_dir() / "benchmark_complete.xlsx"
 
 HDR_FILL = PatternFill("solid", fgColor="1F4E79")
 HDR_FONT = Font(bold=True, color="FFFFFF")
@@ -49,7 +60,7 @@ def flat(v) -> str:
 
 def load_items() -> list:
     out = []
-    for p in sorted((ROOT / "items").glob("*.yaml")):
+    for p in sorted(items_dir().glob("*.yaml")):
         it = yaml.safe_load(p.read_text())
         it["_suite"] = it.get("suite", "core")
         out.append(it)
@@ -60,7 +71,7 @@ def load_items() -> list:
 def load_results() -> dict:
     """Per-item outcomes from any exports/*scores*.csv."""
     res = {}
-    for csvp in sorted((ROOT / "exports").glob("*scores*.csv")):
+    for csvp in sorted(exports_dir().glob("*scores*.csv")):
         try:
             for r in csv.DictReader(csvp.open()):
                 if r.get("status") != "scored":

@@ -31,7 +31,7 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
+from chi_edge_bench.paths import items_dir, runs_dir, workspace
 MANIFEST = "_manifest.json"
 
 
@@ -41,7 +41,7 @@ def prompt_sha(prompt: str) -> str:
 
 def load_items() -> dict:
     out = {}
-    for p in (ROOT / "items").glob("*.yaml"):
+    for p in items_dir().glob("*.yaml"):
         it = yaml.safe_load(p.read_text())
         out[it["id"]] = it
     return out
@@ -73,7 +73,7 @@ def record(run_dir: Path, item_id: str, prompt: str, **extra) -> None:
 
 
 def run_dirs():
-    for d in sorted((ROOT / "runs").glob("*/*")):
+    for d in sorted(runs_dir().glob("*/*")):
         if d.is_dir():
             yield d
 
@@ -84,7 +84,7 @@ def check(items: dict):
     drift, unmanifested = [], []
     for d in run_dirs():
         man = read_manifest(d)
-        rel = d.relative_to(ROOT).as_posix()
+        rel = d.relative_to(workspace()).as_posix()
         for answer in sorted(d.glob("*.md")):
             stem = answer.stem
             if not answer.read_text(encoding="utf-8").strip():

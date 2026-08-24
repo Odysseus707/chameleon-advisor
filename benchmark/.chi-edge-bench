@@ -1,0 +1,6 @@
+# Marks this directory as a chi-edge-bench workspace.
+#
+# chi_edge_bench.paths.workspace() walks up from the cwd looking for this file,
+# so any command run from anywhere in this repo reads and writes the real
+# measurement record in benchmark/runs and benchmark/exports rather than
+# scattering a fresh ./chi-edge-bench-work directory.

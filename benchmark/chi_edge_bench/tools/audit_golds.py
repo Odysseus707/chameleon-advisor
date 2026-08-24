@@ -32,16 +32,15 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
-from harness.checks import extract_ranked_types  # noqa: E402
+from chi_edge_bench.harness.checks import extract_ranked_types
+from chi_edge_bench.paths import items_dir, snapshots_dir
 
 CLAIM = re.compile(r"^\s*\d+\.\s*(\S+)\s*-\s*(\d+) of (\d+) free", re.MULTILINE)
 
 
 def snapshot_counts(name: str) -> dict:
     """Count free/total per type straight from the JSON. No solver involved."""
-    devices = json.loads((ROOT / "snapshots" / f"{name}.json").read_text())["devices"]
+    devices = json.loads((snapshots_dir() / f"{name}.json").read_text())["devices"]
     out = defaultdict(lambda: {"free": 0, "total": 0})
     for d in devices:
         out[d["device_type"]]["total"] += 1
@@ -58,7 +57,7 @@ def main() -> int:
     args = ap.parse_args()
 
     items = []
-    for p in sorted((ROOT / "items").glob("R*.yaml")):
+    for p in sorted(items_dir().glob("R*.yaml")):
         items.append(yaml.safe_load(p.read_text()))
     if not items:
         raise SystemExit("no R*.yaml items; run tools/build_reservation_items.py")

@@ -21,16 +21,15 @@ tier and the item's tier_intent are flagged (they bounce back to the author).
 
 import json
 import sys
-from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
+from chi_edge_bench.paths import exports_dir, grounding_dir, items_dir
 
 
 def _load_grounding():
     g = {}
-    for p in (ROOT / "grounding").glob("A*.md"):
+    for p in grounding_dir().glob("A*.md"):
         g[p.stem] = p.read_text()
     return g
 
@@ -74,7 +73,7 @@ def main():
 
     grounding = _load_grounding()
     rows, mismatches = [], []
-    for p in sorted((ROOT / "items").glob("*.yaml")):
+    for p in sorted(items_dir().glob("*.yaml")):
         item = yaml.safe_load(p.read_text())
         # Items predating v5 carry no `suite` key; they are the core suite.
         if suite != "all" and item.get("suite", "core") != suite:
@@ -86,9 +85,9 @@ def main():
             intent = item.get("tier_intent_by_condition", {}).get(cond)
             if intent and res["tier"] != intent:
                 mismatches.append(row | {"intended": intent})
-    out = ROOT / "exports" / ("tier_report.json" if suite == "core"
-                              else f"tier_report_{suite}.json")
-    out.parent.mkdir(exist_ok=True)
+    out = exports_dir() / ("tier_report.json" if suite == "core"
+                           else f"tier_report_{suite}.json")
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({"rows": rows, "mismatches": mismatches}, indent=2))
     for r in rows:
         flag = ""

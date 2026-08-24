@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Collect chatbot answers for the benchmark, with the advisor ON or OFF.
 
-RUNS ON THE NODE. It needs the built vect_store and a live Ollama, so it fails
-fast anywhere else rather than half-producing a run.
+Requires the RAG app: a built vect_store and a reachable model endpoint. It
+fails fast when either is missing rather than half-producing a run. (Until
+2026-08 this only ran on the Chameleon P100 node; nothing in it is node-specific
+now that rag.py resolves its endpoint from the environment.)
 
 The point is a single-variable experiment. This reproduces web_rag.py's answer
 path exactly -
@@ -23,12 +25,12 @@ collapsing the variable under test - and a 39 KB artifact blob as a retrieval
 query is not what the deployed chatbot ever sees. Fed conditions are for
 paste-driven systems (Sonnet), not for this A/B.
 
-  # on the node, detached, one arm at a time
-  setsid nohup ~/.venv/bin/python tools/collect_runs.py \\
-      --system s8-qwen32b-noadv --advisor off > ~/collect_noadv.log 2>&1 &
+  # detached, one arm at a time
+  nohup chi-edge-bench collect --adapter fork \\
+      --system s12-noadv --advisor off > ~/collect_noadv.log 2>&1 &
 
-  setsid nohup ~/.venv/bin/python tools/collect_runs.py \\
-      --system s9-qwen32b-adv --advisor on  > ~/collect_adv.log 2>&1 &
+  nohup chi-edge-bench collect --adapter fork \\
+      --system s12-adv   --advisor on  > ~/collect_adv.log 2>&1 &
 
 Resumable: a non-empty answer file is never regenerated, so a dropped SSH
 session or an interrupted run costs only the item in flight. Writes only
@@ -45,10 +47,9 @@ import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "tools"))
-
-from provenance import record  # noqa: E402
+from chi_edge_bench.paths import (items_dir, prompts_dir, runs_dir,
+                                  workspace)
+from chi_edge_bench.tools.provenance import record
 
 
 def die(msg: str):
@@ -89,7 +90,7 @@ def main() -> int:
                     help="comma-separated (default: blind - see module docstring)")
     ap.add_argument("--suite", default="all", choices=["all", "core", "reservation"])
     ap.add_argument("--rag-root", type=Path,
-                    default=ROOT.parent / "RAG-docs-chameleon")
+                    default=workspace().parent / "RAG-docs-chameleon")
     ap.add_argument("--gate", type=float,
                     default=float(os.environ.get("ADVISOR_GATE", "1.0")))
     ap.add_argument("--limit", type=int, default=0)
@@ -102,19 +103,19 @@ def main() -> int:
     # -- which (item, condition) pairs are in scope -------------------------
     conditions = [c.strip() for c in args.conditions.split(",") if c.strip()]
     todo = []
-    for p in sorted((ROOT / "items").glob("*.yaml")):
+    for p in sorted(items_dir().glob("*.yaml")):
         item = yaml.safe_load(p.read_text())
         if args.suite != "all" and item.get("suite", "core") != args.suite:
             continue
         for cond in item.get("fed_sets", {}):
             if cond not in conditions:
                 continue
-            prompt_file = ROOT / "prompts" / cond / f"{item['id']}.txt"
+            prompt_file = prompts_dir() / cond / f"{item['id']}.txt"
             if not prompt_file.is_file():
-                print(f"  WARN: no prompt file {prompt_file.relative_to(ROOT)}; "
-                      "run tools/make_run_prompts.py", file=sys.stderr)
+                print(f"  WARN: no prompt file {prompt_file}; "
+                      "run `chi-edge-bench prompts`", file=sys.stderr)
                 continue
-            out = ROOT / "runs" / cond / args.system / f"{item['id']}.md"
+            out = runs_dir() / cond / args.system / f"{item['id']}.md"
             done = out.is_file() and out.read_text(encoding="utf-8").strip()
             todo.append((item, cond, prompt_file, out, bool(done)))
 
@@ -164,7 +165,7 @@ def main() -> int:
     vectorstore, parents, chain = (load_vectorstore(), load_parents(),
                                    create_llm_chain())
 
-    meta_path = ROOT / "runs" / conditions[0] / args.system / "_meta.jsonl"
+    meta_path = runs_dir() / conditions[0] / args.system / "_meta.jsonl"
     meta_path.parent.mkdir(parents=True, exist_ok=True)
 
     ok = err = fired_n = 0
