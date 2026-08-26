@@ -16,21 +16,35 @@ fork:
   advisor_root: "~/Desktop/Chameleon Fellowship/chameleon-work/chi-edge-advisor"
   advisor_grounding: "~/Desktop/Chameleon Fellowship/chameleon-work/grounding"
   gate: 1.0
-  # PROVENANCE, NOT CURRENT CONFIG. These values are what the s3-chatbot-noadv and
-  # s4-chatbot-adv arms actually executed against: the node's local Ollama serving
-  # qwen2.5:32b. They are retained deliberately - deleting them would destroy the
-  # provenance of results we are keeping. Applied with setdefault
-  # (run_bench.py:130), so exported env wins; new Tejas arms export their own.
+  # ACTIVE CONFIG. Tejas serving Meta-Llama-3.3-70B-Instruct is what the system
+  # runs on, so it is what an unconfigured fork run gets. Applied with setdefault
+  # (run_bench.py:133), so exported env still wins.
+  #
+  # No API key here: rag.py:16 reads LLM_API_KEY or TEJAS_API_KEY from the
+  # environment, and a missing key belongs in a loud 401, not in a config file.
   env:
-    LLM_API_BASE: http://localhost:11434/v1
-    LLM_API_KEY: not-needed
-    LLM_MODEL: qwen2.5:32b-instruct-q4_K_M
+    LLM_API_BASE: https://ai.tejas.tacc.utexas.edu/v1
+    LLM_MODEL: Meta-Llama-3.3-70B-Instruct
     LLM_PROVIDER: tejas
+    TEJAS_BASE_URL: https://ai.tejas.tacc.utexas.edu/v1
+    TEJAS_MODEL: Meta-Llama-3.3-70B-Instruct
+    ADVISOR_OFFLINE: "false"
+
+  # RECORD ONLY - nothing reads this key. ForkAdapter.prepare iterates fork.env
+  # and nothing else (run_bench.py:133), so these values cannot reach a run.
+  #
+  # What s3-chatbot-noadv and s4-chatbot-adv actually executed against: the
+  # Chameleon P100 node's local Ollama. Retained because deleting it would
+  # destroy the provenance of results we still cite. It used to sit in fork.env
+  # itself, which made one block both the historical record and the live
+  # default - so an unconfigured run silently targeted a dead endpoint.
+  provenance_s3_s4:
+    collected: 2026-08-14 .. 2026-08-17
+    LLM_API_BASE: http://localhost:11434/v1
+    LLM_MODEL: qwen2.5:32b-instruct-q4_K_M
     TEJAS_BASE_URL: http://localhost:11434/v1
     TEJAS_MODEL: qwen2.5:32b-instruct-q4_K_M
-    TEJAS_API_KEY: not-needed
     GROUNDING_DIR: /home/cc/grounding
-    ADVISOR_OFFLINE: "false"
 
 # The zero-spend policy that kept these adapters dry-run-only was lifted on
 # 2026-08-24 for the Claude arm of the artifacts A/B. Keys still come from the
