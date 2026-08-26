@@ -139,6 +139,15 @@ def fmt_rate(p, t):
     return f"{p}/{t} ({p / t:.0%})" if t else "—"
 
 
+def _colw(systems):
+    """Column width that actually fits the system names.
+
+    Was a hardcoded 14, which silently ran headers together once arm names grew
+    past it - "s10-llama70b-tejas-noadvs12-claude-artifacts" in one cell.
+    """
+    return max(14, max((len(s) for s in systems), default=0) + 2)
+
+
 def summarize(rows, items_cache=None):
     scored = [r for r in rows if r["status"] == "scored"]
     active = active_groups(scored)
@@ -151,7 +160,7 @@ def summarize(rows, items_cache=None):
     by_cell = defaultdict(list)
     for r in rows:
         by_cell[cell_key(r)].append(r)
-    hdr = f"{'condition':10}" + "".join(f"{s:>14}" for s in systems)
+    hdr = f"{'condition':10}" + "".join(f"{s:>{_colw(systems)}}" for s in systems)
     lines = []
     for c in conds:
         cells = []
@@ -159,7 +168,7 @@ def summarize(rows, items_cache=None):
             rs = by_cell.get((c, s), [])
             cells.append(f"{sum(x['status'] == 'scored' for x in rs)}/{len(rs)}"
                          if rs else "—")
-        lines.append(f"{c:10}" + "".join(f"{x:>14}" for x in cells))
+        lines.append(f"{c:10}" + "".join(f"{x:>{_colw(systems)}}" for x in cells))
     out.append(table(hdr, lines))
 
     # 2. overall pass rates
@@ -171,7 +180,7 @@ def summarize(rows, items_cache=None):
             rs = [x for x in by_cell.get((c, s), []) if x["status"] == "scored"]
             cells.append(fmt_rate(sum(bool(x["all_passed"]) for x in rs), len(rs))
                          if rs else "—")
-        lines.append(f"{c:10}" + "".join(f"{x:>14}" for x in cells))
+        lines.append(f"{c:10}" + "".join(f"{x:>{_colw(systems)}}" for x in cells))
     out.append(table(hdr, lines))
 
     # 2b. common-item subset — selection-bias guard for unequal fills:
@@ -194,14 +203,14 @@ def summarize(rows, items_cache=None):
         any_common = True
         out.append(f"### {c} — {len(common)} items answered by all of: "
                    f"{', '.join(sys_with)}\n")
-        hdr3 = f"{'metric':10}" + "".join(f"{s:>14}" for s in sys_with)
+        hdr3 = f"{'metric':10}" + "".join(f"{s:>{_colw(sys_with)}}" for s in sys_with)
         lines = []
         cells = []
         for s in sys_with:
             rs = [x for x in by_cell[(c, s)]
                   if x["item"] in common and x["status"] == "scored"]
             cells.append(fmt_rate(sum(bool(x["all_passed"]) for x in rs), len(rs)))
-        lines.append(f"{'PASS':10}" + "".join(f"{x:>14}" for x in cells))
+        lines.append(f"{'PASS':10}" + "".join(f"{x:>{_colw(systems)}}" for x in cells))
         for g in active:
             cells = []
             for s in sys_with:
@@ -210,7 +219,7 @@ def summarize(rows, items_cache=None):
                 p = sum(x[f"{g}_passed"] or 0 for x in rs)
                 t = sum(x[f"{g}_total"] or 0 for x in rs)
                 cells.append(fmt_rate(p, t))
-            lines.append(f"{g:10}" + "".join(f"{x:>14}" for x in cells))
+            lines.append(f"{g:10}" + "".join(f"{x:>{_colw(systems)}}" for x in cells))
         out.append(table(hdr3, lines))
     if not any_common:
         out.append("  (fewer than two systems share scored items anywhere)\n")
@@ -227,7 +236,7 @@ def summarize(rows, items_cache=None):
                 p = sum(x[f"{g}_passed"] or 0 for x in rs)
                 t = sum(x[f"{g}_total"] or 0 for x in rs)
                 cells.append(fmt_rate(p, t) if rs else "—")
-            lines.append(f"{c:10}" + "".join(f"{x:>14}" for x in cells))
+            lines.append(f"{c:10}" + "".join(f"{x:>{_colw(systems)}}" for x in cells))
         out.append(table(hdr, lines))
 
     # 3b. state-sensitivity — the reservation suite's headline metric
