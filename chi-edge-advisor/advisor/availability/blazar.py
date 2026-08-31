@@ -121,36 +121,61 @@ def _get(url, token):
     return (r.json(), None) if r.status_code == 200 else (None, f"HTTP {r.status_code}")
 
 
-def probe_site(env: Dict[str, str], rc_file: Optional[str] = None) -> dict:
-    """Raw per-site result: {site, blazar, kind, nodes[], error}."""
-    label = env.get("OS_REGION_NAME") or os.path.basename(rc_file or "?")
-    out = {"site": label, "blazar": None, "kind": None, "nodes": [], "error": None}
+def keystone_auth(env: Dict[str, str]) -> tuple[Optional[str], Optional[dict], Optional[str]]:
+    """Authenticate against Keystone: return (token, token_body, error).
+
+    Exactly one of token / error is set. Split out of probe_site because the
+    token body is worth more than the token: it also carries the service catalog
+    and, on a scoped token, ``token["project"]`` - which is how a connected
+    session learns its project name without a second round trip.
+
+    This is the only POST in this module. Everything else here is GET.
+    """
     if requests is None:
-        out["error"] = "requests not installed"
-        return out
+        return None, None, "requests not installed"
 
     body = _auth_body(env)
     if not body or not env.get("OS_AUTH_URL"):
-        out["error"] = "no credentials or OS_AUTH_URL in this RC"
-        return out
+        return None, None, "no credentials or OS_AUTH_URL in this RC"
 
     url = env["OS_AUTH_URL"].rstrip("/")
     url = url if url.endswith("/v3") else url + "/v3"
     try:
         r = requests.post(f"{url}/auth/tokens", json=body, timeout=TIMEOUT)
     except requests.RequestException as e:
-        out["error"] = f"{type(e).__name__}: {e}"
-        return out
+        return None, None, f"{type(e).__name__}: {e}"
     if r.status_code not in (200, 201):
-        out["error"] = f"keystone HTTP {r.status_code}"
-        return out
-    token = r.headers.get("X-Subject-Token")
+        return None, None, f"keystone HTTP {r.status_code}"
+    return r.headers.get("X-Subject-Token"), r.json(), None
 
-    for svc in r.json().get("token", {}).get("catalog", []):
-        if svc.get("type") == "reservation":
+
+def public_endpoint(token_body: Optional[dict], service_type: str) -> Optional[str]:
+    """Public endpoint for a service type, out of the token's catalog.
+
+    "reservation" is Blazar; "container" is Zun. Last match wins, preserving the
+    original loop: a site publishes one public endpoint per type, so a repeat is
+    a duplicate rather than an alternative.
+    """
+    found = None
+    for svc in (token_body or {}).get("token", {}).get("catalog", []):
+        if svc.get("type") == service_type:
             for ep in svc.get("endpoints", []):
                 if ep.get("interface") == "public":
-                    out["blazar"] = ep["url"].rstrip("/")
+                    found = ep["url"].rstrip("/")
+    return found
+
+
+def probe_site(env: Dict[str, str], rc_file: Optional[str] = None) -> dict:
+    """Raw per-site result: {site, blazar, kind, nodes[], error}."""
+    label = env.get("OS_REGION_NAME") or os.path.basename(rc_file or "?")
+    out = {"site": label, "blazar": None, "kind": None, "nodes": [], "error": None}
+
+    token, token_body, err = keystone_auth(env)
+    if err:
+        out["error"] = err
+        return out
+
+    out["blazar"] = public_endpoint(token_body, "reservation")
     if not out["blazar"]:
         out["error"] = "no reservation endpoint in catalog"
         return out
