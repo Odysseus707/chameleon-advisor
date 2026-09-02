@@ -55,82 +55,185 @@ class DeviceType:
     # Total hosts of this type across all its sites. Informational.
     node_count: int = 0
 
+    # -- hardware capability ------------------------------------------------
+    # Blazar reports none of this. It is vendor specification, hand-curated,
+    # and it is what lets a recommendation reject hardware that is free but
+    # cannot run the workload. Without it `gpu` is the only signal, and a
+    # jetson-nano (compute 5.3) is indistinguishable from an AGX Orin (8.7).
+    #
+    # accelerator is the field that does the most work:
+    #   "none"    - CPU only.
+    #   "cuda"    - NVIDIA GPU, needs runtime="nvidia".
+    #   "edgetpu" - Google Edge TPU. int8-quantised TFLite ONLY; CUDA code will
+    #               not run on it. This is the accelerator-confusion trap.
+    accelerator: Optional[str] = None
+    soc: str = ""
+    cuda_compute: Optional[float] = None
+    cuda_cores: int = 0
+    tensor_cores: int = 0
+    dla_cores: int = 0
+    edge_tpu_tops: Optional[float] = None
+    ram_gb: Optional[int] = None
+    precisions: List[str] = field(default_factory=list)
+    storage: str = ""
+
 
 def _known_fields() -> set:
     return {f.name for f in fields(DeviceType)}
 
 
 # --- Curated fallback catalog -------------------------------------------------
-# Distilled from the seeded artifacts + CHI@Edge docs. A floor, not ground
-# truth: a live Blazar sweep supersedes it and adds the non-edge sites.
+# The seven device types that actually exist on CHI@Edge, with vendor hardware
+# specifications. A floor, not ground truth: a live Blazar sweep supersedes the
+# topology fields and adds the non-edge sites, but Blazar reports no
+# capabilities at all, so the specs below stay authoritative (see the merge in
+# _fetch_from_blazar).
+#
+# The machine_type strings are the ones Blazar actually returns. An earlier
+# revision carried four names that do not exist on the site
+# (jetson-agx-xavier, jetson-xavier-nx, nvidia-jetson-agx-orin, raspberrypi3)
+# and was missing four that do, so the static inventory contradicted live
+# availability in the same prompt.
+#
+# Specs are vendor facts. Deliberately NOT recorded here: which artifact covers
+# a type (that comes from the artifact registry) and any ranking or scoring
+# rule. Selection logic lives in the reasoner, not in the data.
 CURATED_CATALOG: List[DeviceType] = [
     DeviceType(
         machine_type="raspberrypi4-64",
         architecture="arm64",
         gpu=False,
+        accelerator="none",
+        soc="BCM2711 (Cortex-A72 quad @ 1.5GHz)",
+        ram_gb=8,
+        precisions=["fp32", "int8"],          # int8 via TFLite on CPU
+        storage="sdcard",
         device_profiles=["pi_libcamera", "pi_sensehat", "pi_gpio"],
-        peripherals=["camera", "sense_hat", "gpio", "i2c"],
-        example_devices=["iot-rpi4-picam2", "iot-rpi4-picam3", "iot-rpi-cm4-02"],
+        peripherals=["camera", "gpio", "i2c", "sense_hat"],
+        example_devices=["candlestick1-pi4", "ft-rpi4-3", "iot-rpi-cm4-02"],
         sites=["CHI@Edge"],
         api_family="edge",
-        notes="Most common CHI@Edge device; camera/sensor artifacts target it.",
+        node_count=36,
+        notes="The most common and best-documented type on the site. That makes "
+              "it the artifact-bias trap: an artifact-anchored system reaches "
+              "for it even when the workload needs an accelerator it lacks.",
     ),
     DeviceType(
         machine_type="raspberrypi5",
         architecture="arm64",
         gpu=False,
+        accelerator="none",
+        soc="BCM2712 (Cortex-A76 quad @ 2.4GHz)",
+        ram_gb=8,
+        precisions=["fp32", "int8"],
+        storage="sdcard",
+        device_profiles=[],                   # no profile strings verified yet
         peripherals=["camera", "gpio", "i2c"],
-        example_devices=["nyu-rpi5-04"],
+        example_devices=["iot-rpi5-nvme-01", "nyu-rpi5-01"],
         sites=["CHI@Edge"],
         api_family="edge",
-        notes="Targeted by serve-edge-chi; missing from the pre-multisite catalog.",
-    ),
-    DeviceType(
-        machine_type="raspberrypi3",
-        architecture="arm64",
-        gpu=False,
-        device_profiles=["pi_gpio"],
-        peripherals=["gpio", "i2c"],
-        sites=["CHI@Edge"],
-        api_family="edge",
-        notes="Older Pi generation; fewer units.",
+        node_count=10,
+        notes="Roughly 2-3x the CPU inference throughput of the Pi 4. Still no "
+              "accelerator.",
     ),
     DeviceType(
         machine_type="jetson-nano",
         architecture="arm64",
         gpu=True,
+        accelerator="cuda",
+        soc="Tegra X1 (Cortex-A57 quad)",
+        cuda_compute=5.3,
+        cuda_cores=128,
+        ram_gb=4,
+        precisions=["fp32", "fp16"],          # no int8 path
         runtime="nvidia",
-        peripherals=["camera", "gpio"],
+        storage="sdcard",
+        peripherals=["camera", "gpio", "i2c"],
+        example_devices=["ft-nano-1", "iot-jetson01"],
         sites=["CHI@Edge"],
         api_family="edge",
-        notes="Entry-level Jetson; nvidia container runtime required.",
+        node_count=12,
+        notes="Entry-level Jetson. CUDA, but compute 5.3 and no tensor cores: "
+              "it fails workloads that need modern CUDA or int8.",
     ),
     DeviceType(
-        machine_type="jetson-xavier-nx",
+        machine_type="jetson-xavier-nx-devkit-emmc",
         architecture="arm64",
         gpu=True,
+        accelerator="cuda",
+        soc="Xavier NX",
+        cuda_compute=7.2,
+        cuda_cores=384,
+        tensor_cores=48,
+        dla_cores=2,
+        ram_gb=8,
+        precisions=["fp32", "fp16", "int8"],
         runtime="nvidia",
+        storage="emmc",
+        peripherals=["camera", "gpio", "i2c"],
+        example_devices=["iot-xavier-nx-01", "iot-xavier-nx-02"],
         sites=["CHI@Edge"],
         api_family="edge",
-        notes="Mid-range Jetson.",
+        node_count=4,
     ),
     DeviceType(
-        machine_type="jetson-agx-xavier",
+        machine_type="jetson-orin-nano-devkit-nvme",
         architecture="arm64",
         gpu=True,
+        accelerator="cuda",
+        soc="Orin Nano",
+        cuda_compute=8.7,
+        cuda_cores=1024,
+        tensor_cores=32,
+        ram_gb=8,
+        precisions=["fp32", "fp16", "int8"],
         runtime="nvidia",
+        storage="nvme",
+        peripherals=["camera", "gpio", "i2c"],
+        example_devices=["iot-orin-nano-01", "iot-orin-nano-02"],
         sites=["CHI@Edge"],
         api_family="edge",
-        notes="High-end Jetson.",
+        node_count=3,
     ),
     DeviceType(
-        machine_type="nvidia-jetson-agx-orin",
+        machine_type="jetson-agx-orin-devkit-64gb",
         architecture="arm64",
         gpu=True,
+        accelerator="cuda",
+        soc="AGX Orin 64GB",
+        cuda_compute=8.7,
+        cuda_cores=2048,
+        tensor_cores=64,
+        dla_cores=2,
+        ram_gb=64,
+        precisions=["fp32", "fp16", "int8"],
         runtime="nvidia",
+        storage="nvme",
+        peripherals=["camera", "gpio", "i2c"],
+        example_devices=["iot-agx-orin-01"],
         sites=["CHI@Edge"],
         api_family="edge",
-        notes="Newest Jetson generation.",
+        node_count=1,
+        notes="The most capable part on the site, and the scarcest: one unit.",
+    ),
+    DeviceType(
+        machine_type="coral-dev",
+        architecture="arm64",
+        gpu=False,                            # an accelerator, but not a GPU
+        accelerator="edgetpu",
+        soc="NXP i.MX8M (Cortex-A53 quad)",
+        edge_tpu_tops=4.0,
+        ram_gb=1,
+        precisions=["int8"],                  # int8-quantised TFLite only
+        storage="emmc",
+        peripherals=["camera", "gpio", "i2c"],
+        example_devices=["nyu-coral-01", "nyu-coral-02"],
+        sites=["CHI@Edge"],
+        api_family="edge",
+        node_count=2,
+        notes="Accelerator-confusion trap: matching on the word 'accelerator' "
+              "picks it, but CUDA code cannot run on an Edge TPU and anything "
+              "not int8-quantised cannot run on it either.",
     ),
 ]
 
@@ -297,6 +400,20 @@ class InventoryCache:
             dt.notes = dt.notes or c.notes
             dt.platform_version = c.platform_version
             dt.runtime = dt.runtime or c.runtime
+            # Hardware capability is vendor specification. Blazar has no opinion
+            # on it, so unlike the fields above there is nothing live to prefer:
+            # take curated unconditionally. Omitting these here is exactly the
+            # bug the comment above describes, one field set later.
+            dt.accelerator = c.accelerator
+            dt.soc = c.soc
+            dt.cuda_compute = c.cuda_compute
+            dt.cuda_cores = c.cuda_cores
+            dt.tensor_cores = c.tensor_cores
+            dt.dla_cores = c.dla_cores
+            dt.edge_tpu_tops = c.edge_tpu_tops
+            dt.ram_gb = c.ram_gb
+            dt.precisions = list(c.precisions)
+            dt.storage = c.storage
 
         # A type spanning both an edge and a non-edge site would make emitter
         # dispatch ambiguous. It does not happen today; say so if it starts.
