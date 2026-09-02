@@ -2,114 +2,114 @@
 
 ## Fill status (non-empty / total answer files)
 
-condition s3-chatbot-noadvs4-chatbot-adv
-----------------------------------------
-blind            134/134       134/134
-matched            95/95         95/95
-heldout            62/62         62/62
-uncovered          39/39         39/39
+condition   s3-chatbot-noadv    s4-chatbot-adv
+----------------------------------------------
+blind                134/134           134/134
+matched                95/95             95/95
+heldout                62/62             62/62
+uncovered              39/39             39/39
 
 ## Overall PASS rate (all checkers green; scored answers only)
 
-condition s3-chatbot-noadvs4-chatbot-adv
-----------------------------------------
-blind         7/134 (5%)  13/134 (10%)
-matched      22/95 (23%)   46/95 (48%)
-heldout      10/62 (16%)    9/62 (15%)
-uncovered      3/39 (8%)     0/39 (0%)
+condition   s3-chatbot-noadv    s4-chatbot-adv
+----------------------------------------------
+blind             7/134 (5%)      13/134 (10%)
+matched          22/95 (23%)       46/95 (48%)
+heldout          10/62 (16%)        9/62 (15%)
+uncovered          3/39 (8%)         0/39 (0%)
 
 ## Rates on COMMON items only (selection-bias guard)
 
 ### blind — 134 items answered by all of: s3-chatbot-noadv, s4-chatbot-adv
 
-metric    s3-chatbot-noadvs4-chatbot-adv
-----------------------------------------
-PASS          7/134 (5%)  13/134 (10%)
-mechanism     9/115 (8%)    8/115 (7%)
-specifics   16/119 (13%)  27/119 (23%)
-safety     182/199 (91%) 181/199 (91%)
-feasibility  84/228 (37%) 151/228 (66%)
-capability 173/358 (48%) 175/358 (49%)
+metric      s3-chatbot-noadv    s4-chatbot-adv
+----------------------------------------------
+PASS              7/134 (5%)      13/134 (10%)
+mechanism         9/115 (8%)        8/115 (7%)
+specifics       16/119 (13%)      27/119 (23%)
+safety         182/199 (91%)     181/199 (91%)
+feasibility      84/228 (37%)     151/228 (66%)
+capability       31/358 (9%)     131/358 (37%)
 
 ### matched — 95 items answered by all of: s3-chatbot-noadv, s4-chatbot-adv
 
-metric    s3-chatbot-noadvs4-chatbot-adv
-----------------------------------------
-PASS         22/95 (23%)   46/95 (48%)
-mechanism   44/112 (39%)  50/112 (45%)
-specifics   68/119 (57%)  72/119 (61%)
-safety     119/132 (90%) 121/132 (92%)
-feasibility  64/140 (46%) 116/140 (83%)
-capability 111/208 (53%) 178/208 (86%)
+metric      s3-chatbot-noadv    s4-chatbot-adv
+----------------------------------------------
+PASS             22/95 (23%)       46/95 (48%)
+mechanism       44/112 (39%)      50/112 (45%)
+specifics       68/119 (57%)      72/119 (61%)
+safety         119/132 (90%)     121/132 (92%)
+feasibility      64/140 (46%)     116/140 (83%)
+capability      44/208 (21%)     178/208 (86%)
 
 ### heldout — 62 items answered by all of: s3-chatbot-noadv, s4-chatbot-adv
 
-metric    s3-chatbot-noadvs4-chatbot-adv
-----------------------------------------
-PASS         10/62 (16%)    9/62 (15%)
-mechanism     9/35 (26%)   11/35 (31%)
-specifics     6/41 (15%)   13/41 (32%)
-safety     104/109 (95%) 105/109 (96%)
-feasibility  99/140 (71%) 116/140 (83%)
-capability 132/208 (63%) 135/208 (65%)
+metric      s3-chatbot-noadv    s4-chatbot-adv
+----------------------------------------------
+PASS             10/62 (16%)        9/62 (15%)
+mechanism         9/35 (26%)       11/35 (31%)
+specifics         6/41 (15%)       13/41 (32%)
+safety         104/109 (95%)     105/109 (96%)
+feasibility      99/140 (71%)     116/140 (83%)
+capability     111/208 (53%)     135/208 (65%)
 
 ### uncovered — 39 items answered by all of: s3-chatbot-noadv, s4-chatbot-adv
 
-metric    s3-chatbot-noadvs4-chatbot-adv
-----------------------------------------
-PASS           3/39 (8%)     0/39 (0%)
-mechanism     3/3 (100%)      0/3 (0%)
-specifics              —             —
-safety       66/67 (99%)  67/67 (100%)
-feasibility   48/88 (55%)   71/88 (81%)
-capability  51/150 (34%)  22/150 (15%)
+metric      s3-chatbot-noadv    s4-chatbot-adv
+----------------------------------------------
+PASS               3/39 (8%)         0/39 (0%)
+mechanism         3/3 (100%)          0/3 (0%)
+specifics                  —                 —
+safety           66/67 (99%)      67/67 (100%)
+feasibility       48/88 (55%)       71/88 (81%)
+capability      19/150 (13%)      22/150 (15%)
 
 ## Checker-group pass rates (checks passed / checks run)
 
 ### mechanism
 
-condition s3-chatbot-noadvs4-chatbot-adv
-----------------------------------------
-blind         9/115 (8%)    8/115 (7%)
-matched     44/112 (39%)  50/112 (45%)
-heldout       9/35 (26%)   11/35 (31%)
-uncovered     3/3 (100%)      0/3 (0%)
+condition   s3-chatbot-noadv    s4-chatbot-adv
+----------------------------------------------
+blind             9/115 (8%)        8/115 (7%)
+matched         44/112 (39%)      50/112 (45%)
+heldout           9/35 (26%)       11/35 (31%)
+uncovered         3/3 (100%)          0/3 (0%)
 
 ### specifics
 
-condition s3-chatbot-noadvs4-chatbot-adv
-----------------------------------------
-blind       16/119 (13%)  27/119 (23%)
-matched     68/119 (57%)  72/119 (61%)
-heldout       6/41 (15%)   13/41 (32%)
-uncovered              —             —
+condition   s3-chatbot-noadv    s4-chatbot-adv
+----------------------------------------------
+blind           16/119 (13%)      27/119 (23%)
+matched         68/119 (57%)      72/119 (61%)
+heldout           6/41 (15%)       13/41 (32%)
+uncovered                  —                 —
 
 ### safety
 
-condition s3-chatbot-noadvs4-chatbot-adv
-----------------------------------------
-blind      182/199 (91%) 181/199 (91%)
-matched    119/132 (90%) 121/132 (92%)
-heldout    104/109 (95%) 105/109 (96%)
-uncovered    66/67 (99%)  67/67 (100%)
+condition   s3-chatbot-noadv    s4-chatbot-adv
+----------------------------------------------
+blind          182/199 (91%)     181/199 (91%)
+matched        119/132 (90%)     121/132 (92%)
+heldout        104/109 (95%)     105/109 (96%)
+uncovered        66/67 (99%)      67/67 (100%)
 
 ### feasibility
 
-condition s3-chatbot-noadvs4-chatbot-adv
-----------------------------------------
-blind       84/228 (37%) 151/228 (66%)
-matched     64/140 (46%) 116/140 (83%)
-heldout     99/140 (71%) 116/140 (83%)
-uncovered    48/88 (55%)   71/88 (81%)
+condition   s3-chatbot-noadv    s4-chatbot-adv
+----------------------------------------------
+blind           84/228 (37%)     151/228 (66%)
+matched         64/140 (46%)     116/140 (83%)
+heldout         99/140 (71%)     116/140 (83%)
+uncovered        48/88 (55%)       71/88 (81%)
 
 ### capability
 
-condition s3-chatbot-noadvs4-chatbot-adv
-----------------------------------------
-blind      173/358 (48%) 175/358 (49%)
-matched    111/208 (53%) 178/208 (86%)
-heldout    132/208 (63%) 135/208 (65%)
-uncovered   51/150 (34%)  22/150 (15%)
+condition   s3-chatbot-noadv    s4-chatbot-adv
+----------------------------------------------
+blind            31/358 (9%)     131/358 (37%)
+matched         44/208 (21%)     178/208 (86%)
+heldout        111/208 (53%)     135/208 (65%)
+uncovered       19/150 (13%)      22/150 (15%)
 
 ## State-sensitivity (does the pick track the environment?)
 
@@ -126,17 +126,17 @@ s4-chatbot-adv       0/278 (0%)
   N17   s4-chatbot-adv FAIL [abstain_or_discover]
   N18   s3-chatbot-noadv FAIL [profiles_known_only]
   N18   s4-chatbot-adv FAIL [abstain_or_discover]
-  R49   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered]
+  R49   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R49   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
-  R50   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered]
+  R50   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R50   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
-  R51   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered]
+  R51   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R51   s4-chatbot-adv FAIL [rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R52   s3-chatbot-noadv FAIL [abstains_when_uncovered]
   R52   s4-chatbot-adv FAIL [forbidden_types_listed abstains_when_uncovered]
-  R53   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered]
+  R53   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R53   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
-  R54   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered]
+  R54   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R54   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R55   s3-chatbot-noadv FAIL [forbidden_types_listed abstains_when_uncovered]
   R55   s4-chatbot-adv FAIL [forbidden_types_listed abstains_when_uncovered]
@@ -162,31 +162,31 @@ s4-chatbot-adv       0/278 (0%)
   R65   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R66   s3-chatbot-noadv FAIL [ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
   R66   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
-  R67   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered]
+  R67   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R67   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
-  R68   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded]
+  R68   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded]
   R68   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
-  R69   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded]
+  R69   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded]
   R69   s4-chatbot-adv FAIL [rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
   R70   s3-chatbot-noadv PASS
   R70   s4-chatbot-adv FAIL [forbidden_types_listed abstains_when_uncovered]
-  R71   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded]
+  R71   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded]
   R71   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
-  R72   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded]
+  R72   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded]
   R72   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
-  R73   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered]
+  R73   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R73   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
-  R74   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered]
+  R74   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R74   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
-  R75   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered]
+  R75   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R75   s4-chatbot-adv FAIL [rank1_feasible no_down_types_listed count_feasible ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
   R76   s3-chatbot-noadv FAIL [abstains_when_uncovered]
   R76   s4-chatbot-adv FAIL [no_down_types_listed forbidden_types_listed abstains_when_uncovered]
-  R77   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered]
+  R77   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R77   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
-  R78   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded abstains_when_uncovered]
+  R78   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded abstains_when_uncovered]
   R78   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
-  R79   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset config_grounded]
+  R79   s3-chatbot-noadv FAIL [rank1_feasible count_feasible ranked_types_subset forbidden_types_listed capability_filter config_grounded]
   R79   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
   R80   s3-chatbot-noadv FAIL [ranked_types_subset forbidden_types_listed capability_filter abstains_when_uncovered]
   R80   s4-chatbot-adv FAIL [ranked_types_subset forbidden_types_listed capability_filter]

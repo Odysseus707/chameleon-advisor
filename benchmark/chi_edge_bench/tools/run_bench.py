@@ -87,10 +87,21 @@ def provenance_hashes(cfg: dict) -> dict:
         p = Path(os.path.expanduser(adv_dir))
         if p.is_dir():
             adv = sha256_paths(p.rglob("*.md"))
+    # The advisor's device catalogue decides which hardware can be recommended
+    # at all, so two runs of the same arm across a catalogue change are not
+    # comparable. Nothing else here covers it: the other hashes are all
+    # benchmark-side, and provenance.py hashes prompts.
+    cat = None
+    adv_pkg = (cfg.get("fork") or {}).get("advisor_root")
+    if adv_pkg:
+        c = Path(os.path.expanduser(adv_pkg)) / "advisor" / "inventory" / "catalog.py"
+        if c.is_file():
+            cat = sha256_paths([c])
     return {
         "item_bank_sha256": sha256_paths(items_dir().glob("*.yaml")),
         "bench_grounding_sha256": sha256_paths(grounding_dir().glob("*.md")),
         "advisor_grounding_sha256": adv,
+        "advisor_catalog_sha256": cat,
         "snapshot_sha256": sha256_paths([default_snapshot()]),
     }
 

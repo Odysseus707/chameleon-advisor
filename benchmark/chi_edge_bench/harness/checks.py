@@ -449,10 +449,35 @@ def check_ranked_types_subset(ctx, allowed=()):
                          else f"all of {ranked} allowed")
 
 
+def _empty_ranking_verdict(ctx):
+    """How to grade an answer that names no device type at all.
+
+    The empty ranking is ambiguous and the item decides which it is. When the
+    request IS satisfiable, naming nothing is a non-answer, and passing it would
+    credit silence - that is what let an unaided model score 45% capability by
+    recommending hardware that does not exist on the site. When the request is
+    NOT satisfiable, naming nothing is precisely the right answer, and failing it
+    would punish the correct abstention the infeasible items exist to test.
+
+    Absent item context we assume feasible, the stricter reading.
+    """
+    feasible = (ctx.get("item") or {}).get("feasible", True)
+    if feasible:
+        return False, "no ranked device types found"
+    return True, "recommended nothing; the request is not satisfiable here"
+
+
 def check_forbidden_types_listed(ctx, names=()):
     """Trap types. Only the recommended list counts - naming one to reject it
-    is the correct behaviour and must not fail here."""
-    hit = [t for t in _ranked(ctx) if t in set(names)]
+    is the correct behaviour and must not fail here.
+
+    An answer naming no type at all is graded by _empty_ranking_verdict, because
+    "recommended no trap" is vacuously true of a non-answer.
+    """
+    ranked = _ranked(ctx)
+    if not ranked:
+        return _empty_ranking_verdict(ctx)
+    hit = [t for t in ranked if t in set(names)]
     return (not hit), (f"recommended a trap type: {hit}" if hit else "clean")
 
 
@@ -463,7 +488,10 @@ def check_capability_filter(ctx, requires=None):
     min_ram_gb, min_cuda_compute}.
     """
     req, tbl, bad = requires or {}, _captable(), []
-    for t in _ranked(ctx):
+    ranked = _ranked(ctx)
+    if not ranked:
+        return _empty_ranking_verdict(ctx)
+    for t in ranked:
         spec = tbl.get(t)
         if spec is None:
             bad.append(f"{t} (not a CHI@Edge device type)")

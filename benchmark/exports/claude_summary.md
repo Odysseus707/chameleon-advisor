@@ -2,15 +2,15 @@
 
 ## Fill status (non-empty / total answer files)
 
-condition s5-claude-sonnet
---------------------------
-blind            134/134
+condition   s5-claude-sonnet
+----------------------------
+blind                134/134
 
 ## Overall PASS rate (all checkers green; scored answers only)
 
-condition s5-claude-sonnet
---------------------------
-blind       18/134 (13%)
+condition   s5-claude-sonnet
+----------------------------
+blind           18/134 (13%)
 
 ## Rates on COMMON items only (selection-bias guard)
 
@@ -20,33 +20,33 @@ blind       18/134 (13%)
 
 ### mechanism
 
-condition s5-claude-sonnet
---------------------------
-blind       47/115 (41%)
+condition   s5-claude-sonnet
+----------------------------
+blind           47/115 (41%)
 
 ### specifics
 
-condition s5-claude-sonnet
---------------------------
-blind       45/119 (38%)
+condition   s5-claude-sonnet
+----------------------------
+blind           45/119 (38%)
 
 ### safety
 
-condition s5-claude-sonnet
---------------------------
-blind      188/199 (94%)
+condition   s5-claude-sonnet
+----------------------------
+blind          188/199 (94%)
 
 ### feasibility
 
-condition s5-claude-sonnet
---------------------------
-blind      171/228 (75%)
+condition   s5-claude-sonnet
+----------------------------
+blind          171/228 (75%)
 
 ### capability
 
-condition s5-claude-sonnet
---------------------------
-blind      175/358 (49%)
+condition   s5-claude-sonnet
+----------------------------
+blind          175/358 (49%)
 
 ## State-sensitivity (does the pick track the environment?)
 

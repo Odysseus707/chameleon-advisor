@@ -25,6 +25,7 @@ runs/{blind,matched,heldout,uncovered}/ are never touched.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 import traceback
@@ -88,14 +89,37 @@ def availability_from_snapshot(snapshot: str, captable: dict):
 
 
 def render(rec, free_types: dict, note: str = "") -> str:
-    """Format a Recommendation as the ranked list the suite grades."""
+    """Format a Recommendation as the ranked list the suite grades.
+
+    An empty machine_type is a real answer, not a failure: it is the advisor
+    saying nothing on the site satisfies the request. Emitting a ranked list
+    anyway would turn a correct abstention into a fabricated recommendation.
+    """
+    if not rec.machine_type:
+        # Two different empty answers, and they must not share a headline.
+        # "Nothing can satisfy this" is a claim about the hardware. When the
+        # hardware fits and is merely reserved that headline is false, and it is
+        # the part that gets graded - the correct answer is that everything
+        # suitable is busy. The reasoner signals this by leaving machine_type
+        # empty while populating alternatives with the qualifying-but-busy types.
+        if rec.alternatives:
+            busy = ", ".join(rec.alternatives)
+            head = (f"All devices that suit this request are busy right now: {busy}. "
+                    "This is an availability limit, not a capability one: the "
+                    "hardware exists and fits, it is currently reserved.")
+        else:
+            head = "Nothing on CHI@Edge can satisfy this request."
+        body = [head, "", rec.reasoning.strip()]
+        if note:
+            body += ["", note]
+        return "\n".join(body) + "\n"
+
     picks = [rec.machine_type] + [a for a in (rec.alternatives or [])
                                   if a != rec.machine_type]
     lines = []
     for i, t in enumerate(picks, 1):
         n = free_types.get(t, 0)
-        lines.append(f"{i}. {t} - {n} free; {rec.reasoning[:90]}"
-                     if i == 1 else f"{i}. {t} - {n} free.")
+        lines.append(f"{i}. {t} - {n} free." )
     if rec.image:
         cfg = [f"image {rec.image}"]
         if rec.device_profiles:
@@ -103,6 +127,11 @@ def render(rec, free_types: dict, note: str = "") -> str:
         if rec.runtime:
             cfg.append(f'runtime="{rec.runtime}"')
         lines += ["", "Configuration: " + ", ".join(cfg) + "."]
+    # The full reasoning, not a 90-character prefix of it. The coverage caveat
+    # and the rejected-type list sit at the end of that string, so truncating
+    # dropped exactly the parts that say what the recommendation does NOT cover.
+    if rec.reasoning:
+        lines += ["", rec.reasoning.strip()]
     if note:
         lines += ["", note]
     return "\n".join(lines) + "\n"
@@ -121,10 +150,18 @@ def main() -> int:
     os.environ.setdefault("LLM_PROVIDER", "none")
     os.environ.setdefault("AVAILABILITY_BACKEND", "reference_api")
 
+    from chi_edge_bench.tools import provenance  # noqa: E402
     from advisor.artifacts.router import RetrievalRouter  # noqa: E402
     from advisor.artifacts.store import ArtifactStore  # noqa: E402
     from advisor.inventory.catalog import InventoryCache  # noqa: E402
     from advisor.reason.reasoner import Reasoner  # noqa: E402
+
+    # Which catalogue this arm was collected against. A recommendation is only
+    # interpretable next to the hardware facts the advisor had at the time.
+    catalog_sha = None
+    _cat = Path(__file__).resolve().parents[3] / "chi-edge-advisor/advisor/inventory/catalog.py"
+    if _cat.is_file():
+        catalog_sha = hashlib.sha256(_cat.read_bytes()).hexdigest()
 
     items = sorted(items_dir().glob("R*.yaml"))
     if args.limit:
@@ -161,6 +198,13 @@ def main() -> int:
                     + traceback.format_exc(limit=3))
             err += 1
         (outdir / f"{item['id']}.md").write_text(text)
+        # Bind the answer to the prompt it answered. run_bench.py has always
+        # done this; this tool never did, so every advisor cell was an
+        # unmanifested one that could not prove which prompt produced it.
+        provenance.record(outdir, item["id"], item["prompt"],
+                          system=args.system, condition=args.condition,
+                          produced_by=getattr(rec, "produced_by", "heuristic"),
+                          advisor_catalog_sha256=catalog_sha)
 
     print(f"{len(items)} items -> {outdir}")
     print(f"  answered {ok}   errored {err}")

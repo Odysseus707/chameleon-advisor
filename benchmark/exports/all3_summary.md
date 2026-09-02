@@ -2,60 +2,60 @@
 
 ## Fill status (non-empty / total answer files)
 
-condition s3-chatbot-noadvs4-chatbot-advs5-claude-sonnet
---------------------------------------------------------
-blind            134/134       134/134       134/134
+condition   s3-chatbot-noadv    s4-chatbot-adv  s5-claude-sonnet
+----------------------------------------------------------------
+blind                134/134           134/134           134/134
 
 ## Overall PASS rate (all checkers green; scored answers only)
 
-condition s3-chatbot-noadvs4-chatbot-advs5-claude-sonnet
---------------------------------------------------------
-blind         7/134 (5%)  13/134 (10%)  18/134 (13%)
+condition   s3-chatbot-noadv    s4-chatbot-adv  s5-claude-sonnet
+----------------------------------------------------------------
+blind             7/134 (5%)      13/134 (10%)      18/134 (13%)
 
 ## Rates on COMMON items only (selection-bias guard)
 
 ### blind — 134 items answered by all of: s3-chatbot-noadv, s4-chatbot-adv, s5-claude-sonnet
 
-metric    s3-chatbot-noadvs4-chatbot-advs5-claude-sonnet
---------------------------------------------------------
-PASS          7/134 (5%)  13/134 (10%)  18/134 (13%)
-mechanism     9/115 (8%)    8/115 (7%)  47/115 (41%)
-specifics   16/119 (13%)  27/119 (23%)  45/119 (38%)
-safety     182/199 (91%) 181/199 (91%) 188/199 (94%)
-feasibility  84/228 (37%) 151/228 (66%) 171/228 (75%)
-capability 173/358 (48%) 175/358 (49%) 175/358 (49%)
+metric      s3-chatbot-noadv    s4-chatbot-adv  s5-claude-sonnet
+----------------------------------------------------------------
+PASS              7/134 (5%)      13/134 (10%)      18/134 (13%)
+mechanism         9/115 (8%)        8/115 (7%)      47/115 (41%)
+specifics       16/119 (13%)      27/119 (23%)      45/119 (38%)
+safety         182/199 (91%)     181/199 (91%)     188/199 (94%)
+feasibility      84/228 (37%)     151/228 (66%)     171/228 (75%)
+capability       31/358 (9%)     131/358 (37%)     175/358 (49%)
 
 ## Checker-group pass rates (checks passed / checks run)
 
 ### mechanism
 
-condition s3-chatbot-noadvs4-chatbot-advs5-claude-sonnet
---------------------------------------------------------
-blind         9/115 (8%)    8/115 (7%)  47/115 (41%)
+condition   s3-chatbot-noadv    s4-chatbot-adv  s5-claude-sonnet
+----------------------------------------------------------------
+blind             9/115 (8%)        8/115 (7%)      47/115 (41%)
 
 ### specifics
 
-condition s3-chatbot-noadvs4-chatbot-advs5-claude-sonnet
---------------------------------------------------------
-blind       16/119 (13%)  27/119 (23%)  45/119 (38%)
+condition   s3-chatbot-noadv    s4-chatbot-adv  s5-claude-sonnet
+----------------------------------------------------------------
+blind           16/119 (13%)      27/119 (23%)      45/119 (38%)
 
 ### safety
 
-condition s3-chatbot-noadvs4-chatbot-advs5-claude-sonnet
---------------------------------------------------------
-blind      182/199 (91%) 181/199 (91%) 188/199 (94%)
+condition   s3-chatbot-noadv    s4-chatbot-adv  s5-claude-sonnet
+----------------------------------------------------------------
+blind          182/199 (91%)     181/199 (91%)     188/199 (94%)
 
 ### feasibility
 
-condition s3-chatbot-noadvs4-chatbot-advs5-claude-sonnet
---------------------------------------------------------
-blind       84/228 (37%) 151/228 (66%) 171/228 (75%)
+condition   s3-chatbot-noadv    s4-chatbot-adv  s5-claude-sonnet
+----------------------------------------------------------------
+blind           84/228 (37%)     151/228 (66%)     171/228 (75%)
 
 ### capability
 
-condition s3-chatbot-noadvs4-chatbot-advs5-claude-sonnet
---------------------------------------------------------
-blind      173/358 (48%) 175/358 (49%) 175/358 (49%)
+condition   s3-chatbot-noadv    s4-chatbot-adv  s5-claude-sonnet
+----------------------------------------------------------------
+blind            31/358 (9%)     131/358 (37%)     175/358 (49%)
 
 ## State-sensitivity (does the pick track the environment?)
 
