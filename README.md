@@ -231,6 +231,13 @@ python -m venv .venv
 documented `.venv/bin/python …` invocation works from either project. The
 editable install puts the `chi-edge-bench` command on PATH.
 
+The benchmark also installs standalone, both wings included:
+
+```bash
+pip install "git+https://github.com/Odysseus707/chameleon-advisor#subdirectory=benchmark"
+python -m chi_edge_bench.harness.validate_golds --wing chameleon_bench --suite all
+```
+
 Run the advisor tests with `LLM_PROVIDER=none`; a live local Ollama changes what
 the heuristic test sees. The offline CLI needs `AVAILABILITY_BACKEND=reference_api`.
 
@@ -262,8 +269,6 @@ Stated precisely, because the measurement is the contribution:
   CHI@Edge device types, so a hand-authored capability table defines
   correctness there.
 - **KVM@TACC is out of scope** — it reserves flavors, not hosts.
-- **`chameleon_bench/` is not in the installable package.** `pip install` ships
-  the CHI@Edge wing only; the bare-metal wing runs from a clone.
 - **`chi_edge_bench.tools.export_xlsx` does I/O at import time** and fails
   unless a prior run has produced `tier_report.json`, which trips one import
   test.

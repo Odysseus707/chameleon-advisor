@@ -32,7 +32,10 @@ dev = ["pytest>=8.0", "build>=1.0"]
 chi-edge-bench = "chi_edge_bench.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["chi_edge_bench*"]
+# Both wings. paths.py resolves a wing as a SIBLING package shipping a data/
+# tree, so chameleon_bench has to be installed beside chi_edge_bench or
+# `--wing chameleon_bench` only works from a checkout.
+include = ["chi_edge_bench*", "chameleon_bench*"]
 
 [tool.setuptools.package-data]
 # data/ is the benchmark itself (items, snapshots, grounding, capability table).
@@ -43,6 +46,12 @@ include = ["chi_edge_bench*"]
   "harness/stub_chi/**/*.py",
   "tools/*.yaml",
   "tools/*.jsonl",
+]
+# The chameleon wing is data and a stub; the logic that grades it lives in
+# chi_edge_bench's harness, which both wings share. Same stub-as-data rule.
+"chameleon_bench" = [
+  "data/**/*",
+  "harness/stub_chi/**/*.py",
 ]
 
 [tool.pytest.ini_options]
