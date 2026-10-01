@@ -1,0 +1,129 @@
+id: CB36
+version: '1.0'
+suite: baremetal_core
+category: Composition · full lifecycle
+axis: ACT
+prompt: Reserve a compute_liqid node at CHI@TACC for 7 hours with a floating IP, boot CC-Ubuntu20.04 on
+  it, and delete the lease when the run finishes.
+prompt_sha256: b98eb9d5f98fb82490782f26a7bcfda57bc20ab5dc765f333a76c6c60079cb7a
+designed_trap: Grammar, image and teardown in one artifact; the composable-hardware literal only in the
+  other.
+trap_tags:
+- composition
+- bare_metal_api
+target_artifact:
+- A49
+- A41
+target_content_group:
+- 60a1562738bb
+- c1b29c6f7bf1
+fed_sets:
+  blind: []
+  matched:
+  - A49
+  - A41
+  heldout:
+  - A60
+  - A61
+  - A76
+  partial:
+  - A49
+partial_omits:
+- A41
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - add_fip_reservation
+  - delete_lease
+  specifics:
+  - compute_liqid
+  - CC-Ubuntu20.04
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+verification:
+  basis: stub_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+exec_expect:
+  site: CHI@TACC
+  node_reservations:
+  - node_type: compute_liqid
+    amount: 1
+  lease_hours: 7
+  lease_submitted: true
+  server_image: CC-Ubuntu20.04
+  server_bound_to_reservation: true
+  fip_reservations: 1
+  lease_deleted: true
+  server_deleted: true
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@TACC")
+
+  my_lease = lease.Lease("node-lease", duration=timedelta(hours=7))
+  my_lease.add_node_reservation(amount=1, node_type="compute_liqid")
+  my_lease.add_fip_reservation(amount=1)
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "node",
+      image_name="CC-Ubuntu20.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+
+  my_server.delete()
+  chi.lease.delete_lease(my_lease.id)
+gold_provenance: COMPOSED. A49 supplies add_node_reservation, add_fip_reservation, delete_lease and CC-Ubuntu20.04;
+  A41 supplies the compute_liqid literal.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@TACC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: compute_liqid
+- check: lease_hours
+  group: specifics
+  hours: 7
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu20.04
+- check: required_call
+  group: mechanism
+  name: add_fip_reservation
+- check: teardown
+  group: mechanism
+  lease: true
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

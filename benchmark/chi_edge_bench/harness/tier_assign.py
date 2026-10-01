@@ -24,6 +24,7 @@ import sys
 
 import yaml
 
+from chi_edge_bench import paths
 from chi_edge_bench.paths import exports_dir, grounding_dir, items_dir
 
 
@@ -67,9 +68,13 @@ def main():
     # exports/tier_report.json is the cited core artifact. Only a core run may
     # claim that filename; anything wider writes tier_report_<suite>.json.
     suite = "all"
+    wing = None
     for i, a in enumerate(sys.argv):
         if a == "--suite" and i + 1 < len(sys.argv):
             suite = sys.argv[i + 1]
+        if a == "--wing" and i + 1 < len(sys.argv):
+            wing = sys.argv[i + 1]
+    paths.set_wing(wing)
 
     grounding = _load_grounding()
     rows, mismatches = [], []
@@ -85,8 +90,18 @@ def main():
             intent = item.get("tier_intent_by_condition", {}).get(cond)
             if intent and res["tier"] != intent:
                 mismatches.append(row | {"intended": intent})
-    out = exports_dir() / ("tier_report.json" if suite == "core"
-                           else f"tier_report_{suite}.json")
+    if not rows:
+        raise SystemExit(
+            f"no (item, condition) pairs for wing={paths.wing()} "
+            f"suite={suite!r} under {items_dir()}. Refusing to report "
+            "0 mismatches over 0 rows - that is the shape of a check that "
+            "never ran, and it exits green.")
+
+    # tier_report.json is the cited core artifact; only an EDGE core run claims it.
+    edge = paths.wing() == paths.DEFAULT_WING
+    tag = suite if edge else f"{paths.wing()}_{suite}"
+    out = exports_dir() / ("tier_report.json" if (suite == "core" and edge)
+                           else f"tier_report_{tag}.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({"rows": rows, "mismatches": mismatches}, indent=2))
     for r in rows:

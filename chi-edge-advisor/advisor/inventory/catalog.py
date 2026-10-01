@@ -27,6 +27,15 @@ from ..config import settings
 
 log = logging.getLogger(__name__)
 
+#: Bump when the SHAPE or POPULATION of the catalog changes, not on every edit.
+#: A cache written before the bare-metal types existed is not merely old, it is
+#: a different catalog - and staleness-by-age never notices, because the file
+#: is perfectly fresh. The symptom is an advisor that answers
+#: "nothing at CHI@TACC can do this" while holding only CHI@Edge hardware.
+#:   1  edge only, 7 device types
+#:   2  + 29 bare-metal node types, + vcpus/gpu_model/covered_by
+CATALOG_SCHEMA_VERSION = 2
+
 
 @dataclass
 class DeviceType:
@@ -76,6 +85,24 @@ class DeviceType:
     ram_gb: Optional[int] = None
     precisions: List[str] = field(default_factory=list)
     storage: str = ""
+
+    # -- bare-metal capability (chameleon wing) -----------------------------
+    # vcpus is required by the reservation solver's `meets()`; without it a
+    # min_vcpus requirement silently passes on every node.
+    #
+    # None here means NOT MEASURED, and that is not the same as zero. Blazar
+    # reported nothing for 17 of the 29 bare-metal types, so a null must FAIL
+    # a minimum rather than satisfy it - an absent measurement is not a
+    # measurement of absence.
+    vcpus: Optional[int] = None
+    microarchitecture: str = ""
+    gpu_model: Optional[str] = None
+    gpu_per_node: int = 0
+    vram_gb_per_gpu: Optional[int] = None
+    # Artifacts whose grounding names this type. PROVENANCE ONLY. Capability
+    # never comes from an artifact: an artifact may say a type exists, it may
+    # never say what the hardware can do.
+    covered_by: List[str] = field(default_factory=list)
 
 
 def _known_fields() -> set:
@@ -238,6 +265,100 @@ CURATED_CATALOG: List[DeviceType] = [
 ]
 
 
+# --- bare-metal capability table (chameleon wing) -----------------------------
+# Cache keyed by path, never a bare lru_cache over a no-argument function: an
+# unkeyed cache of a per-wing table grades the second wing against the first.
+_CAPTABLE_CACHE: Dict[str, List[DeviceType]] = {}
+
+
+def capability_table_types(path: Optional[Path] = None) -> List[DeviceType]:
+    """The 29 bare-metal node types, read from the benchmark's table.
+
+    This table is the ONLY authority on what bare-metal hardware can do (R3).
+    Blazar reports which hosts exist and whether they are free; it reports
+    almost nothing about their capability, and 18 of these 29 types are named
+    by no artifact at all - for those, "correct" is defined by this file and
+    nothing else.
+
+    Every one of the 29 is bare metal at CHI@UC or CHI@TACC. `kvm_compute` is
+    a CHI@TACC bare-metal node type despite the name, not a KVM flavor;
+    KVM@TACC has no entry here at all, because KVM reserves flavors rather
+    than hosts and a per-host capability row would not answer any question
+    anyone can ask of it.
+    """
+    path = Path(path or (settings.corpus_dir / "capability_table.yaml"))
+    key = str(path)
+    hit = _CAPTABLE_CACHE.get(key)
+    if hit is not None:
+        return [DeviceType(**asdict(d)) for d in hit]
+    if not path.is_file():
+        log.info("no bare-metal capability table at %s; edge types only", path)
+        return []
+    try:
+        import yaml
+        raw = yaml.safe_load(path.read_text(encoding="utf-8"))["node_types"]
+    except Exception as exc:  # noqa: BLE001
+        log.warning("capability table unreadable (%s); edge types only", exc)
+        return []
+
+    out: List[DeviceType] = []
+    for name, spec in raw.items():
+        sites = dict(spec.get("sites") or {})
+        accel = spec.get("accelerator")
+        out.append(DeviceType(
+            machine_type=name,
+            architecture=spec.get("architecture") or "x86_64",
+            # `gpu` is the coarse legacy flag. An MI100 IS a GPU even though
+            # CUDA will not run on it, so this must not be read as "cuda":
+            # `accelerator` carries that distinction and the emitter and the
+            # capability filter both use it, not this.
+            gpu=accel in {"cuda", "rocm", "oneapi"},
+            accelerator=accel,
+            # runtime="nvidia" is a CHI@Edge container concern. Bare metal
+            # boots a whole machine, so there is no container runtime to set.
+            runtime=None,
+            sites=sorted(sites),
+            node_count=sum(sites.values()),
+            api_family="baremetal",
+            cuda_compute=spec.get("cuda_compute"),
+            cuda_cores=spec.get("cuda_cores") or 0,
+            tensor_cores=spec.get("tensor_cores") or 0,
+            ram_gb=spec.get("ram_gb"),
+            vcpus=spec.get("vcpus"),
+            precisions=list(spec.get("precisions") or []),
+            microarchitecture=spec.get("microarchitecture") or "",
+            gpu_model=spec.get("gpu_model"),
+            gpu_per_node=spec.get("gpu_per_node") or 0,
+            vram_gb_per_gpu=spec.get("vram_gb_per_gpu"),
+            covered_by=list(spec.get("covered_by") or []),
+            notes=spec.get("notes") or "",
+        ))
+    out.sort(key=lambda d: d.machine_type)
+    _CAPTABLE_CACHE[key] = out
+    return [DeviceType(**asdict(d)) for d in out]
+
+
+def capability_ranking_weights(path: Optional[Path] = None) -> Dict[str, int]:
+    """The testbed's own capability-score weights, from the table.
+
+    Read rather than hardcoded so the advisor ranks hardware by the same rule
+    the benchmark's golds were solved with. Inventing a second ranking policy
+    here would make every disagreement unattributable: you could not tell a
+    worse recommendation from a differently-weighted one.
+    """
+    path = Path(path or (settings.corpus_dir / "capability_table.yaml"))
+    default = {"cuda_cores": 1, "tensor_cores": 4, "ram_gb": 8, "vcpus": 4}
+    if not path.is_file():
+        return dict(default)
+    try:
+        import yaml
+        raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+        return dict(raw["ranking"]["capability_score"])
+    except Exception as exc:  # noqa: BLE001
+        log.warning("capability ranking unreadable (%s); using defaults", exc)
+        return dict(default)
+
+
 def api_family_for(site: str, resource_kind: str) -> str:
     """Which emitter grammar a site's resources use.
 
@@ -282,6 +403,10 @@ class InventoryCache:
             return False
         try:
             raw = json.loads(self.cache_path.read_text())
+            if raw.get("schema_version") != CATALOG_SCHEMA_VERSION:
+                log.info("resource catalog is schema v%s, want v%s; refreshing",
+                         raw.get("schema_version"), CATALOG_SCHEMA_VERSION)
+                return True
             stamp = raw.get("generated_utc")
             if not stamp:
                 return True
@@ -322,21 +447,44 @@ class InventoryCache:
     def _write_cache(self, catalog: List[DeviceType]) -> None:
         self.cache_path.parent.mkdir(parents=True, exist_ok=True)
         payload = {
+            "schema_version": CATALOG_SCHEMA_VERSION,
             "source": getattr(self, "_source", "unknown"),
             "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "device_types": [asdict(d) for d in catalog],
         }
         self.cache_path.write_text(json.dumps(payload, indent=2))
 
+    @staticmethod
+    def _static_capability() -> Dict[str, DeviceType]:
+        """Everything we know about hardware that Blazar cannot tell us.
+
+        Two sources, one shape: the curated edge specs and the benchmark's
+        bare-metal capability table. Neither is ever superseded by a live
+        sweep, because a live sweep has no opinion on capability at all.
+        """
+        by_type = {d.machine_type: d for d in CURATED_CATALOG}
+        for d in capability_table_types():
+            # Edge wins a name collision. There is none today; if one appears,
+            # silently reclassifying an edge device as bare metal would change
+            # which emitter grammar it gets, so say so.
+            if d.machine_type in by_type:
+                log.warning("machine_type %s is in both the curated edge "
+                            "catalog and the bare-metal capability table; "
+                            "keeping the edge entry", d.machine_type)
+                continue
+            by_type[d.machine_type] = d
+        return by_type
+
     def _fetch(self) -> List[DeviceType]:
-        """Prefer a live Blazar sweep; fall back to the curated catalog."""
+        """Prefer a live Blazar sweep; fall back to the static catalogue."""
         if not settings.offline:
             live = self._fetch_from_blazar()
             if live:
                 self._source = "blazar"
                 return live
-        self._source = "curated_fallback"
-        return list(CURATED_CATALOG)
+        self._source = "static_fallback"
+        return sorted(self._static_capability().values(),
+                      key=lambda d: d.machine_type)
 
     def _fetch_from_blazar(self) -> List[DeviceType]:
         """Full sweep across every site, folded into one entry per machine_type.
@@ -390,9 +538,9 @@ class InventoryCache:
         # authoritative for topology (sites, counts, api_family, arch, gpu);
         # the curated entries stay authoritative for capabilities Blazar cannot
         # see. Merge rather than replace.
-        curated = {d.machine_type: d for d in CURATED_CATALOG}
+        static = self._static_capability()
         for dt in by_type.values():
-            c = curated.get(dt.machine_type)
+            c = static.get(dt.machine_type)
             if c is None:
                 continue
             dt.device_profiles = dt.device_profiles or list(c.device_profiles)
@@ -414,6 +562,28 @@ class InventoryCache:
             dt.ram_gb = c.ram_gb
             dt.precisions = list(c.precisions)
             dt.storage = c.storage
+            dt.vcpus = c.vcpus
+            dt.microarchitecture = c.microarchitecture
+            dt.gpu_model = c.gpu_model
+            dt.gpu_per_node = c.gpu_per_node
+            dt.vram_gb_per_gpu = c.vram_gb_per_gpu
+            dt.covered_by = list(c.covered_by)
+            # runtime="nvidia" is a container concern and the live sweep sets
+            # it from the gpu flag alone. Bare metal boots a whole machine;
+            # there is no container runtime, and emitting one is noise.
+            if dt.api_family == "baremetal":
+                dt.runtime = None
+
+        # A site we could not reach reports no types, and dropping its
+        # hardware entirely would let the advisor answer "nothing exists"
+        # when the truth is "we could not look". Static entries the sweep did
+        # not cover are added back with node_count 0 - present, but making no
+        # claim about how many are there.
+        for name, c in static.items():
+            if name not in by_type:
+                missing = DeviceType(**asdict(c))
+                missing.node_count = 0
+                by_type[name] = missing
 
         # A type spanning both an edge and a non-edge site would make emitter
         # dispatch ambiguous. It does not happen today; say so if it starts.

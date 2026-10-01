@@ -1,0 +1,128 @@
+id: RB07
+version: '1.0'
+suite: baremetal_reservation
+category: Reservation · rocm_port
+axis: REASON
+coverage: covered
+snapshot: baremetal_tacc_2026-09-04
+environment_note: recorded CHI@TACC state, 4 Sep 2026
+site: CHI@TACC
+stem: rocm_port
+prompt: I need to run a ROCm/HIP port of an existing CUDA kernel on CHI@TACC, using 1 node for about 4
+  hours. Tell me what is available right now, then give me your top 3 node types to reserve, best first,
+  one line of justification each.
+prompt_sha256: 3d97e986695ac0b45db31fa53067ca2b4ff3ffc201505403a2bdb17165d7509f
+designed_trap: compute_arm64 (accelerator is none, needs rocm); compute_cascadelake (accelerator is none,
+  needs rocm); compute_cascadelake_r (accelerator is none, needs rocm)
+trap_tags:
+- live_state
+- accelerator_confusion
+target_artifact: []
+fed_sets:
+  blind: []
+  matched: []
+requested_count: 1
+requested_hours: 4
+requires: &id001
+  accelerator: rocm
+expected_answer_type: ranked_list
+verification_level: V0
+feasible: true
+gold_spec: '1. gpu_mi100 - 4 of 8 free; AMD MI100 (ROCm, not CUDA); 256 GB.
+
+
+  Not recommended:
+
+  - compute_arm64: accelerator is none, needs rocm.
+
+  - compute_cascadelake: accelerator is none, needs rocm.
+
+  - compute_cascadelake_r: accelerator is none, needs rocm.
+
+  - compute_gigaio: accelerator is none, needs rocm.
+
+  - compute_haswell: accelerator is none, needs rocm.
+
+  - compute_haswell_ib: accelerator is none, needs rocm.
+
+  - compute_icelake_r650: accelerator is none, needs rocm.
+
+  - compute_icelake_r750: accelerator is none, needs rocm.
+
+  - compute_liqid: accelerator is cuda, needs rocm.
+
+  - compute_skylake: accelerator is none, needs rocm.
+
+  - compute_zen3: accelerator is none, needs rocm.
+
+  - gpu_h100: accelerator is cuda, needs rocm.
+
+  - gpu_k80: accelerator is cuda, needs rocm.
+
+  - gpu_m40: accelerator is cuda, needs rocm.
+
+  - gpu_p100: accelerator is cuda, needs rocm.
+
+  - gpu_p100_nvlink: accelerator is cuda, needs rocm.
+
+  - gpu_p100_v100: accelerator is cuda, needs rocm.
+
+  - gpu_pontevecchio: accelerator is oneapi, needs rocm.
+
+  - kvm_compute: accelerator is none, needs rocm.
+
+  - storage: accelerator is none, needs rocm.
+
+  - storage_hierarchy: accelerator is none, needs rocm.
+
+  '
+gold_provenance: 'Feasibility solved from snapshots/baremetal_tacc_2026-09-04.json; capability from capability_table.yaml
+  (measured node counts, hand-authored vendor facts). Ranking rule: hard filter on requirements and free>=count,
+  then free count desc, then capability score desc, then name.'
+checkers:
+- check: rank1_feasible
+  group: feasibility
+- check: no_down_types_listed
+  group: feasibility
+- check: names_known_type
+  group: feasibility
+- check: count_feasible
+  group: feasibility
+  count: 1
+- check: ranked_types_subset
+  group: capability
+  allowed:
+  - gpu_mi100
+- check: forbidden_types_listed
+  group: capability
+  names:
+  - compute_arm64
+  - compute_cascadelake
+  - compute_cascadelake_r
+  - compute_gigaio
+  - compute_haswell
+  - compute_haswell_ib
+  - compute_icelake_r650
+  - compute_icelake_r750
+  - compute_liqid
+  - compute_skylake
+  - compute_zen3
+  - gpu_h100
+  - gpu_k80
+  - gpu_m40
+  - gpu_p100
+  - gpu_p100_nvlink
+  - gpu_p100_v100
+  - gpu_pontevecchio
+  - kvm_compute
+  - storage
+  - storage_hierarchy
+- check: capability_filter
+  group: capability
+  requires: *id001
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container

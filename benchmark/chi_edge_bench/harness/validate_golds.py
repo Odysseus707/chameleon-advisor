@@ -20,6 +20,7 @@ from pathlib import Path
 import yaml
 
 from chi_edge_bench.harness.runner import evaluate
+from chi_edge_bench import paths
 from chi_edge_bench.paths import default_snapshot, exports_dir, items_dir
 
 
@@ -40,10 +41,14 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("ids", nargs="*", help="gate only these item ids")
     ap.add_argument("--suite", default="all",
-                    choices=["all", "core", "reservation"],
-                    help="core = the frozen 50; reservation = the v5 R items")
+                    help="core = the frozen 50; reservation = the v5 R items; "
+                         "a wing defines its own suite names")
+    ap.add_argument("--wing", default=None,
+                    help=f"which wing to gate (default {paths.DEFAULT_WING}); "
+                         f"known: {', '.join(paths.known_wings())}")
     ap.add_argument("--out", type=Path, default=None)
     args = ap.parse_args()
+    paths.set_wing(args.wing)
 
     only = set(args.ids)
     reports, failed = [], []
@@ -63,10 +68,19 @@ def main():
             for r in rep["results"]:
                 if not r["passed"]:
                     print(f"        x {r['check']}[{r['group']}]: {r['detail']}")
+    if not reports:
+        raise SystemExit(
+            f"no items matched wing={paths.wing()} suite={args.suite!r}"
+            + (f" ids={sorted(only)}" if only else "")
+            + f" under {items_dir()}. Refusing to report a vacuous 0/0 pass: an "
+              "empty gate exits green and looks exactly like a gate that ran.")
+
     exports_dir().mkdir(parents=True, exist_ok=True)
     # gate_report.json is the cited core artifact; only a core run may claim it.
-    default = ("gate_report.json" if args.suite == "core"
-               else f"gate_report_{args.suite}.json")
+    edge = paths.wing() == paths.DEFAULT_WING
+    tag = args.suite if edge else f"{paths.wing()}_{args.suite}"
+    default = ("gate_report.json" if (args.suite == "core" and edge)
+               else f"gate_report_{tag}.json")
     out = args.out or (exports_dir() / default)
     out.write_text(json.dumps(reports, indent=2))
     n = len(reports)

@@ -1,0 +1,118 @@
+id: CB34
+version: '1.0'
+suite: baremetal_core
+category: Composition · GPU bare metal
+axis: ACT
+prompt: Reserve a gpu_mi100 at CHI@TACC for 6 hours and boot the CC-Ubuntu24.04 image on the reserved
+  node.
+prompt_sha256: ced6666daf57c18d45f24ee869e631676618a3069820a1e18272d18ddec6381b
+designed_trap: The literal pair (AMD GPU, 24.04 image) sits in an artifact with no reservation code; the
+  grammar sits in one that names neither.
+trap_tags:
+- composition
+- gpu_runtime
+- image_choice
+target_artifact:
+- A26
+- A34
+target_content_group:
+- 0500b3c06c4c
+- a8f3da0a2ae4
+fed_sets:
+  blind: []
+  matched:
+  - A26
+  - A34
+  heldout:
+  - A7
+  - A22
+  - A58
+  partial:
+  - A26
+partial_omits:
+- A34
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - get_node_reservation
+  specifics:
+  - gpu_mi100
+  - CC-Ubuntu24.04
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V2
+verification:
+  basis: live_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+  python_chi: 1.2.10
+  evidence: live_gold_v2_evidence_2026-09-07.md
+exec_expect:
+  site: CHI@TACC
+  node_reservations:
+  - node_type: gpu_mi100
+    amount: 1
+  lease_hours: 6
+  lease_submitted: true
+  server_image: CC-Ubuntu24.04
+  server_bound_to_reservation: true
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@TACC")
+
+  my_lease = lease.Lease("node-lease", duration=timedelta(hours=6))
+  my_lease.add_node_reservation(amount=1, node_type="gpu_mi100")
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "node",
+      image_name="CC-Ubuntu24.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+gold_provenance: COMPOSED. A34 supplies gpu_mi100 and CC-Ubuntu24.04; A26 supplies add_node_reservation
+  and get_node_reservation. Neither has both halves.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@TACC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: gpu_mi100
+- check: lease_hours
+  group: specifics
+  hours: 6
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu24.04
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

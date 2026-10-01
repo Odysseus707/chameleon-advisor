@@ -140,6 +140,19 @@ class Settings:
             os.environ.get("GROUNDING_DIR", str(_PKG_ROOT.parent / "grounding"))
         )
     )
+    # The chameleon wing's corpus: 90 artifact records, their grounding, and
+    # the bare-metal capability table. Owned by chi-edge-bench and READ IN
+    # PLACE — copying any of it here would create the second source of truth
+    # the loader exists to prevent. Missing is not an error: the advisor still
+    # runs edge-only when the benchmark is not checked out beside it.
+    corpus_dir: Path = field(
+        default_factory=lambda: Path(
+            os.environ.get(
+                "CHAMELEON_CORPUS_DIR",
+                str(_PKG_ROOT.parent / "benchmark" / "chameleon_bench" / "data"),
+            )
+        )
+    )
     # Force the pure-Python offline path even if faiss/bge/openai are installed
     # (used by tests and for credential-free demos).
     offline: bool = field(

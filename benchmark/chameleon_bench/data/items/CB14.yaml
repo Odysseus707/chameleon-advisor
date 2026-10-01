@@ -1,0 +1,139 @@
+id: CB14
+version: '1.0'
+suite: baremetal_core
+category: Composition · GPU + networking
+axis: ACT
+prompt: Reserve a gpu_rtx_6000 at CHI@UC for 8 hours with a public IP, boot CC-Ubuntu22.04 bound to the
+  reservation, and release everything at the end.
+prompt_sha256: 08ace9fb213ddfacb2487885adc3c323af2e83d323cd0265e1c42060b98acd39
+designed_trap: 'Four ingredients across two artifacts: floating IP and wiring from one, the GPU literal
+  and the teardown from the other.'
+trap_tags:
+- composition
+- gpu_runtime
+- networking
+target_artifact:
+- A92
+- A76
+target_content_group:
+- b9c1f6650925
+- ff9623a3c8af
+fed_sets:
+  blind: []
+  matched:
+  - A92
+  - A76
+  heldout:
+  - A46
+  - A69
+  - A70
+  partial:
+  - A92
+partial_omits:
+- A76
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - add_fip_reservation
+  - delete_lease
+  specifics:
+  - gpu_rtx_6000
+  - CC-Ubuntu22.04
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+verification:
+  basis: stub_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+exec_expect:
+  site: CHI@UC
+  node_reservations:
+  - node_type: gpu_rtx_6000
+    amount: 1
+  lease_hours: 8
+  lease_submitted: true
+  server_image: CC-Ubuntu22.04
+  server_bound_to_reservation: true
+  lease_deleted: true
+  server_deleted: true
+  fip_reservations: 1
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@UC")
+
+  my_lease = lease.Lease("node-lease", duration=timedelta(hours=8))
+  my_lease.add_node_reservation(amount=1, node_type="gpu_rtx_6000")
+  my_lease.add_fip_reservation(amount=1)
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "node",
+      image_name="CC-Ubuntu22.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+
+  # The floating IP THIS lease reserved. associate_floating_ip() with no
+  # argument calls get_free_floating_ip(), which returns the first unallocated
+  # floating IP in the PROJECT - not the one reserved here - so in a shared
+  # project it can bind an address another lease is holding, and fails as
+  # "None of the ports can route to floating ip ...", which names neither cause.
+  reserved_fip = my_lease.get_reserved_floating_ips()[0]
+  fip = my_server.associate_floating_ip(reserved_fip)
+  print(fip)
+
+  my_server.delete()
+  chi.lease.delete_lease(my_lease.id)
+gold_provenance: COMPOSED. A92 supplies add_fip_reservation and the reservation wiring; A76 supplies the
+  gpu_rtx_6000 literal and the delete_lease teardown.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@UC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: gpu_rtx_6000
+- check: lease_hours
+  group: specifics
+  hours: 8
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu22.04
+- check: required_call
+  group: mechanism
+  name: add_fip_reservation
+- check: teardown
+  group: mechanism
+  lease: true
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

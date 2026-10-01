@@ -4,6 +4,7 @@ import unittest
 from advisor.artifacts.embeddings import HashingEmbedder
 from advisor.artifacts.router import RetrievalRouter
 from advisor.artifacts.store import ArtifactStore
+from advisor.artifacts.registry import EDGE_ARTIFACTS
 from advisor.artifacts.tree import RouterTree, WorkloadSpec
 
 
@@ -12,7 +13,10 @@ class TreeTestBase(unittest.TestCase):
     def setUpClass(cls):
         # Deterministic, offline: hashing embedder over the real grounding docs.
         cls.store = ArtifactStore(embedder=HashingEmbedder()).build()
-        cls.flat = RetrievalRouter(cls.store)
+        # The flat router is scoped to the edge pool. Unscoped it now competes
+        # 95 artifacts for every query, which is a different operation.
+        cls.flat = RetrievalRouter(
+            cls.store, artifacts=[a.artifact_id for a in EDGE_ARTIFACTS])
         cls.tree = RouterTree(cls.store)
 
 
@@ -30,13 +34,28 @@ class TestSiteGate(TreeTestBase):
         self.assertEqual(r.context_text, "")
         self.assertEqual(r.selected_artifact_ids, [])
 
-    def test_unpopulated_site_needs_clarification(self):
-        # Declaration and embedding agree on KVM@TACC, but no artifacts exist.
+    def test_populated_kvm_branch_now_routes(self):
+        # Was "unpopulated site needs clarification". KVM@TACC has 26 grounded
+        # artifacts since the registry became a loader, so the branch it used
+        # to prove empty is the branch this phase existed to fill.
         spec = WorkloadSpec(
             text="boot a vm instance from a flavor with kvm virtualization",
             site="KVM@TACC",
         )
         r = self.tree.route(spec)
+        self.assertEqual(r.status, "ok")
+        self.assertEqual(r.site, "KVM@TACC")
+        self.assertTrue(r.selected_artifact_ids)
+
+    def test_unpopulated_site_needs_clarification(self):
+        # The guard still has to work; it just needs a genuinely empty branch
+        # now, so the tree is built over the edge artifacts alone.
+        tree = RouterTree(self.store, artifacts=EDGE_ARTIFACTS)
+        spec = WorkloadSpec(
+            text="boot a vm instance from a flavor with kvm virtualization",
+            site="KVM@TACC",
+        )
+        r = tree.route(spec)
         self.assertEqual(r.status, "needs_clarification")
         self.assertIn("no grounded artifacts", r.clarification)
 
@@ -57,11 +76,12 @@ class TestSiteGate(TreeTestBase):
         self.assertTrue(r.chunks)
 
     def test_plain_string_never_gated(self):
-        # Even KVM-leaning text routes to the only populated branch when the
-        # workload is a bare string (spec.site is None).
+        # A bare string is never gated: no declaration means nothing to
+        # disagree with. It now reaches the branch it actually describes,
+        # which it could not do while KVM@TACC was empty.
         r = self.tree.route("boot a vm instance from a flavor with kvm virtualization")
         self.assertEqual(r.status, "ok")
-        self.assertEqual(r.site, "CHI@Edge")
+        self.assertEqual(r.site, "KVM@TACC")
 
 
 class TestFlatParity(TreeTestBase):
@@ -74,13 +94,32 @@ class TestFlatParity(TreeTestBase):
         "xyzzy plugh nothing relevant here",  # all-zero fallback path
     ]
 
+    def test_edge_branch_is_closed(self):
+        """The CHI@Edge branch is exactly the five frozen artifacts.
+
+        This is the R1 guard. Two corpus artifacts observe CHI@Edge, and
+        letting them in drops measured edge L2 retrieval from 93.5% to 77.4%
+        on the benchmark's own items - a regression against 3231 collected
+        answer cells, wearing the costume of a bigger registry.
+        """
+        self.assertEqual(
+            [m.artifact_id for m in self.tree.branches["CHI@Edge"]],
+            [a.artifact_id for a in EDGE_ARTIFACTS],
+        )
+
     def test_byte_identical_single_branch(self):
-        # One populated branch + default knobs -> tree output must be
-        # byte-identical to the flat router on the original surface.
+        # An edge workload routed through the tree must land on exactly what
+        # the flat router over the edge pool produces: same selection, same
+        # budget, same chunks, same assembled context. Widening the registry
+        # is only additive if this keeps holding.
         for w in self.WORKLOADS:
             with self.subTest(workload=w):
                 f = self.flat.route(w)
-                t = self.tree.route(w)
+                # The site is declared. In a one-branch world it did not need
+                # to be; with four branches an undeclared workload is entitled
+                # to route somewhere else, and asserting otherwise would be
+                # asserting that site routing does not work.
+                t = self.tree.route(WorkloadSpec(text=w, site="CHI@Edge"))
                 self.assertEqual(t.status, "ok")
                 self.assertEqual(f.task_scores, t.task_scores)
                 self.assertEqual(f.selected_artifact_ids, t.selected_artifact_ids)
@@ -91,6 +130,42 @@ class TestFlatParity(TreeTestBase):
                     [(c.artifact_id, c.source_file, c.score, c.text) for c in f.chunks],
                     [(c.artifact_id, c.source_file, c.score, c.text) for c in t.chunks],
                 )
+
+
+class TestUnsitedAmbiguity(TreeTestBase):
+    """A workload that names no site is routed on descriptor similarity alone.
+
+    Recorded rather than papered over. On the benchmark's own items this is
+    good enough - L0 is 134/134 on the edge suite and 32/32 on the chameleon
+    suite, because real prompts say where they want to run. But similarity at
+    these margins is noise, and a peripheral workload that mentions neither a
+    site nor an edge device can land on the wrong branch by 0.007.
+    """
+
+    # Item P28 of the edge suite. Chosen because the embedding gets it WRONG:
+    # the prompt is dense with CHI@UC vocabulary and scores CHI@UC 0.409 over
+    # CHI@Edge 0.280, so a test that did not actually depend on reading the
+    # name would pass here by luck. Blinding _named_site must break this.
+    PORTING = ("Convert my CHI@UC bare-metal script (add_node_reservation, "
+               "node_type='compute_skylake', create_server) to run on CHI@Edge.")
+
+    def test_embedding_alone_gets_the_porting_prompt_wrong(self):
+        # Pins the premise of the test below: without the name, this misroutes.
+        scores = self.tree._site_scores(self.PORTING)
+        self.assertEqual(max(scores, key=scores.get), "CHI@UC")
+
+    def test_last_named_site_wins(self):
+        # A porting request names its source first and its destination last;
+        # the destination is the site the user wants code for.
+        self.assertEqual(self.tree._named_site(self.PORTING), "CHI@Edge")
+        self.assertEqual(self.tree.route(self.PORTING).site, "CHI@Edge")
+
+    def test_unsited_workload_falls_back_to_similarity(self):
+        # No name to read, so the descriptors decide - and on this workload
+        # they are wrong by 0.007. Recorded, not hidden.
+        text = "read temperature humidity and pressure from a sensor"
+        self.assertIsNone(self.tree._named_site(text))
+        self.assertEqual(self.tree.route(text).status, "ok")
 
 
 class TestUseCaseRouting(TreeTestBase):

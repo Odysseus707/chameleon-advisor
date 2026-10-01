@@ -40,10 +40,41 @@ def prompt_sha(prompt: str) -> str:
 
 
 def load_items() -> dict:
-    out = {}
-    for p in items_dir().glob("*.yaml"):
-        it = yaml.safe_load(p.read_text())
-        out[it["id"]] = it
+    """Every wing's items, merged by id.
+
+    EVERY WING, not the pinned one. This read used to resolve `items_dir()`
+    with no wing set, so it returned the edge wing's 134 items and nothing
+    else - and `check()` skips any answer whose id it cannot find, on the
+    reasonable-looking grounds that it is "scored elsewhere". The two together
+    meant the chameleon wing's 136 manifested cells were silently passed over:
+    `--check` reported "0 drift" over 60 run directories while the chameleon
+    runs went entirely unexamined. An empty result set reading as a pass (P5)
+    is the exact failure this gate exists to prevent, so it must not be the
+    gate's own behaviour.
+
+    Merging by id is safe because the wings' id spaces are disjoint (edge
+    R/N/P/AV, chameleon CB/RB). That is asserted rather than assumed: a
+    collision would mean one wing's prompt silently gating the other's
+    answers, which is worse than the hole being fixed here.
+    """
+    from chi_edge_bench import paths
+
+    out: dict = {}
+    pinned = paths.wing()
+    try:
+        for name in paths.known_wings():
+            paths.set_wing(name)
+            for p in paths.items_dir().glob("*.yaml"):
+                it = yaml.safe_load(p.read_text())
+                prior = out.get(it["id"])
+                if prior is not None and prior["prompt"] != it["prompt"]:
+                    raise SystemExit(
+                        f"item id {it['id']!r} exists in more than one wing with "
+                        f"different prompts; provenance cannot tell which prompt "
+                        f"a stored answer was collected against")
+                out[it["id"]] = it
+    finally:
+        paths.set_wing(pinned)
     return out
 
 

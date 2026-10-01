@@ -50,6 +50,14 @@ chi-edge-advisor/data/
 
 # Collected experiment data, not code: 556 model answers
 benchmark/runs/
+# Live-verification output: what a run against the real testbed produced. The
+# drivers beside them (live_api_probe.py, live_gold_batch.py) and the unexecuted
+# verify_golds_live.ipynb are tracked; the state they emit is not. An executed
+# notebook also carries its own outputs, so it is output by the same rule.
+benchmark/notebooks/live_probe_state.json
+benchmark/notebooks/live_verification_results.json
+benchmark/notebooks/live_gold_batch_state_*.json
+benchmark/notebooks/*_executed.ipynb
 # Superseded arms + the advisor component test, kept out of runs/ so the scorer
 # never reads them as a condition (see tools/score_runs.py SYSTEM_ORDER).
 benchmark/runs_archive/
@@ -81,9 +89,20 @@ benchmark/reports/
 benchmark/BENCHMARK_REPORT.md
 benchmark/benchmark_v3.xlsx
 chi-edge-advisor/README.md
+# Handoff prompts: each one opens "paste this whole file as your opening
+# prompt", so they are session scaffolding rather than documentation. The
+# reasoning they carry is in benchmark_v4_decisions.md, which IS tracked.
+benchmark/*_HANDOFF.md
+chi-edge-advisor/*_HANDOFF.md
+benchmark/CHAMELEON_WING_FINAL.md
 
 # Chatbot session transcripts dropped at the repo root
 20*-chameleon-chatbot-*.txt
+# Harness leftovers dumped at the repo root by the bpftime uprobe benchmark:
+# 80 empty files named test-<arm>-<n>_--http.txt. Not ours, not data.
+/test-*.txt
+# Slide decks and other binaries parked at the root
+/*.pdf
 
 # --- Agent instruction files. Not part of the published work. ---
 CLAUDE.md

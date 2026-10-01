@@ -23,7 +23,11 @@ REAL_TYPES = {
 }
 CAPABILITY_FIELDS = ("accelerator", "soc", "cuda_compute", "cuda_cores",
                      "tensor_cores", "dla_cores", "edge_tpu_tops", "ram_gb",
-                     "precisions", "storage")
+                     "precisions", "storage",
+                     # bare-metal additions; same rule applies to them, and
+                     # vcpus in particular binds the reservation solver.
+                     "vcpus", "microarchitecture", "gpu_model", "gpu_per_node",
+                     "vram_gb_per_gpu", "covered_by")
 
 
 class TestCuratedCapability(unittest.TestCase):
@@ -75,7 +79,10 @@ class TestCapabilitySurvivesTheCache(unittest.TestCase):
             self.assertTrue(path.is_file())
             reread = {d.machine_type: d for d in InventoryCache(cache_path=path).load()}
 
-        self.assertEqual(set(reread), REAL_TYPES)
+        # The catalogue carries bare metal too now, so the edge vocabulary is
+        # a subset rather than the whole of it. Every edge type must still be
+        # there: losing one silently is the failure this guards.
+        self.assertTrue(REAL_TYPES <= set(reread), REAL_TYPES - set(reread))
         for mt, curated in {d.machine_type: d for d in CURATED_CATALOG}.items():
             for f in CAPABILITY_FIELDS:
                 self.assertEqual(getattr(reread[mt], f), getattr(curated, f),
@@ -91,7 +98,9 @@ class TestCapabilitySurvivesTheCache(unittest.TestCase):
             blob["device_types"][0]["a_field_from_the_future"] = 1
             path.write_text(json.dumps(blob))
             got = InventoryCache(cache_path=path).load()
-        self.assertEqual(len(got), len(REAL_TYPES))
+        # Every entry survives the drift, not just the edge ones.
+        self.assertGreaterEqual(len(got), len(REAL_TYPES))
+        self.assertTrue(REAL_TYPES <= {d.machine_type for d in got})
 
 
 class TestLiveSweepDoesNotBlankCapability(unittest.TestCase):
@@ -120,7 +129,7 @@ class TestLiveSweepDoesNotBlankCapability(unittest.TestCase):
         """If a field is added to DeviceType but not to the merge loop, a live
         sweep silently zeroes it. Assert the source lists them all."""
         src = Path(__file__).resolve().parents[1] / "advisor/inventory/catalog.py"
-        body = src.read_text().split("curated = {d.machine_type: d for d in CURATED_CATALOG}")[1]
+        body = src.read_text().split("static = self._static_capability()")[1]
         merge = body.split("# A type spanning both")[0]
         for f in CAPABILITY_FIELDS:
             self.assertIn(f"dt.{f} = ", merge,

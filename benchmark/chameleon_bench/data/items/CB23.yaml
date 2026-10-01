@@ -1,0 +1,91 @@
+id: CB23
+version: '1.0'
+suite: baremetal_core
+category: Abstention
+axis: REASON
+prompt: On KVM@TACC, show me the python-chi code to reserve resources before I launch an instance.
+prompt_sha256: 386a55c0760effca3ea73b869d8d600469b947951fffca25ec64b4d54b93e218
+designed_trap: No reservation is needed or available. The KVM site does not require a lease for its instances,
+  and its documented provisioning path is the Horizon web interface and the command line rather than python-chi
+  reservation grammar. The invented answer is a plausible Lease block for a site that does not use one.
+trap_tags:
+- absent_capability
+- confident_invention
+target_artifact:
+- A13
+target_content_group: 5d8008f43c44
+fed_sets:
+  blind: []
+  matched:
+  - A13
+  heldout:
+  - A11
+  - A18
+  - A66
+tier_intent_by_condition:
+  matched: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - get_node_types
+  specifics:
+  - Horizon
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: text
+gold_spec: |
+  There is no reservation step to write. KVM@TACC does not require a lease or node
+  reservation for its instances - leases are the bare-metal path - so nothing needs
+  reserving before you launch.
+
+  Provisioning at the KVM site is done through the Horizon web interface and the
+  command line, or through openstacksdk; python-chi is used there only to establish
+  context, with choose_site defaulting to the KVM cloud. Quoting an
+  add_node_reservation or Lease block here would be inventing a grammar this site
+  does not use.
+
+  If you want to see what the testbed exposes:
+
+  ```python
+  import chi
+  from chi import hardware
+
+  chi.use_site("KVM@TACC")
+  print(hardware.get_node_types())
+  ```
+gold_provenance: Restated standalone (deictic repair). Grounded in A13 not_covered - 'No lease or reservation
+  of any kind through python-chi', 'No bare-metal provisioning; this is a virtual-machine tutorial' -
+  and A13 traps_illustrated, 'the tutorial teaches Horizon and the CLI, so no reservation grammar exists
+  in Python to find'. The KVM-requires-no-lease fact is A18 not_covered.
+checkers:
+- check: abstain_or_discover
+  group: mechanism
+  discovery_calls:
+  - get_nodes
+  - get_node_types
+  - get_flavor_id
+  discovery_strings: []
+  abstain_patterns:
+  - \b(there is|there's) no\s+(such\s+)?(code|call|reservation|lease|image|node[_ ]type|step|way)\b
+  - \b(does|do) not\s+(create|reserve|launch|boot|require|pass|name|provision)\b
+  - \byou (cannot|can'?t)\b
+  - \breserves nothing\b
+  - \bno (particular|specific) (one|type|image)\b
+  - \bnot (pinned|determined|guaranteed|passed|documented)\b
+  - \bcannot (tell|infer|know|determine)\b
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - add_flavor_reservation
+  - add_device_reservation
+  - create_container
+  - Container
+- check: required_text_string
+  group: specifics
+  any:
+  - Horizon
+  - command line
+  - CLI
+  - openstacksdk
+  - does not require

@@ -1,0 +1,128 @@
+id: CB11
+version: '1.0'
+suite: baremetal_core
+category: Composition · GPU bare metal
+axis: ACT
+prompt: Reserve a gpu_rtx_6000 node at CHI@UC for 4 hours, launch CC-Ubuntu22.04 on the reservation, then
+  tear the whole thing down.
+prompt_sha256: 25ffe9f339e4708a31dcf6fd386751fe91d6ed565118c5597a5b4697f1a18f7f
+designed_trap: The GPU node-type literal and the teardown come from one artifact; the reservation wiring
+  and image from another. gpu_rtx_6000 exists only at CHI@UC.
+trap_tags:
+- composition
+- gpu_runtime
+- bare_metal_api
+target_artifact:
+- A22
+- A79
+target_content_group:
+- 614ecafe954b
+- f2e35a624fa3
+fed_sets:
+  blind: []
+  matched:
+  - A22
+  - A79
+  heldout:
+  - A26
+  - A36
+  - A78
+  partial:
+  - A22
+partial_omits:
+- A79
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - node_reservations
+  - delete_lease
+  specifics:
+  - gpu_rtx_6000
+  - CC-Ubuntu22.04
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V2
+verification:
+  basis: live_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+  python_chi: 1.2.10
+  evidence: live_gold_v2_evidence_2026-09-07.md
+exec_expect:
+  site: CHI@UC
+  node_reservations:
+  - node_type: gpu_rtx_6000
+    amount: 1
+  lease_hours: 4
+  lease_submitted: true
+  server_image: CC-Ubuntu22.04
+  server_bound_to_reservation: true
+  lease_deleted: true
+  server_deleted: true
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@UC")
+
+  my_lease = lease.Lease("node-lease", duration=timedelta(hours=4))
+  my_lease.add_node_reservation(amount=1, node_type="gpu_rtx_6000")
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "node",
+      image_name="CC-Ubuntu22.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+
+  # Teardown. The lease outlives the instance unless it is deleted explicitly.
+  my_server.delete()
+  chi.lease.delete_lease(my_lease.id)
+gold_provenance: COMPOSED. A22 supplies node_reservations wiring and CC-Ubuntu22.04; A79 supplies the
+  gpu_rtx_6000 literal and the delete_lease teardown. Neither names both.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@UC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: gpu_rtx_6000
+- check: lease_hours
+  group: specifics
+  hours: 4
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu22.04
+- check: teardown
+  group: mechanism
+  lease: true
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

@@ -47,21 +47,59 @@ def render_spec(rec: Recommendation) -> str:
 
 
 def _render_baremetal(rec: Recommendation) -> str:
-    """CHI@UC / CHI@TACC / CHI@NCAR / CHI@NRP / CHI@NU.
+    """CHI@UC / CHI@TACC. Reserve a node, then boot a server onto it.
 
-    CAUTION: add_node_reservation and create_server appear ZERO times as real
-    calls anywhere in this workspace; they exist only inside benchmark
-    forbidden_calls trap lists. This template comes from the python-chi API,
-    not from a validated local example, and it is the first thing the
-    artifact-ingestion work should ground against real notebooks.
+    VERIFIED LIVE on CHI@TACC (project CHI-231225): add_node_reservation then
+    reservation_id=my_lease.node_reservations[0]["id"] submits and boots. Note
+    that the reservation id and the lease id are different identifiers and the
+    call accepts either shape - passing the lease id is the documented trap,
+    and it fails only when the instance never appears.
+
+    A NAMED HOST is emitted when one was verified free, with the node_type
+    request commented beneath it. The trade-off is real and stated in the
+    output rather than hidden: a named host is exactly the machine that was
+    checked, and it fails outright if someone takes it between the check and
+    the submit, where a type request would have been satisfied by any of its
+    siblings.
+
+    lease.get_node_reservation is NEVER emitted. It is deprecated and broken
+    in python-chi 1.2.10 - _reservation_matching expects a lease dict while
+    get_lease returns a Lease object, so it raises AttributeError. It appears
+    throughout the corpus (A9, A55, A61, A63, A77), which means the artifacts
+    teach an idiom that no longer runs.
     """
     name = _safe_name(rec)
     site = rec.site or "CHI@UC"
     image = rec.image or "CC-Ubuntu24.04"
+
+    if rec.device_name:
+        reservation = (
+            f'my_lease.add_node_reservation(amount={rec.count}, '
+            f'node_name="{rec.device_name}")\n'
+            f'# Race-safe alternative: ask for the TYPE instead of this exact\n'
+            f'# host. The named host above is the one verified free just now,\n'
+            f'# and the reservation fails if someone else takes it first; the\n'
+            f'# line below would be satisfied by any free {rec.machine_type}.\n'
+            f'# my_lease.add_node_reservation(amount={rec.count}, '
+            f'node_type="{rec.machine_type}")'
+        )
+    else:
+        reservation = (
+            f'my_lease.add_node_reservation(amount={rec.count}, '
+            f'node_type="{rec.machine_type}")'
+        )
+
+    header = f"# grounded_by = {rec.grounded_by}  produced_by = {rec.produced_by}"
+    if rec.selection_rung:
+        header += f"\n# selection_rung = {rec.selection_rung}"
+        if rec.wait_hours:
+            header += (f"  (nothing free now; this frees up in about "
+                       f"{rec.wait_hours:.1f}h, so the submit below will "
+                       f"queue until then)")
+
     return f'''\
 # --- chi-edge-advisor generated lease spec (baremetal) ---
-# grounded_by = {rec.grounded_by}  produced_by = {rec.produced_by}
-# UNVALIDATED GRAMMAR: no positive baremetal example exists in this corpus yet.
+{header}
 from datetime import timedelta
 
 import chi
@@ -69,19 +107,20 @@ from chi import lease, server
 
 chi.use_site("{site}")
 
-# 1) Lease with a NODE reservation (baremetal uses add_node_reservation,
-#    not add_device_reservation).
+# 1) Lease with a NODE reservation. Bare metal reserves whole machines:
+#    add_node_reservation, not add_device_reservation.
 my_lease = lease.Lease("{name}-lease", duration=timedelta(hours={rec.duration_hours}))
-my_lease.add_node_reservation(amount={rec.count}, node_type="{rec.machine_type}")
+{reservation}
 my_lease.submit(idempotent=True)
 
-# 2) Server (baremetal boots a whole machine; there is no container here).
+# 2) Server. reservation_id must be the RESERVATION id taken from the lease,
+#    not the lease id - the call accepts both and only one of them boots.
 my_server = server.Server(
     name="{name}-node",
     reservation_id=my_lease.node_reservations[0]["id"],
     image_name="{image}",
 )
-my_server.submit()
+my_server.submit(idempotent=True)
 
 # my_server.associate_floating_ip()          # if public network access needed
 # my_server.delete(); my_lease.delete()      # cleanup when done
@@ -89,14 +128,32 @@ my_server.submit()
 
 
 def _render_kvm(rec: Recommendation) -> str:
-    """KVM@TACC. Reserves a flavor rather than a node or a device."""
+    """KVM@TACC. Reserve a flavor, then launch ON the reserved flavor.
+
+    The grammar this replaces could not run. It emitted
+    add_flavor_reservation(amount=..., flavor_name=...), and there is no
+    flavor_name kwarg: the real signature in python-chi 1.2.10 is
+    add_flavor_reservation(id=None, name=None, amount=1). It then wired the
+    server with reservation_id, which is the bare-metal spelling.
+
+    The form below is taken from benchmark golds CB03/CB04/CB05/CB16/CB30 and
+    corpus artifacts A30/A57/A94, all of which execute.
+
+    Launching with a LITERAL flavor name is the trap here, and it is a quiet
+    one: KVM will happily hand you an on-demand instance, so nothing errors,
+    the machine boots, and the reservation you are paying for sits unused for
+    the life of the lease. flavor_name must come from the lease.
+    """
     name = _safe_name(rec)
     site = rec.site or "KVM@TACC"
     image = rec.image or "CC-Ubuntu24.04"
+    header = f"# grounded_by = {rec.grounded_by}  produced_by = {rec.produced_by}"
+    if rec.selection_rung:
+        header += f"\n# selection_rung = {rec.selection_rung}"
+
     return f'''\
 # --- chi-edge-advisor generated lease spec (KVM) ---
-# grounded_by = {rec.grounded_by}  produced_by = {rec.produced_by}
-# UNVALIDATED GRAMMAR: only two add_flavor_reservation examples exist locally.
+{header}
 from datetime import timedelta
 
 import chi
@@ -104,18 +161,23 @@ from chi import lease, server
 
 chi.use_site("{site}")
 
-# 1) Lease with a FLAVOR reservation (KVM reserves capacity, not a named host).
+# 1) Lease with a FLAVOR reservation. KVM reserves capacity of a flavor, not
+#    a named host, so there is no node_type and no device here.
 my_lease = lease.Lease("{name}-lease", duration=timedelta(hours={rec.duration_hours}))
-my_lease.add_flavor_reservation(amount={rec.count}, flavor_name="{rec.machine_type}")
+my_lease.add_flavor_reservation(
+    id=chi.server.get_flavor_id("{rec.machine_type}"), amount={rec.count}
+)
 my_lease.submit(idempotent=True)
 
-# 2) Virtual machine.
+# 2) Virtual machine, launched ON the reserved flavor. Naming the flavor
+#    literally here would boot an on-demand instance instead and leave the
+#    reservation unused - it works, which is what makes it dangerous.
 my_server = server.Server(
-    name="{name}-vm",
-    reservation_id=my_lease.flavor_reservations[0]["id"],
+    "{name}-vm",
     image_name="{image}",
+    flavor_name=my_lease.get_reserved_flavors()[0].name,
 )
-my_server.submit()
+my_server.submit(idempotent=True)
 
 # my_server.associate_floating_ip()          # if public network access needed
 # my_server.delete(); my_lease.delete()      # cleanup when done
@@ -181,6 +243,58 @@ my_container.submit()
 '''
 
 
+#: Never emitted. Deprecated AND broken in python-chi 1.2.10: its
+#: _reservation_matching expects a lease dict while get_lease returns a Lease
+#: object, so it raises AttributeError. The corpus teaches it anyway.
+BROKEN_IDIOMS = ("get_node_reservation",)
+
+
+def _audit_source(code: str, family: str) -> List[str]:
+    """Parse the rendered spec and confirm the wiring, without running it."""
+    import ast
+
+    out: List[str] = []
+    try:
+        tree = ast.parse(code)
+    except SyntaxError as exc:
+        return [f"FAIL rendered spec does not parse: {exc}"]
+
+    called = {n.func.attr for n in ast.walk(tree)
+              if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)}
+    kwargs = {k.arg for n in ast.walk(tree) if isinstance(n, ast.Call)
+              for k in n.keywords if k.arg}
+
+    for bad in BROKEN_IDIOMS:
+        if bad in called:
+            out.append(f"FAIL emits {bad}(), which raises AttributeError in "
+                       "python-chi 1.2.10")
+
+    if family == "baremetal":
+        if "add_node_reservation" not in called:
+            out.append("FAIL no add_node_reservation")
+        if not ({"node_type", "node_name"} & kwargs):
+            out.append("FAIL node reservation names neither a type nor a host")
+        if "reservation_id" not in kwargs:
+            out.append("FAIL server call has no reservation_id")
+        elif "node_reservations" not in code:
+            out.append("FAIL reservation_id is not derived from the lease "
+                       "(passing the lease id here is the documented trap)")
+        else:
+            out.append("node reservation wired from the lease")
+    else:
+        if "add_flavor_reservation" not in called:
+            out.append("FAIL no add_flavor_reservation")
+        if "flavor_name" in kwargs and "get_reserved_flavors" not in called:
+            out.append("FAIL flavor named literally rather than taken from "
+                       "get_reserved_flavors() - the instance boots on demand "
+                       "and the reservation goes unused")
+        elif "get_reserved_flavors" in called:
+            out.append("flavor wired from the lease's reserved flavors")
+        else:
+            out.append("FAIL server call does not name a reserved flavor")
+    return out
+
+
 def dry_check(rec: Recommendation) -> DryCheckResult:
     """Construct the spec objects without submitting to confirm validity."""
     details: List[str] = []
@@ -195,16 +309,18 @@ def dry_check(rec: Recommendation) -> DryCheckResult:
     if rec.duration_hours < 1:
         details.append("duration_hours must be >= 1")
 
-    # Only the edge grammar gets a live object-construction check. The
-    # baremetal and KVM templates have no validated local example, so building
-    # their objects here would assert a correctness we have not earned; they
-    # stay structural until artifact ingestion grounds them.
-    if rec.api_family != "edge":
-        details.insert(0, f"{rec.api_family} grammar: structural validation only "
-                          "(no validated local example yet)")
-        return DryCheckResult(passed=not any(
-            d for d in details if not d.startswith(rec.api_family)),
-            mode="structural", details=details)
+    # The non-edge grammars are validated now, so they get checked rather than
+    # excused. Both are verified against things that actually ran: the
+    # bare-metal form submitted live on CHI@TACC, the KVM form is carried by
+    # benchmark golds CB03/CB04/CB05/CB16/CB30 which all execute.
+    #
+    # Checked by parsing the rendered source instead of building objects,
+    # because the KVM form calls chi.server.get_flavor_id(), which needs the
+    # network. A dry check that reaches the network is not a dry check.
+    if rec.api_family in {"baremetal", "kvm"}:
+        details.extend(_audit_source(render_spec(rec), rec.api_family))
+        return DryCheckResult(passed=not any(d.startswith("FAIL") for d in details),
+                              mode="ast", details=details)
 
     try:
         import chi  # noqa: F401

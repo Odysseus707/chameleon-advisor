@@ -3,8 +3,10 @@
 This is the Q7 Level 1 + Level 2 + Level 3 check, in one reusable tool. It is
 the gate that every later corpus_v2 run is diffed against.
 
-  Level 1  content parity   sha256 of items/*.yaml, grounding/A*.md,
-                            extractions/A*.yaml, snapshots/*.json
+  Level 1  content parity   sha256 of every watched file in every discovered
+                            wing: items/, grounding/, extractions/, snapshots/,
+                            artifacts/, baselines/ and data-root *.yaml (which
+                            is what covers capability_table.yaml)
   Level 2  verdict parity   rescore all collected cells, byte-diff the CSV
   Level 3  gold-gate parity harness.validate_golds must stay green, and
                             exports/gate_report.json must be unchanged
@@ -42,19 +44,32 @@ BENCH = CORPUS.parent                 # benchmark/
 WORKSPACE = BENCH.parent              # chameleon-work/
 PARITY = CORPUS / "parity"
 
-# The four content globs named in Q7 Level 1. Keys are stored workspace-relative
-# so the manifest stays stable across machines.
+# What Level 1 watches inside each wing. Keys are stored workspace-relative so
+# the manifest stays stable across machines.
 #
-# All four anchor at benchmark/, including extractions/: there is no
-# extractions/ at the workspace root. Anchoring it at the root makes the glob
-# match nothing and Level 1 goes blind to those files without failing, so
-# EXPECT_NONEMPTY below asserts every glob actually resolves.
-CONTENT_GLOBS = [
-    (BENCH, "items/*.yaml"),
-    (BENCH, "grounding/A*.md"),
-    (BENCH, "extractions/A*.yaml"),
-    (BENCH, "snapshots/*.json"),
+# These are leaf patterns, and the wings they apply to are DISCOVERED rather
+# than listed (see discover_wings). The original version hardcoded the parent
+# as `benchmark/items/*.yaml`; the packaging refactor moved the data under
+# chi_edge_bench/ and this tool went blind for a month. Hardcoding the parent
+# was the bug. Enumerating the leaf names is fine - those are the benchmark's
+# own vocabulary and do not move when packaging changes.
+#
+# `*.yaml` at the data root is what covers capability_table.yaml: hand-authored
+# ground truth that every reservation verdict depends on, which the original
+# four globs did not watch at all.
+CONTENT_PATTERNS = [
+    "items/*.yaml",
+    "grounding/*.md",
+    "extractions/*.yaml",
+    "snapshots/*.json",
+    "artifacts/*.yaml",      # a wing's pinned artifact registry
+    "baselines/*.csv",       # shipped reference arms, quoted in the README
+    "baselines/*.md",
+    "*.yaml",                # capability tables and any other data-root config
 ]
+
+#: A wing is a package directory under benchmark/ that ships a data/ tree.
+WING_MARKER = "data"
 
 PINNED_CSV = PARITY / "run_scores.baseline.csv"
 PINNED_SUMMARY = PARITY / "run_summary.baseline.md"
@@ -75,22 +90,66 @@ def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def content_manifest() -> list[tuple[str, str]]:
-    """sha256 of every file in the four frozen globs, sorted by key.
+def discover_wings() -> list[tuple[str, Path]]:
+    """Every benchmark wing in this repo, as (package_name, data_dir).
 
-    A glob that matches nothing is treated as a configuration error, not as an
-    empty set. A mis-anchored glob would otherwise silently shrink the surface
-    that Level 1 protects while still reporting OK.
+    Discovered, not listed, so a new wing is protected the moment its data tree
+    exists rather than when someone remembers to add it here. That is the whole
+    point of this rewrite: the previous hardcoded path meant a second wing would
+    have shipped with no Level 1 coverage and nothing would have said so.
+
+    The wing list is recorded in baseline_meta.json, so a wing that later
+    DISAPPEARS also fails - its keys vanish from the manifest and Level 1 goes
+    red. Discovery adds coverage automatically; it never removes it silently.
+    """
+    wings = []
+    for pkg in sorted(BENCH.iterdir()):
+        if not pkg.is_dir() or pkg.name.startswith((".", "_")):
+            continue
+        data = pkg / WING_MARKER
+        if data.is_dir():
+            wings.append((pkg.name, data))
+    if not wings:
+        raise SystemExit(
+            f"no benchmark wing found under {BENCH}: expected at least one "
+            f"package directory containing a '{WING_MARKER}/' tree. Level 1 "
+            "cannot protect a surface it cannot locate.")
+    return wings
+
+
+def content_manifest() -> list[tuple[str, str]]:
+    """sha256 of every watched file across every discovered wing, sorted by key.
+
+    A wing that contributes no files at all is a configuration error, not an
+    empty set - it means the patterns no longer describe that wing's layout and
+    Level 1 has gone blind to it while still reporting OK. Individual patterns
+    are allowed to miss, because wings legitimately differ: the chameleon wing
+    carries artifacts/ and the edge wing does not, and neither absence is a bug.
     """
     rows = []
-    for root, pattern in CONTENT_GLOBS:
-        hits = [p for p in sorted(root.glob(pattern)) if p.is_file()]
+    for name, data in discover_wings():
+        hits = []
+        for pattern in CONTENT_PATTERNS:
+            hits.extend(p for p in sorted(data.glob(pattern)) if p.is_file())
         if not hits:
             raise SystemExit(
-                f"content glob '{pattern}' anchored at {root} matched no files. "
-                "Fix the anchor; an empty glob makes Level 1 blind.")
-        rows.extend((str(p.relative_to(WORKSPACE)), sha256_file(p)) for p in hits)
+                f"wing '{name}' at {data} matched none of the content patterns "
+                f"{CONTENT_PATTERNS}. Fix the patterns; a wing that matches "
+                "nothing makes Level 1 blind to it.")
+        rows.extend((str(p.relative_to(WORKSPACE)), sha256_file(p))
+                    for p in dict.fromkeys(hits))   # dedupe, preserve order
     return sorted(rows)
+
+
+def manifest_wing_counts() -> dict[str, int]:
+    """{wing name: files watched}, for the pin metadata and for reporting."""
+    counts = {}
+    for name, data in discover_wings():
+        seen = set()
+        for pattern in CONTENT_PATTERNS:
+            seen.update(p for p in data.glob(pattern) if p.is_file())
+        counts[name] = len(seen)
+    return counts
 
 
 def render_content_manifest(rows) -> str:
@@ -119,7 +178,7 @@ def run_scorer(csv_out: Path, md_out: Path) -> None:
     the extractor would otherwise not see. runs/ is the measurement record,
     so the baseline is the default read of it, not the recovered read.
     """
-    cmd = [sys.executable, str(BENCH / "tools" / "score_runs.py"),
+    cmd = [sys.executable, "-m", "chi_edge_bench.tools.score_runs",
            "--csv", str(csv_out), "--md", str(md_out)]
     proc = subprocess.run(cmd, cwd=BENCH, capture_output=True, text=True)
     if proc.returncode != 0:
@@ -135,8 +194,10 @@ def run_gold_gate(gate_out: Path) -> tuple[bool, str]:
     """
     live_gate = BENCH / "exports" / "gate_report.json"
     before = live_gate.read_bytes() if live_gate.exists() else None
-    proc = subprocess.run([sys.executable, "-m", "harness.validate_golds"],
-                          cwd=BENCH, capture_output=True, text=True)
+    proc = subprocess.run(
+        [sys.executable, "-m", "chi_edge_bench.harness.validate_golds",
+         "--suite", "core"],
+        cwd=BENCH, capture_output=True, text=True)
     passed = proc.returncode == 0
     if live_gate.exists():
         gate_out.write_bytes(live_gate.read_bytes())
@@ -191,11 +252,14 @@ def do_pin(force: bool) -> int:
     rows = content_manifest()
     PINNED_CONTENT.write_text(render_content_manifest(rows), encoding="utf-8")
     content_sha = manifest_digest(rows)
+    wing_counts = manifest_wing_counts()
+    print(f"[level 1] wings: " + ", ".join(f"{n} ({c} files)"
+                                           for n, c in wing_counts.items()))
     print(f"[level 1] {len(rows)} files, manifest digest {content_sha}")
 
     meta = {
         "pinned_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "scorer_invocation": "tools/score_runs.py (default flags, no --wrap-code)",
+        "scorer_invocation": "python -m chi_edge_bench.tools.score_runs (default flags, no --wrap-code)",
         "cells_total": total,
         "cells_non_empty": filled,
         "run_scores_sha256": csv_sha,
@@ -204,7 +268,11 @@ def do_pin(force: bool) -> int:
         "gold_gate_passed": gate_ok,
         "content_manifest_sha256": content_sha,
         "content_file_count": len(rows),
-        "content_globs": [f"{r.name}/{g}" for r, g in CONTENT_GLOBS],
+        "content_patterns": list(CONTENT_PATTERNS),
+        # Which wings were watched, and how many files each contributed. A wing
+        # appearing or vanishing shows up here as well as in the manifest keys,
+        # so 'we forgot to protect the new wing' is visible in one glance.
+        "wings": manifest_wing_counts(),
         "csv_status_counts": csv_status_counts(PINNED_CSV),
     }
     PINNED_META.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")

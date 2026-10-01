@@ -1,0 +1,88 @@
+id: CB24
+version: '1.0'
+suite: baremetal_core
+category: Abstention
+axis: REASON
+prompt: Show me how to reserve bare-metal hardware on Chameleon using openstacksdk.
+prompt_sha256: 81ac2b7737c1e90cddd8e34bf8fd635acd083ce645fa0a7367eed4dfc8be6079
+designed_trap: openstacksdk cannot reserve bare-metal hardware. Reservations are Blazar's, reached through
+  python-chi's lease module or the blazar client; openstacksdk speaks to the OpenStack services and has
+  no lease grammar at all. The invented answer is a plausible openstacksdk reservation call that does
+  not exist.
+trap_tags:
+- absent_capability
+- confident_invention
+target_artifact:
+- A16
+target_content_group: 5ffd0a6d339f
+fed_sets:
+  blind: []
+  matched:
+  - A16
+  heldout:
+  - A11
+  - A13
+  - A18
+tier_intent_by_condition:
+  matched: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - get_node_types
+  specifics:
+  - CHI@TACC
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: text
+gold_spec: |
+  You cannot. openstacksdk has no bare-metal reservation API - it talks to the
+  OpenStack services directly and there is no lease or node-reservation grammar in it
+  to call.
+
+  Bare-metal reservation on Chameleon is Blazar's job, reached through python-chi's
+  lease module (or the blazar client underneath it). Those are different systems, so
+  there is nothing in openstacksdk to adapt and writing an openstacksdk reservation
+  call would be inventing one.
+
+  To see what is actually reservable at a site:
+
+  ```python
+  import chi
+  from chi import hardware
+
+  chi.use_site("CHI@TACC")
+  print(hardware.get_node_types())
+  ```
+gold_provenance: Restated standalone (deictic repair). Grounded in A16 not_covered - 'No lease, node reservation
+  or flavor reservation of any kind', 'No server or instance creation' - and A16 traps_illustrated, 'All
+  cloud interaction goes through openstacksdk connections rather than python-chi'. The item now asserts
+  the general separation (openstacksdk has no Blazar path) rather than a property of one artifact.
+checkers:
+- check: abstain_or_discover
+  group: mechanism
+  discovery_calls:
+  - get_nodes
+  - get_node_types
+  - get_flavor_id
+  discovery_strings: []
+  abstain_patterns:
+  - \b(there is|there's) no\s+(such\s+)?(code|call|reservation|lease|image|node[_ ]type|step|way)\b
+  - \b(does|do) not\s+(create|reserve|launch|boot|require|pass|name|provision)\b
+  - \byou (cannot|can'?t)\b
+  - \breserves nothing\b
+  - \bno (particular|specific) (one|type|image)\b
+  - \bnot (pinned|determined|guaranteed|passed|documented)\b
+  - \bcannot (tell|infer|know|determine)\b
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+- check: required_text_string
+  group: specifics
+  any:
+  - blazar
+  - Blazar
+  - python-chi
+  - lease module

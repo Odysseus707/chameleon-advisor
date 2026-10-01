@@ -36,6 +36,13 @@ def extract_code(answer_text: str) -> str:
         ast.parse(answer_text)
         return answer_text
     except SyntaxError:
+        # DELIBERATELY still "". Recovering unfenced code from a pasted chat
+        # answer belongs at ingest, not here: wiring it in as a third fallback
+        # was tried and moved 79 stored verdicts - every one of them in the two
+        # hand-pasted arms - which failed Level 2 verdict parity and is exactly
+        # what R1 forbids. Extraction improving must not restate a past
+        # measurement. `tools/manual_arm.py --prepare` normalises a new arm's
+        # answers instead, preserving the raw paste beside them.
         return ""
 
 

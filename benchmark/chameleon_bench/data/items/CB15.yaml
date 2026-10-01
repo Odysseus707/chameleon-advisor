@@ -1,0 +1,127 @@
+id: CB15
+version: '1.0'
+suite: baremetal_core
+category: Composition · bare metal
+axis: ACT
+prompt: On CHI@TACC, reserve a compute_skylake node for 5 hours, launch a server bound to the reservation
+  using get_node_reservation, and delete the lease when finished.
+prompt_sha256: 54a093c1ffdf43b3fe445e084bd2521caca23a7dc766a9e3dc5f241cde9151d8
+designed_trap: The node-type literal and the site come from one artifact; the get_node_reservation wiring
+  and the teardown from another.
+trap_tags:
+- composition
+- reservation_wiring
+- bare_metal_api
+target_artifact:
+- A69
+- A61
+target_content_group:
+- 1b4b013c8631
+- 9d655d5b9feb
+fed_sets:
+  blind: []
+  matched:
+  - A69
+  - A61
+  heldout:
+  - A10
+  - A19
+  - A21
+  partial:
+  - A69
+partial_omits:
+- A61
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - get_node_reservation
+  - delete_lease
+  specifics:
+  - compute_skylake
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V2
+verification:
+  basis: live_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+  python_chi: 1.2.10
+  evidence: live_gold_v2_evidence_2026-09-07.md
+exec_expect:
+  site: CHI@TACC
+  node_reservations:
+  - node_type: compute_skylake
+    amount: 1
+  lease_hours: 5
+  lease_submitted: true
+  server_image: CC-Ubuntu22.04
+  server_bound_to_reservation: true
+  lease_deleted: true
+  server_deleted: true
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@TACC")
+
+  my_lease = lease.Lease("node-lease", duration=timedelta(hours=5))
+  my_lease.add_node_reservation(amount=1, node_type="compute_skylake")
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "node",
+      image_name="CC-Ubuntu22.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+
+  # Teardown. The lease outlives the instance unless it is deleted explicitly.
+  my_server.delete()
+  chi.lease.delete_lease(my_lease.id)
+gold_provenance: COMPOSED. A69 supplies the compute_skylake literal at CHI@TACC; A61 supplies get_node_reservation
+  and the delete_lease teardown. Neither has both.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@TACC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: compute_skylake
+- check: lease_hours
+  group: specifics
+  hours: 5
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu22.04
+- check: teardown
+  group: mechanism
+  lease: true
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

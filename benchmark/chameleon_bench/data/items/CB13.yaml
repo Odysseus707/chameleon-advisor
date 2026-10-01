@@ -1,0 +1,127 @@
+id: CB13
+version: '1.0'
+suite: baremetal_core
+category: Composition · bare metal
+axis: ACT
+prompt: At CHI@UC, reserve a compute_skylake node for 6 hours and boot the CC-Ubuntu20.04 image on it,
+  cleaning up the lease afterwards.
+prompt_sha256: 302e1ab2d09f1d7e6a3ca41b66dbf5688265c0d88c2166d6795ab4e435c165fd
+designed_trap: CC-Ubuntu20.04 is the older image and is grounded in only one artifact; the teardown is
+  grounded in another. A system defaulting to CC-Ubuntu22.04 gets the image wrong.
+trap_tags:
+- composition
+- image_choice
+- bare_metal_api
+target_artifact:
+- A23
+- A19
+target_content_group:
+- 30651bbe33b0
+- e864d4fbc611
+fed_sets:
+  blind: []
+  matched:
+  - A23
+  - A19
+  heldout:
+  - A60
+  - A61
+  - A79
+  partial:
+  - A23
+partial_omits:
+- A19
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - delete_lease
+  specifics:
+  - compute_skylake
+  - CC-Ubuntu20.04
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V2
+verification:
+  basis: live_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+  python_chi: 1.2.10
+  evidence: live_gold_v2_evidence_2026-09-07.md
+exec_expect:
+  site: CHI@UC
+  node_reservations:
+  - node_type: compute_skylake
+    amount: 1
+  lease_hours: 6
+  lease_submitted: true
+  server_image: CC-Ubuntu20.04
+  server_bound_to_reservation: true
+  lease_deleted: true
+  server_deleted: true
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@UC")
+
+  my_lease = lease.Lease("node-lease", duration=timedelta(hours=6))
+  my_lease.add_node_reservation(amount=1, node_type="compute_skylake")
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "node",
+      image_name="CC-Ubuntu20.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+
+  # Teardown. The lease outlives the instance unless it is deleted explicitly.
+  my_server.delete()
+  chi.lease.delete_lease(my_lease.id)
+gold_provenance: COMPOSED. A23 supplies the compute_skylake and CC-Ubuntu20.04 literals; A19 supplies
+  the delete_lease teardown. A23 never tears down and A19 names no image.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@UC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: compute_skylake
+- check: lease_hours
+  group: specifics
+  hours: 6
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu20.04
+- check: teardown
+  group: mechanism
+  lease: true
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

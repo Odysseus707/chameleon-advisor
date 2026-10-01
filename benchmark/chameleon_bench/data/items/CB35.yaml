@@ -1,0 +1,122 @@
+id: CB35
+version: '1.0'
+suite: baremetal_core
+category: Composition · GPU bare metal
+axis: ACT
+prompt: On CHI@TACC reserve a gpu_p100 node for 2 hours with a floating IP and boot CC-Ubuntu20.04 on
+  the reservation.
+prompt_sha256: 35ad5a48a9ed5187bbc2ad2dbd7f3d6c0171bd1792e681dc1d362eb56fdf0a1e
+designed_trap: The artifact holding the grammar names a CHI@UC GPU; the required type is named only in
+  the other. Copying the grammar artifact's own GPU is the cross-site error.
+trap_tags:
+- composition
+- gpu_runtime
+target_artifact:
+- A74
+- A87
+target_content_group:
+- 216a5094125c
+- 6f4553fb30ee
+fed_sets:
+  blind: []
+  matched:
+  - A74
+  - A87
+  heldout:
+  - A14
+  - A61
+  - A79
+  partial:
+  - A74
+partial_omits:
+- A87
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - get_node_reservation
+  - add_fip_reservation
+  specifics:
+  - gpu_p100
+  - CC-Ubuntu20.04
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+verification:
+  basis: stub_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+exec_expect:
+  site: CHI@TACC
+  node_reservations:
+  - node_type: gpu_p100
+    amount: 1
+  lease_hours: 2
+  lease_submitted: true
+  server_image: CC-Ubuntu20.04
+  server_bound_to_reservation: true
+  fip_reservations: 1
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@TACC")
+
+  my_lease = lease.Lease("node-lease", duration=timedelta(hours=2))
+  my_lease.add_node_reservation(amount=1, node_type="gpu_p100")
+  my_lease.add_fip_reservation(amount=1)
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "node",
+      image_name="CC-Ubuntu20.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+gold_provenance: COMPOSED. A87 supplies the gpu_p100 literal; A74 supplies add_node_reservation, get_node_reservation,
+  add_fip_reservation and CC-Ubuntu20.04, but its own GPU literal is gpu_rtx_6000 which exists only at
+  CHI@UC.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@TACC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: gpu_p100
+- check: lease_hours
+  group: specifics
+  hours: 2
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu20.04
+- check: required_call
+  group: mechanism
+  name: add_fip_reservation
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

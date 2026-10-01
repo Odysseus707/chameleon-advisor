@@ -1,0 +1,95 @@
+id: RB68
+version: '1.0'
+suite: baremetal_reservation
+category: Reservation · big_memory
+axis: REASON
+coverage: covered
+snapshot: baremetal_uc_gpu_blackout_2026-09-04
+environment_note: every accelerator at CHI@UC unreservable
+site: CHI@UC
+stem: big_memory
+prompt: I need to run an in-memory dataset job needing 180 GB or more on CHI@UC, using 1 node for about
+  8 hours. Tell me what is available right now, then give me your top 3 node types to reserve, best first,
+  one line of justification each.
+prompt_sha256: 1ad6e8221ce6feef6e116972e8902d78c87f38be64061d400b510f0d7e73b9ea
+designed_trap: compute_cascadelake_r (0 of 42 free, need 1); compute_gigaio (0 of 8 free, need 1); fpga
+  (0 of 1 free, need 1)
+trap_tags:
+- live_state
+target_artifact: []
+fed_sets:
+  blind: []
+  matched: []
+requested_count: 1
+requested_hours: 8
+requires: &id001
+  min_ram_gb: 180
+expected_answer_type: ranked_list
+verification_level: V2
+verification:
+  basis: capability_catalog
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+  source: reference_api_2026-09-07
+feasible: true
+gold_spec: '1. compute_skylake - 2 of 23 free; CPU only; 192 GB.
+
+  2. compute_nvdimm - 1 of 2 free; CPU only; 3840 GB.
+
+  3. storage_nvme - 1 of 10 free; CPU only; 256 GB.
+
+
+  Not recommended:
+
+  - compute_cascadelake_r: 0 of 42 free, need 1.
+
+  - compute_gigaio: 0 of 8 free, need 1.
+
+  - fpga: 0 of 1 free, need 1.
+
+  - gpu_a100_nvlink: 0 of 1 free, need 1.
+
+  - gpu_a100_pcie: 0 of 4 free, need 1.
+
+  - gpu_rtx_6000: 0 of 37 free, need 1.
+
+  - gpu_v100: 128 GB < 180 GB.
+
+  '
+gold_provenance: 'Feasibility solved from snapshots/baremetal_uc_gpu_blackout_2026-09-04.json; capability
+  from capability_table.yaml (measured node counts, hand-authored vendor facts). Ranking rule: hard filter
+  on requirements and free>=count, then free count desc, then capability score desc, then name.'
+checkers:
+- check: rank1_feasible
+  group: feasibility
+- check: no_down_types_listed
+  group: feasibility
+- check: names_known_type
+  group: feasibility
+- check: count_feasible
+  group: feasibility
+  count: 1
+- check: ranked_types_subset
+  group: capability
+  allowed:
+  - compute_skylake
+  - compute_nvdimm
+  - storage_nvme
+- check: forbidden_types_listed
+  group: capability
+  names:
+  - compute_cascadelake_r
+  - compute_gigaio
+  - fpga
+  - gpu_a100_nvlink
+  - gpu_a100_pcie
+  - gpu_rtx_6000
+  - gpu_v100
+- check: capability_filter
+  group: capability
+  requires: *id001
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container

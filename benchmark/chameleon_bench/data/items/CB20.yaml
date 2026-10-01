@@ -1,0 +1,131 @@
+id: CB20
+version: '1.0'
+suite: baremetal_core
+category: Composition · GPU bare metal
+axis: ACT
+prompt: On CHI@TACC, reserve a gpu_p100 node for 5 hours with a floating IP and boot CC-Ubuntu22.04 on
+  the reservation.
+prompt_sha256: 0a638f90b403240c0c87d79fd832cc7d0eda695a532ab6802397222e61d8871d
+designed_trap: gpu_p100 exists only at CHI@TACC and is grounded in one artifact; the image and wiring
+  come from another. Naming a CHI@UC GPU here is the cross-site error.
+trap_tags:
+- composition
+- gpu_runtime
+- bare_metal_api
+target_artifact:
+- A73
+- A36
+target_content_group:
+- a12c97724191
+- f6945c608f77
+fed_sets:
+  blind: []
+  matched:
+  - A73
+  - A36
+  heldout:
+  - A19
+  - A33
+  - A46
+  partial:
+  - A73
+partial_omits:
+- A36
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - node_reservations
+  - add_fip_reservation
+  specifics:
+  - gpu_p100
+  - CC-Ubuntu22.04
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+verification:
+  basis: stub_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+exec_expect:
+  site: CHI@TACC
+  node_reservations:
+  - node_type: gpu_p100
+    amount: 1
+  lease_hours: 5
+  lease_submitted: true
+  server_image: CC-Ubuntu22.04
+  server_bound_to_reservation: true
+  fip_reservations: 1
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@TACC")
+
+  my_lease = lease.Lease("node-lease", duration=timedelta(hours=5))
+  my_lease.add_node_reservation(amount=1, node_type="gpu_p100")
+  my_lease.add_fip_reservation(amount=1)
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "node",
+      image_name="CC-Ubuntu22.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+
+  # The floating IP THIS lease reserved. associate_floating_ip() with no
+  # argument calls get_free_floating_ip(), which returns the first unallocated
+  # floating IP in the PROJECT - not the one reserved here - so in a shared
+  # project it can bind an address another lease is holding, and fails as
+  # "None of the ports can route to floating ip ...", which names neither cause.
+  reserved_fip = my_lease.get_reserved_floating_ips()[0]
+  fip = my_server.associate_floating_ip(reserved_fip)
+  print(fip)
+gold_provenance: COMPOSED. A36 supplies the gpu_p100 literal and add_fip_reservation; A73 supplies CC-Ubuntu22.04
+  and the node_reservations wiring.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@TACC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: gpu_p100
+- check: lease_hours
+  group: specifics
+  hours: 5
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu22.04
+- check: required_call
+  group: mechanism
+  name: add_fip_reservation
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

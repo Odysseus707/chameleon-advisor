@@ -1,0 +1,91 @@
+id: CB41
+version: '1.0'
+suite: baremetal_core
+category: Abstention
+axis: REASON
+prompt: At CHI@UC, if I create my cluster nodes without passing an image, which appliance image do they
+  boot?
+prompt_sha256: 85194abe91361173b8460cd5257d815f6f923344b83d10fa32be9f189d6c3d13
+designed_trap: Nothing in the call determines it. An image that is never passed as a kwarg cannot be read
+  back out of the code, so any named image in the answer is invention - and a plausible CC-Ubuntu appliance
+  is exactly what a lookup system will supply.
+trap_tags:
+- absent_capability
+- confident_invention
+target_artifact:
+- A43
+target_content_group: 7982c555b586
+fed_sets:
+  blind: []
+  matched:
+  - A43
+  heldout:
+  - A16
+  - A47
+tier_intent_by_condition:
+  matched: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - get_node_types
+  specifics:
+  - provisioning
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: text
+gold_spec: |
+  You cannot tell from the code, because nothing in it names one. An image that is
+  never passed as a kwarg is not recorded anywhere in the call, so there is no image
+  choice to read back - the boot image is whatever the site or the cluster recipe
+  supplies by default, not something your provisioning code decided.
+
+  Named appliance images do exist for clusters like this, and the recipe may come in
+  several variants differing by site and accelerator, which is precisely why guessing
+  is unsafe: naming CC-Ubuntu22.04, or any other appliance, as 'the image it boots'
+  would be asserting something the code does not show. If you care which image you
+  get, pass it explicitly rather than relying on a default.
+
+  To see what the site offers:
+
+  ```python
+  import chi
+  from chi import hardware
+
+  chi.use_site("CHI@UC")
+  print(hardware.get_node_types())
+  ```
+gold_provenance: 'Restated standalone (deictic repair, second pass - missed by D86''s determiner regex
+  because ''multi-site'' is hyphenated). Grounded in A43 not_covered, ''No image is passed as a call kwarg,
+  although three named appliance images exist for this artifact'', and A43 traps_illustrated, ''Four variants
+  differ by site and accelerator''. Generalised to the property that makes it true: a kwarg never passed
+  cannot be recovered from the call.'
+checkers:
+- check: abstain_or_discover
+  group: mechanism
+  discovery_calls:
+  - get_nodes
+  - get_node_types
+  - get_flavor_id
+  discovery_strings: []
+  abstain_patterns:
+  - \b(there is|there's) no\s+(such\s+)?(code|call|reservation|lease|image|node[_ ]type|step|way)\b
+  - \b(does|do) not\s+(create|reserve|launch|boot|require|pass|name|provision)\b
+  - \byou (cannot|can'?t)\b
+  - \breserves nothing\b
+  - \bno (particular|specific) (one|type|image)\b
+  - \bnot (pinned|determined|guaranteed|passed|documented)\b
+  - \bcannot (tell|infer|know|determine)\b
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+- check: required_text_string
+  group: specifics
+  any:
+  - not passed
+  - does not show
+  - explicitly
+  - cannot tell
+  - default

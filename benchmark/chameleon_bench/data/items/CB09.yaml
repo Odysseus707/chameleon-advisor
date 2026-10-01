@@ -1,0 +1,117 @@
+id: CB09
+version: '1.0'
+suite: baremetal_core
+category: Composition · bare metal
+axis: ACT
+prompt: On CHI@TACC, reserve a gpu_mi100 node, launch a server bound to that reservation, and delete the
+  lease when the run finishes.
+prompt_sha256: e0267ae0c8cfd434131004265fda9f9d70e022b19afb2356cf1441250c887973
+designed_trap: No single artifact answers this. The full lifecycle grammar (reserve, derive the reservation
+  id, launch, delete) and the hardware literal live in different artifacts, so the answer has to be composed
+  rather than copied.
+trap_tags:
+- composition
+- bare_metal_api
+target_artifact:
+- A9
+- A15
+target_content_group:
+- d0f866915f0a
+- e545ce19a871
+fed_sets:
+  blind: []
+  matched:
+  - A9
+  - A15
+  heldout:
+  - A7
+  - A19
+  - A85
+  partial:
+  - A9
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - get_node_reservation
+  - delete_lease
+  specifics:
+  - gpu_mi100
+  - CHI@TACC
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V2
+verification:
+  basis: live_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+  python_chi: 1.2.10
+  evidence: live_gold_v2_evidence_2026-09-07.md
+exec_expect:
+  site: CHI@TACC
+  node_reservations:
+  - node_type: gpu_mi100
+    amount: 1
+  lease_hours: 3
+  lease_submitted: true
+  server_image: CC-Ubuntu22.04
+  server_bound_to_reservation: true
+  lease_deleted: true
+  server_deleted: true
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@TACC")
+
+  my_lease = lease.Lease("mi100-lease", duration=timedelta(hours=3))
+  my_lease.add_node_reservation(amount=1, node_type="gpu_mi100")
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "mi100-node",
+      image_name="CC-Ubuntu22.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+
+  # Teardown. The lease outlives the instance unless it is deleted explicitly.
+  my_server.delete()
+  chi.lease.delete_lease(my_lease.id)
+gold_provenance: 'COMPOSED from two artifacts, neither sufficient alone. A9 supplies the lifecycle grammar:
+  add_node_reservation, get_node_reservation / reservation_id wiring, create_server, and the delete_lease
+  teardown stage - but names no node type, site or image. A15 supplies the hardware literals gpu_mi100
+  and CHI@TACC - but shows no server launch and no teardown. Verified by token presence in each grounding
+  document; see the fed_sets partial condition, which drops A15 and leaves the answer unreachable.'
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@TACC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: gpu_mi100
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: teardown
+  group: mechanism
+  lease: true
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

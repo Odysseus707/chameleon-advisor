@@ -23,6 +23,10 @@ class DeviceAvailability:
 
     device_uid: str
     machine_type: str
+    # The host's human name, e.g. "c05-33" or "nyu-coral-01". Distinct from
+    # device_uid: bare-metal reservations take node_name=, not the uuid, so a
+    # recommendation naming a specific host needs this and cannot use the uid.
+    device_name: Optional[str] = None
     device_profile: Optional[str] = None
     site: str = "CHI@Edge"
     architecture: Optional[str] = None

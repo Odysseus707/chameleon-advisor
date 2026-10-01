@@ -1,0 +1,114 @@
+id: CB01
+version: '1.0'
+suite: baremetal_core
+category: Reservation · bare metal
+axis: ACT
+prompt: On CHI@UC, reserve one compute_cascadelake_r bare-metal node for 3 hours and launch a CC-Ubuntu22.04
+  server on that reservation.
+prompt_sha256: 6812600397cf79dce55f8978b6555f15fd50e50fa999de72446779d1e988de63
+designed_trap: CHI@Edge grammar (add_device_reservation / Container / platform_version) on a bare-metal
+  site. This is the exact inverse of edge item P02, whose designed trap is the bare-metal call that is
+  correct here.
+trap_tags:
+- edge_api
+- bare_metal_api
+target_artifact:
+- A7
+target_content_group: a3ac00479e82
+fed_sets:
+  blind: []
+  matched:
+  - A7
+  heldout:
+  - A21
+  - A22
+  - A86
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - create_server
+  specifics:
+  - compute_cascadelake_r
+  - CHI@UC
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V2
+verification:
+  basis: live_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+  python_chi: 1.2.10
+  evidence: live_gold_v2_evidence_2026-09-07.md
+exec_expect:
+  site: CHI@UC
+  node_reservations:
+  - node_type: compute_cascadelake_r
+    amount: 1
+  lease_hours: 3
+  lease_submitted: true
+  server_image: CC-Ubuntu22.04
+  server_bound_to_reservation: true
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@UC")
+
+  my_lease = lease.Lease("cascadelake-3h", duration=timedelta(hours=3))
+  my_lease.add_node_reservation(amount=1, node_type="compute_cascadelake_r")
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "cascadelake-node",
+      image_name="CC-Ubuntu22.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+gold_provenance: authored from artifact A7 extraction (workflow_stages site/auth, lease, server; magic_strings
+  CHI@UC, compute_cascadelake_r). A7 is legacy imperative; the gold uses the current object API per D01,
+  which the extraction's own api_calls make derivable.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@UC
+- check: required_call
+  group: mechanism
+  any:
+  - Lease
+  - create_lease
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: compute_cascadelake_r
+- check: lease_hours
+  group: specifics
+  hours: 3
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu22.04
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

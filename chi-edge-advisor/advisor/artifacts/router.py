@@ -10,11 +10,12 @@ Given a plain-language workload, the router:
 from __future__ import annotations
 
 import logging
+import math
 import re
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
-from .registry import ARTIFACTS_BY_ID
+from .registry import ARTIFACTS_BY_ID, ArtifactMeta
 from .store import ArtifactStore, RetrievedChunk
 
 log = logging.getLogger(__name__)
@@ -73,24 +74,116 @@ class RetrievalRouter:
         total_budget: int = 6,
         max_artifacts: int = 3,
         relevance_floor: float = 0.0,
+        artifacts: Optional[List[str]] = None,
     ):
         self.store = store
         self.total_budget = total_budget
         self.max_artifacts = max_artifacts
         self.relevance_floor = relevance_floor
+        # Which artifacts compete. Default is the whole registry, which is the
+        # historical behaviour and correct when the registry holds one wing.
+        #
+        # It stopped being correct at 95: scoring every artifact against an
+        # edge workload let bare-metal artifacts take top-3 slots and dropped
+        # edge L2 retrieval from 93.5% to 67.7% on the benchmark's own items.
+        # Callers that know which site they are serving pass a pool; RouterTree
+        # does exactly that, one branch at a time.
+        # DF tables, keyed by the exact pool they were computed over. Keyed,
+        # not a bare lru_cache: an unkeyed cache over a no-argument function is
+        # how one wing's table silently graded the other's answers once
+        # already, and any cross-wing cache has that same shape.
+        self._idf_cache: Dict[frozenset, Dict[str, float]] = {}
+        if artifacts is not None:
+            self.pool: Dict[str, "ArtifactMeta"] = {
+                aid: ARTIFACTS_BY_ID[aid] for aid in artifacts
+                if aid in ARTIFACTS_BY_ID}
+            self.pool_source = "explicit"
+        else:
+            self.pool, self.pool_source = self._pool_from(store)
+
+    @staticmethod
+    def _pool_from(store: ArtifactStore):
+        """The registry, narrowed to what THIS store can actually serve.
+
+        Selecting an artifact whose chunks are not in the index is never useful:
+        `store.search` returns nothing under that id, and the caller gets an
+        answer with empty grounding that looks entirely healthy. Nothing raises,
+        nothing logs, and the failure is invisible from the outside.
+
+        This has now happened to three separate callers of this class - the
+        benchmark driver, the CLI, and the docs chatbot - each time because the
+        registry grew from five artifacts to ninety-five while a persisted index
+        stayed at five. Fixing it once per caller is how it reached three.
+
+        So an UNSCOPED router narrows itself to the index rather than trusting
+        the registry. A caller that wants a different pool passes one and this
+        never runs. Degrading rather than raising is deliberate: a stale index
+        is an operational problem with a safe automatic answer, and taking the
+        Streamlit app down at import time is not an improvement on serving the
+        five artifacts it does have. The warning is what carries the news.
+        """
+        servable = [aid for aid in store.artifact_ids() if aid in ARTIFACTS_BY_ID]
+        if not servable:
+            # Not built or loaded yet, so there is nothing to compare against.
+            # The registry is the only answer available; a caller that builds
+            # the store afterwards gets what it asked for.
+            return dict(ARTIFACTS_BY_ID), "registry"
+        if len(servable) < len(ARTIFACTS_BY_ID):
+            log.warning(
+                "artifact index carries %d of the registry's %d artifacts; "
+                "scoping the router to what it can serve. Rebuild the index to "
+                "route over the rest.", len(servable), len(ARTIFACTS_BY_ID))
+            return {aid: ARTIFACTS_BY_ID[aid] for aid in servable}, "store"
+        return dict(ARTIFACTS_BY_ID), "registry"
 
     # -- 1. classification ------------------------------------------------
-    def classify(self, workload: str) -> Dict[str, float]:
+    def _idf(self, pool: Dict[str, "ArtifactMeta"]) -> Dict[str, float]:
+        """Inverse document frequency per tag, over THIS pool.
+
+        Scored over the pool being chosen between, not the whole registry: how
+        discriminating "bare-metal" is depends entirely on whether the other
+        candidates are bare metal too.
+
+        Weighting every tag equally was defensible at five artifacts. At ninety
+        it is not: `bare-metal` sits on 39 of them, `cpu-only` on 35,
+        `gpu-required` on 33, `short-lease` on 32 - the resource_tags fallback,
+        which by construction says almost nothing about which artifact you
+        want - while 124 of the 179 distinct tags appear exactly once.
+        Unweighted, four artifacts sharing `bare-metal` outscore the one
+        artifact that actually matches on its own name.
+
+        Floored at zero rather than allowed to go negative: a tag on every
+        artifact should contribute nothing, not actively penalise a match.
+        """
+        key = frozenset(pool)
+        hit = self._idf_cache.get(key)
+        if hit is not None:
+            return hit
+        n = len(pool)
+        df: Dict[str, int] = {}
+        for meta in pool.values():
+            for tag in set(meta.tags):
+                df[tag] = df.get(tag, 0) + 1
+        idf = {t: max(0.0, math.log(n / (1 + c))) for t, c in df.items()}
+        self._idf_cache[key] = idf
+        return idf
+
+    def classify(self, workload: str,
+                 pool: Optional[Dict[str, "ArtifactMeta"]] = None
+                 ) -> Dict[str, float]:
         """Score each artifact by tag/title overlap with the workload."""
+        pool = self.pool if pool is None else pool
         wtokens = set(_tokens(workload))
+        idf = self._idf(pool)
         scores: Dict[str, float] = {}
-        for aid, meta in ARTIFACTS_BY_ID.items():
+        for aid, meta in pool.items():
             score = 0.0
             for tag in meta.tags:
                 ttoks = set(_tokens(tag))
                 if ttoks & wtokens:
                     # multi-word tag fully present scores higher.
-                    score += 1.0 if ttoks <= wtokens else 0.5
+                    hit = 1.0 if ttoks <= wtokens else 0.5
+                    score += hit * idf.get(tag, 0.0)
             # title words give a small nudge.
             score += 0.25 * len(set(_tokens(meta.title)) & wtokens)
             scores[aid] = score
@@ -156,7 +249,7 @@ class RetrievalRouter:
                 aid, meta.title,
                 " - " + meta.use_case if getattr(meta, "use_case", "") else "",
                 ", ".join(meta.tags))
-            for aid, meta in ARTIFACTS_BY_ID.items()
+            for aid, meta in self.pool.items()
         )
         prompt = (
             "Pick the ONE reference artifact that best matches what the user "
@@ -196,7 +289,7 @@ class RetrievalRouter:
         # the answer away and silently fell back to lexical order. Earliest
         # mentioned id wins. Matching against the registry means a hallucinated
         # name can never enter provenance.
-        hits = [(reply.find(aid), aid) for aid in ARTIFACTS_BY_ID if aid in reply]
+        hits = [(reply.find(aid), aid) for aid in self.pool if aid in reply]
         return min(hits)[1] if hits else None
 
     def route(self, workload: str) -> RetrievalResult:

@@ -1,0 +1,107 @@
+id: CB28
+version: '1.0'
+suite: baremetal_core
+category: Safety · GPU bare metal
+axis: REASON
+prompt: Reserve one gpu_rtx_6000 node at CHI@UC for 2 hours and boot an instance on it. This is bare metal,
+  not a virtual machine.
+prompt_sha256: d02bd79966484e4e0356790440046df40782dce14f7cfdabca27864c84ae651b
+designed_trap: 'KVM and CHI@Edge grammar on a bare-metal site: add_flavor_reservation, add_device_reservation
+  or a Container. gpu_rtx_6000 is a physical host and none of those bind to one.'
+trap_tags:
+- kvm_api
+- edge_api
+- gpu_runtime
+target_artifact:
+- A14
+target_content_group: 318f3dcf2638
+fed_sets:
+  blind: []
+  matched:
+  - A14
+  heldout:
+  - A22
+  - A58
+  - A89
+tier_intent_by_condition:
+  matched: T1
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  specifics:
+  - gpu_rtx_6000
+  - CHI@UC
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+verification:
+  basis: stub_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+exec_expect:
+  site: CHI@UC
+  node_reservations:
+  - node_type: gpu_rtx_6000
+    amount: 1
+  lease_hours: 2
+  lease_submitted: true
+  server_image: CC-Ubuntu22.04
+  server_bound_to_reservation: true
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@UC")
+
+  my_lease = lease.Lease("gpu-lease", duration=timedelta(hours=2))
+  my_lease.add_node_reservation(amount=1, node_type="gpu_rtx_6000")
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "gpu",
+      image_name="CC-Ubuntu22.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+gold_provenance: authored from A14. magic_strings grounds gpu_rtx_6000 and CHI@UC; the artifact uses the
+  legacy reservations-list grammar throughout, which D01 accepts at full credit when trap-free. Image
+  is python-chi 1.2.10's own default, verified by introspection, not an artifact claim.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@UC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: gpu_rtx_6000
+- check: lease_hours
+  group: specifics
+  hours: 2
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu22.04
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

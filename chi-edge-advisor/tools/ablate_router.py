@@ -5,19 +5,28 @@ the hierarchical RouterTree, then score whether the item's source artifact
 (``target_artifact``, mapped from benchmark A-ids to router artifact_ids)
 lands in the top-k at each level:
 
-  L0     tree picks the correct site (all covered targets live on CHI@Edge)
+  L0     tree picks the site the item asked for
   L1@k1  the target's use-case survives use-case soft routing (top-k1)
   L2@k2  the target artifact is among the selected artifacts (top-k2)
   chunk  at least one retrieved chunk comes from the target artifact
 
-Items with no scoreable source — targets with no router counterpart (A4, the
-bare-metal distractor) or an empty ``target_artifact`` (designed no-source
-items) — are flagged ``covered=false`` and excluded from the aggregates.
+Items with no scoreable source — targets the registry does not carry (A4, the
+bare-metal distractor, on the edge wing) or an empty ``target_artifact``
+(designed no-source items) — are flagged ``covered=false`` and excluded from
+the aggregates. An L0 with no site to check scores ``None`` and is excluded
+from that level's denominator rather than counted as a miss.
 
-Emits Table A7 (tree vs flat) to benchmark/exports/ablation_A7.{md,json}.
+Runs against either wing (``--wing``); see WINGS for the per-wing items
+directory, id map and output stem. Emits Table A7 (tree vs flat) to
+benchmark/exports/<stem>.{md,json}.
+
+EXIT CODES: 0 measured something, 2 measured nothing. The second case is the
+point — this tool spent its whole life defaulting --items at a directory that
+had moved, finding zero items, printing "n/a" and exiting 0.
 
 Usage (from chi-edge-advisor/):
-    .venv/bin/python tools/ablate_router.py [--l1-k 2] [--l2-k 3] [--embedder hashing|auto]
+    .venv/bin/python tools/ablate_router.py [--wing chameleon_bench]
+        [--l1-k 2] [--l2-k 3] [--embedder hashing|auto]
 """
 from __future__ import annotations
 
@@ -50,6 +59,25 @@ A_TO_ROUTER = {
 
 EXPECTED_SITE = "CHI@Edge"
 
+# Per-wing wiring. The two wings key their artifacts differently and that is
+# deliberate: the edge registry predates the corpus and uses repo slugs, while
+# chameleon artifacts are keyed by their benchmark A-id so provenance keeps
+# naming an id the benchmark can resolve. `id_map=None` means identity.
+WINGS = {
+    "chi_edge_bench": {
+        "items": "chi_edge_bench/data/items",
+        "id_map": A_TO_ROUTER,
+        "site": EXPECTED_SITE,   # edge items carry no `site` field; all CHI@Edge
+        "stem": "ablation_A7",
+    },
+    "chameleon_bench": {
+        "items": "chameleon_bench/data/items",
+        "id_map": None,          # A-ids ARE the registry keys for this wing
+        "site": None,            # per-item `site`; unscored at L0 when absent
+        "stem": "ablation_A7_chameleon",
+    },
+}
+
 
 def load_items(items_dir: Path):
     items = []
@@ -60,14 +88,21 @@ def load_items(items_dir: Path):
                 "id": data["id"],
                 "prompt": data["prompt"],
                 "targets": list(data.get("target_artifact") or []),
+                "site": data.get("site"),
             }
         )
     return items
 
 
-def score_item(item, flat, tree):
-    mapped = [A_TO_ROUTER[a] for a in item["targets"] if a in A_TO_ROUTER]
+def score_item(item, flat, tree, id_map=None, expected_site=None):
+    mapped = ([id_map[a] for a in item["targets"] if a in id_map] if id_map
+              else list(item["targets"]))
+    # A target the registry does not carry is not scoreable, and counting it as
+    # a miss would blame the router for an artifact it was never given.
+    mapped = [aid for aid in mapped if aid in ARTIFACTS_BY_ID]
     covered = bool(mapped)
+    # L0 is only a claim when we know which site the item wanted.
+    want_site = expected_site or item.get("site")
     target_ucs = {
         ARTIFACTS_BY_ID[aid].use_case or aid for aid in mapped if aid in ARTIFACTS_BY_ID
     }
@@ -82,8 +117,9 @@ def score_item(item, flat, tree):
         "covered": covered,
         "tree_site": t.site,
         "tree_status": t.status,
+        "want_site": want_site,
         "tree": {
-            "L0": t.status == "ok" and t.site == EXPECTED_SITE,
+            "L0": None if not want_site else (t.status == "ok" and t.site == want_site),
             "L1": any(uc in t.selected_use_cases for uc in target_ucs),
             "L2": any(aid in t.selected_artifact_ids for aid in mapped),
             "chunk": any(c.artifact_id in mapped for c in t.chunks),
@@ -101,12 +137,16 @@ def aggregate(rows):
     n = len(covered)
 
     def rate(getter):
-        return round(sum(1 for r in covered if getter(r)) / n, 4) if n else None
+        # None means "not a claim for this item" (an L0 with no declared site),
+        # and it is excluded from the denominator rather than scored as a miss.
+        vals = [v for v in (getter(r) for r in covered) if v is not None]
+        return round(sum(1 for v in vals if v) / len(vals), 4) if vals else None
 
     return {
         "n_items": len(rows),
         "n_covered": n,
         "n_uncovered": len(rows) - n,
+        "n_l0_scored": sum(1 for r in covered if r["tree"]["L0"] is not None),
         "tree": {
             "L0": rate(lambda r: r["tree"]["L0"]),
             "L1": rate(lambda r: r["tree"]["L1"]),
@@ -125,6 +165,8 @@ def _pct(x):
 
 
 def _mark(b):
+    if b is None:
+        return "-"       # not a claim for this item, distinct from a miss
     return "Y" if b else "."
 
 
@@ -176,12 +218,22 @@ def render_markdown(config, agg, rows):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument(
-        "--items", default=str(_HERE.parent.parent / "benchmark" / "items")
+        "--wing", choices=sorted(WINGS), default="chi_edge_bench",
+        help="which benchmark wing's items to score (default: the edge wing)",
+    )
+    ap.add_argument(
+        "--items", default=None,
+        help="override the wing's items directory",
     )
     ap.add_argument(
         "--out", default=str(_HERE.parent.parent / "benchmark" / "exports")
     )
-    ap.add_argument("--l1-k", type=int, default=2, dest="l1_k")
+    # 0 = no use-case truncation, which is RouterTree's own default and what
+    # the pipeline runs. Forcing k=2 here for years hid that the gate COSTS
+    # accuracy: on the edge suite it drops L2 from 93.5% to 78.5%, because
+    # "peripherals" holds two artifacts and the gate discards the group.
+    ap.add_argument("--l1-k", type=int, default=0, dest="l1_k",
+                    help="use-case top-k (0 = no truncation, the default)")
     ap.add_argument("--l2-k", type=int, default=3, dest="l2_k")
     ap.add_argument("--budget", type=int, default=6)
     ap.add_argument(
@@ -199,28 +251,56 @@ def main():
         store,
         total_budget=args.budget,
         max_artifacts=args.l2_k,
-        use_case_top_k=args.l1_k,
+        use_case_top_k=args.l1_k or None,
     )
 
-    items = load_items(Path(args.items))
-    rows = [score_item(item, flat, tree) for item in items]
+    wing = WINGS[args.wing]
+    items_dir = Path(args.items) if args.items else (
+        _HERE.parent.parent / "benchmark" / wing["items"])
+    if not items_dir.is_dir():
+        print(f"ERROR: items directory does not exist: {items_dir}", file=sys.stderr)
+        return 2
+
+    items = load_items(items_dir)
+    rows = [score_item(item, flat, tree,
+                       id_map=wing["id_map"], expected_site=wing["site"])
+            for item in items]
     agg = aggregate(rows)
 
     config = {
         "generated": date.today().isoformat(),
+        "wing": args.wing,
         "embedder": embedder.name,
         "l1_k": args.l1_k,
         "l2_k": args.l2_k,
         "budget": args.budget,
-        "items_dir": args.items,
-        "expected_site": EXPECTED_SITE,
-        "a_to_router": A_TO_ROUTER,
+        "items_dir": str(items_dir),
+        "expected_site": wing["site"],
+        "a_to_router": wing["id_map"],
     }
+
+    # P5: an empty result set reads as a pass. This tool printed
+    # "0 covered / 0 items ... n/a" and exited 0 for as long as its --items
+    # default pointed at benchmark/items, a directory that moved. A routing
+    # measurement with no scoreable item is not a measurement, and the whole
+    # point of running it before and after a change is that it can disagree.
+    #
+    # Checked BEFORE the writes: a vacuous run that clobbers the previous
+    # baseline on its way to failing has destroyed the number you were about
+    # to compare against.
+    if not agg["n_items"]:
+        print(f"ERROR: no items found under {items_dir}", file=sys.stderr)
+        return 2
+    if not agg["n_covered"]:
+        print(f"ERROR: {agg['n_items']} items, none with a target the registry "
+              f"carries — nothing was measured. Check the {args.wing} id map.",
+              file=sys.stderr)
+        return 2
 
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
-    json_path = out_dir / "ablation_A7.json"
-    md_path = out_dir / "ablation_A7.md"
+    json_path = out_dir / f"{wing['stem']}.json"
+    md_path = out_dir / f"{wing['stem']}.md"
     json_path.write_text(
         json.dumps({"config": config, "aggregates": agg, "items": rows}, indent=2)
     )
@@ -233,7 +313,8 @@ def main():
           f"chunk {_pct(agg['flat']['chunk'])}")
     print(f"  wrote {json_path}")
     print(f"  wrote {md_path}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

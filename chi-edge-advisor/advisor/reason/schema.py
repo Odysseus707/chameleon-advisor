@@ -36,6 +36,23 @@ class Recommendation:
     # recommendation whose only option is unreservable is not actionable.
     alternatives: List[str] = field(default_factory=list)
 
+    # Which rung of the selection ladder produced this, when the ladder
+    # produced it at all ("" for the edge reasoner path). A recommendation
+    # that matched immediately is a different claim from one that reached the
+    # fourth rung, and the reader is entitled to know which they got:
+    #   free_now                free hardware, right now
+    #   future                  nothing free; this frees up in wait_hours
+    #   no_host_state           KVM: flavors are not reserved per host
+    #   infeasible_capability   no hardware here can do it
+    #   infeasible_busy         hardware exists and fits, all of it is taken
+    selection_rung: str = ""
+    # Constraints the advisor supplied rather than the user. Always surfaced:
+    # a recommendation resting on "we assumed you need 80 GB of VRAM" is a
+    # different claim from one resting on the user having said so.
+    assumptions: List[str] = field(default_factory=list)
+    # Hours until the recommendation becomes actionable. None means now.
+    wait_hours: Optional[float] = None
+
     # provenance: artifact_ids that grounded this recommendation
     grounded_by: List[str] = field(default_factory=list)
     # which reasoner produced it: "tejas" | "anthropic" | "heuristic"
@@ -66,6 +83,9 @@ class Recommendation:
             site=pick("site"),
             api_family=pick("api_family", default="edge"),
             alternatives=list(pick("alternatives", "fallbacks", default=[]) or []),
+            selection_rung=pick("selection_rung", default="") or "",
+            assumptions=list(pick("assumptions", default=[]) or []),
+            wait_hours=pick("wait_hours"),
             grounded_by=list(pick("grounded_by", "artifact_ids", default=[]) or []),
             produced_by=pick("produced_by", default="unknown"),
         )

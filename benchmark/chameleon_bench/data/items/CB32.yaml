@@ -1,0 +1,115 @@
+id: CB32
+version: '1.0'
+suite: baremetal_core
+category: Composition · GPU bare metal
+axis: ACT
+prompt: Reserve a gpu_p100 node at CHI@TACC for 5 hours and launch CC-Ubuntu24.04 on that reservation.
+prompt_sha256: d2ef00df0698ab96ba85f82cd379eff715e95ad7f07b1c64b4e6e14bc7989882
+designed_trap: Both the GPU literal and the image come from an artifact that reserves nothing; all reservation
+  grammar comes from the other.
+trap_tags:
+- composition
+- gpu_runtime
+target_artifact:
+- A95
+- A52
+target_content_group:
+- 2d82072eebef
+- f9c5080e4d29
+fed_sets:
+  blind: []
+  matched:
+  - A95
+  - A52
+  heldout:
+  - A10
+  - A21
+  - A24
+  partial:
+  - A95
+partial_omits:
+- A52
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - get_node_reservation
+  specifics:
+  - gpu_p100
+  - CC-Ubuntu24.04
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+verification:
+  basis: stub_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+exec_expect:
+  site: CHI@TACC
+  node_reservations:
+  - node_type: gpu_p100
+    amount: 1
+  lease_hours: 5
+  lease_submitted: true
+  server_image: CC-Ubuntu24.04
+  server_bound_to_reservation: true
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@TACC")
+
+  my_lease = lease.Lease("node-lease", duration=timedelta(hours=5))
+  my_lease.add_node_reservation(amount=1, node_type="gpu_p100")
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "node",
+      image_name="CC-Ubuntu24.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+gold_provenance: COMPOSED. A52 supplies the gpu_p100 literal and CC-Ubuntu24.04 but makes no bare-metal
+  node reservation at all; A95 supplies add_node_reservation and get_node_reservation but names neither
+  literal.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@TACC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: gpu_p100
+- check: lease_hours
+  group: specifics
+  hours: 5
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu24.04
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

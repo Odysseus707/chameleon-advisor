@@ -1,0 +1,116 @@
+id: CB16
+version: '1.0'
+suite: baremetal_core
+category: Composition · KVM
+axis: ACT
+prompt: On Chameleon's KVM cloud, reserve an m1.large flavor for 6 hours and launch a CC-Ubuntu24.04 instance
+  on the flavor you reserved.
+prompt_sha256: f3b81c869a8b7036c032fdcfea5585151f30513666e709eb10b9a173032eb3af
+designed_trap: Launching with a literal flavor name after reserving one. It boots on demand, the reservation
+  sits idle and nothing errors. The reading-back idiom is in one artifact; the m1.large literal only in
+  the other.
+trap_tags:
+- composition
+- kvm_api
+- unused_reservation
+target_artifact:
+- A57
+- A84
+target_content_group:
+- 2e82f88a0c49
+- 51753a21aa32
+fed_sets:
+  blind: []
+  matched:
+  - A57
+  - A84
+  heldout:
+  - A28
+  - A40
+  - A82
+  partial:
+  - A57
+partial_omits:
+- A84
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_flavor_reservation
+  - get_flavor_id
+  - get_reserved_flavors
+  specifics:
+  - m1.large
+  - CC-Ubuntu24.04
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+verification:
+  basis: stub_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+exec_expect:
+  site: KVM@TACC
+  flavor_reservations:
+  - flavor: m1.large
+    amount: 1
+  lease_hours: 6
+  lease_submitted: true
+  server_image: CC-Ubuntu24.04
+  server_flavor: m1.large
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("KVM@TACC")
+
+  my_lease = lease.Lease("kvm-large-lease", duration=timedelta(hours=6))
+  my_lease.add_flavor_reservation(id=chi.server.get_flavor_id("m1.large"), amount=1)
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "kvm-large",
+      image_name="CC-Ubuntu24.04",
+      flavor_name=my_lease.get_reserved_flavors()[0].name,
+  )
+  my_server.submit(idempotent=True, show="text")
+gold_provenance: COMPOSED. A57 supplies the get_reserved_flavors read-back idiom and the CC-Ubuntu24.04
+  image but never names m1.large; A84 supplies the m1.large literal but not the read-back. Verified by
+  token presence.
+checkers:
+- check: site_correct
+  group: specifics
+  site: KVM@TACC
+- check: required_call
+  group: mechanism
+  name: add_flavor_reservation
+- check: required_call
+  group: mechanism
+  name: get_flavor_id
+- check: required_code_string
+  group: specifics
+  s: m1.large
+- check: lease_hours
+  group: specifics
+  hours: 6
+- check: flavor_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu24.04
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - add_device_reservation
+  - create_container
+  - Container

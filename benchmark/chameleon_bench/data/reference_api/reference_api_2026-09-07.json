@@ -1,0 +1,721 @@
+{
+ "_meta": {
+  "source": "chameleon_reference_api",
+  "base": "https://api.chameleoncloud.org",
+  "urls": [
+   "https://api.chameleoncloud.org/sites/tacc/clusters.json",
+   "https://api.chameleoncloud.org/sites/tacc/clusters/chameleon/nodes.json",
+   "https://api.chameleoncloud.org/sites/uc/clusters.json",
+   "https://api.chameleoncloud.org/sites/uc/clusters/chameleon/nodes.json"
+  ],
+  "probed_utc": "2026-09-07T05:47:41.215257+00:00",
+  "sites": [
+   "CHI@TACC",
+   "CHI@UC"
+  ],
+  "node_records": 445,
+  "note": "Hardware catalog, NOT reservation state. Distributions are preserved verbatim; no scalar is chosen here and no SMT assumption is applied. See the module docstring for why smt_size is not written as vcpus."
+ },
+ "node_types": {
+  "compute_arm64": {
+   "node_count": 8,
+   "sites": {
+    "CHI@TACC": 8
+   },
+   "ram_gib": {
+    "32": 8
+   },
+   "smt_size": {
+    "48": 8
+   },
+   "smp_size": {
+    "1": 8
+   },
+   "platform_type": {
+    "aarch64": 8
+   },
+   "cpu_models": {
+    "461F0010": 8
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  },
+  "compute_cascadelake": {
+   "node_count": 24,
+   "sites": {
+    "CHI@TACC": 24
+   },
+   "ram_gib": {
+    "192": 23,
+    "187": 1
+   },
+   "smt_size": {
+    "64": 20,
+    "32": 4
+   },
+   "smp_size": {
+    "2": 24
+   },
+   "platform_type": {
+    "x86_64": 24
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Gold 6242 CPU @ 2.80GHz": 23,
+    "Intel Xeon": 1
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  },
+  "compute_cascadelake_r": {
+   "node_count": 98,
+   "sites": {
+    "CHI@TACC": 56,
+    "CHI@UC": 42
+   },
+   "ram_gib": {
+    "192": 98
+   },
+   "smt_size": {
+    "96": 98
+   },
+   "smp_size": {
+    "2": 98
+   },
+   "platform_type": {
+    "x86_64": 98
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Gold 6240R CPU @ 2.40GHz": 97,
+    "Intel Xeon": 1
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  },
+  "compute_gigaio": {
+   "node_count": 14,
+   "sites": {
+    "CHI@TACC": 6,
+    "CHI@UC": 8
+   },
+   "ram_gib": {
+    "256": 6,
+    "512": 8
+   },
+   "smt_size": {
+    "160": 6,
+    "256": 8
+   },
+   "smp_size": {
+    "2": 14
+   },
+   "platform_type": {
+    "x86_64": 14
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Platinum 8380 CPU @ 2.30GHz": 6,
+    "AMD EPYC 7763 64-Core Processor": 8
+   },
+   "gpu_count": {
+    "1": 10
+   },
+   "gpu_models": {
+    "GA100GL [A30 PCIe]": 2,
+    "GA100 [A100 PCIe 40GB]": 1,
+    "GA100 [A100 PCIe 80GB]": 7
+   }
+  },
+  "compute_haswell_ib": {
+   "node_count": 17,
+   "sites": {
+    "CHI@TACC": 17
+   },
+   "ram_gib": {
+    "128": 17
+   },
+   "smt_size": {
+    "48": 17
+   },
+   "smp_size": {
+    "2": 17
+   },
+   "platform_type": {
+    "x86_64": 17
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz": 17
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  },
+  "compute_icelake_r650": {
+   "node_count": 52,
+   "sites": {
+    "CHI@TACC": 52
+   },
+   "ram_gib": {
+    "256": 52
+   },
+   "smt_size": {
+    "160": 52
+   },
+   "smp_size": {
+    "2": 52
+   },
+   "platform_type": {
+    "x86_64": 52
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Platinum 8380 CPU @ 2.30GHz": 52
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  },
+  "compute_icelake_r750": {
+   "node_count": 20,
+   "sites": {
+    "CHI@TACC": 20
+   },
+   "ram_gib": {
+    "256": 20
+   },
+   "smt_size": {
+    "160": 20
+   },
+   "smp_size": {
+    "2": 20
+   },
+   "platform_type": {
+    "x86_64": 20
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Platinum 8380 CPU @ 2.30GHz": 20
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  },
+  "compute_liqid": {
+   "node_count": 8,
+   "sites": {
+    "CHI@TACC": 8
+   },
+   "ram_gib": {
+    "256": 8
+   },
+   "smt_size": {
+    "256": 8
+   },
+   "smp_size": {
+    "2": 8
+   },
+   "platform_type": {
+    "x86_64": 8
+   },
+   "cpu_models": {
+    "AMD EPYC 7763 64-Core Processor": 8
+   },
+   "gpu_count": {
+    "1": 6,
+    "2": 2
+   },
+   "gpu_models": {
+    "GA100 [A100 PCIe 40GB]": 8
+   }
+  },
+  "compute_nvdimm": {
+   "node_count": 2,
+   "sites": {
+    "CHI@UC": 2
+   },
+   "ram_gib": {
+    "3840": 2
+   },
+   "smt_size": {
+    "224": 1,
+    "112": 1
+   },
+   "smp_size": {
+    "4": 2
+   },
+   "platform_type": {
+    "x86_64": 2
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Platinum 8276 CPU @ 2.20GHz": 2
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  },
+  "compute_skylake": {
+   "node_count": 55,
+   "sites": {
+    "CHI@TACC": 32,
+    "CHI@UC": 23
+   },
+   "ram_gib": {
+    "192": 54,
+    "191": 1
+   },
+   "smt_size": {
+    "48": 52,
+    "24": 3
+   },
+   "smp_size": {
+    "2": 55
+   },
+   "platform_type": {
+    "x86_64": 55
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Gold 6126 CPU @ 2.60GHz": 54,
+    "Intel Xeon": 1
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  },
+  "compute_zen3": {
+   "node_count": 32,
+   "sites": {
+    "CHI@TACC": 32
+   },
+   "ram_gib": {
+    "256": 32
+   },
+   "smt_size": {
+    "256": 32
+   },
+   "smp_size": {
+    "2": 32
+   },
+   "platform_type": {
+    "x86_64": 32
+   },
+   "cpu_models": {
+    "AMD EPYC 7763 64-Core Processor": 32
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  },
+  "fpga": {
+   "node_count": 1,
+   "sites": {
+    "CHI@UC": 1
+   },
+   "ram_gib": {
+    "192": 1
+   },
+   "smt_size": {
+    "48": 1
+   },
+   "smp_size": {
+    "2": 1
+   },
+   "platform_type": {
+    "x86_64": 1
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Gold 6126 CPU @ 2.60GHz": 1
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  },
+  "gpu_a100_nvlink": {
+   "node_count": 1,
+   "sites": {
+    "CHI@UC": 1
+   },
+   "ram_gib": {
+    "512": 1
+   },
+   "smt_size": {
+    "256": 1
+   },
+   "smp_size": {
+    "2": 1
+   },
+   "platform_type": {
+    "x86_64": 1
+   },
+   "cpu_models": {
+    "AMD EPYC 7763 64-Core Processor": 1
+   },
+   "gpu_count": {
+    "4": 1
+   },
+   "gpu_models": {
+    "GA100 [A100 SXM4 80GB]": 1
+   }
+  },
+  "gpu_a100_pcie": {
+   "node_count": 4,
+   "sites": {
+    "CHI@UC": 4
+   },
+   "ram_gib": {
+    "512": 4
+   },
+   "smt_size": {
+    "160": 4
+   },
+   "smp_size": {
+    "2": 4
+   },
+   "platform_type": {
+    "x86_64": 4
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Platinum 8380 CPU @ 2.30GHz": 4
+   },
+   "gpu_count": {
+    "4": 4
+   },
+   "gpu_models": {
+    "GA100 [A100 PCIe 80GB]": 4
+   }
+  },
+  "gpu_h100": {
+   "node_count": 2,
+   "sites": {
+    "CHI@TACC": 2
+   },
+   "ram_gib": {
+    "1024": 2
+   },
+   "smt_size": {
+    "192": 2
+   },
+   "smp_size": {
+    "2": 2
+   },
+   "platform_type": {
+    "x86_64": 2
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Platinum 8468": 2
+   },
+   "gpu_count": {
+    "4": 2
+   },
+   "gpu_models": {
+    "GH100 [H100 SXM5 94GB]": 2
+   }
+  },
+  "gpu_k80": {
+   "node_count": 2,
+   "sites": {
+    "CHI@TACC": 2
+   },
+   "ram_gib": {
+    "128": 2
+   },
+   "smt_size": {
+    "48": 2
+   },
+   "smp_size": {
+    "2": 2
+   },
+   "platform_type": {
+    "x86_64": 2
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz": 2
+   },
+   "gpu_count": {
+    "2": 2
+   },
+   "gpu_models": {
+    "GK210GL [Tesla K80]": 2
+   }
+  },
+  "gpu_m40": {
+   "node_count": 2,
+   "sites": {
+    "CHI@TACC": 2
+   },
+   "ram_gib": {
+    "128": 2
+   },
+   "smt_size": {
+    "48": 2
+   },
+   "smp_size": {
+    "2": 2
+   },
+   "platform_type": {
+    "x86_64": 2
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz": 2
+   },
+   "gpu_count": {
+    "1": 2
+   },
+   "gpu_models": {
+    "GM200GL [Tesla M40]": 2
+   }
+  },
+  "gpu_mi100": {
+   "node_count": 8,
+   "sites": {
+    "CHI@TACC": 8
+   },
+   "ram_gib": {
+    "256": 8
+   },
+   "smt_size": {
+    "256": 8
+   },
+   "smp_size": {
+    "2": 8
+   },
+   "platform_type": {
+    "x86_64": 8
+   },
+   "cpu_models": {
+    "AMD EPYC 7763 64-Core Processor": 8
+   },
+   "gpu_count": {
+    "2": 8
+   },
+   "gpu_models": {
+    "Arcturus GL-XL [Instinct MI100]": 8
+   }
+  },
+  "gpu_p100": {
+   "node_count": 15,
+   "sites": {
+    "CHI@TACC": 15
+   },
+   "ram_gib": {
+    "128": 15
+   },
+   "smt_size": {
+    "48": 15
+   },
+   "smp_size": {
+    "2": 15
+   },
+   "platform_type": {
+    "x86_64": 15
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz": 15
+   },
+   "gpu_count": {
+    "2": 15
+   },
+   "gpu_models": {
+    "GP100GL [Tesla P100 PCIe 16GB]": 15
+   }
+  },
+  "gpu_p100_nvlink": {
+   "node_count": 4,
+   "sites": {
+    "CHI@TACC": 4
+   },
+   "ram_gib": {
+    "128": 4
+   },
+   "smt_size": {
+    "56": 4
+   },
+   "smp_size": {
+    "2": 4
+   },
+   "platform_type": {
+    "x86_64": 4
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) CPU E5-2660 v4 @ 2.00GHz": 4
+   },
+   "gpu_count": {
+    "2": 1,
+    "4": 3
+   },
+   "gpu_models": {
+    "GP100GL [Tesla P100 SXM2 16GB]": 4
+   }
+  },
+  "gpu_p100_v100": {
+   "node_count": 1,
+   "sites": {
+    "CHI@TACC": 1
+   },
+   "ram_gib": {
+    "128": 1
+   },
+   "smt_size": {
+    "48": 1
+   },
+   "smp_size": {
+    "2": 1
+   },
+   "platform_type": {
+    "x86_64": 1
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz": 1
+   },
+   "gpu_count": {
+    "2": 1
+   },
+   "gpu_models": {
+    "GV100GL [Tesla V100 PCIe 16GB]": 1
+   }
+  },
+  "gpu_pontevecchio": {
+   "node_count": 2,
+   "sites": {
+    "CHI@TACC": 2
+   },
+   "ram_gib": {
+    "1024": 2
+   },
+   "smt_size": {
+    "96": 2
+   },
+   "smp_size": {
+    "2": 2
+   },
+   "platform_type": {
+    "x86_64": 2
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Platinum 8468": 2
+   },
+   "gpu_count": {
+    "4": 2
+   },
+   "gpu_models": {
+    "Ponte Vecchio XT (2 Tile) [Data Center GPU Max 1550]": 2
+   }
+  },
+  "gpu_rtx_6000": {
+   "node_count": 37,
+   "sites": {
+    "CHI@UC": 37
+   },
+   "ram_gib": {
+    "192": 37
+   },
+   "smt_size": {
+    "48": 37
+   },
+   "smp_size": {
+    "2": 37
+   },
+   "platform_type": {
+    "x86_64": 37
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Gold 6126 CPU @ 2.60GHz": 37
+   },
+   "gpu_count": {
+    "1": 37
+   },
+   "gpu_models": {
+    "TU102GL [Quadro RTX 6000/8000]": 37
+   }
+  },
+  "gpu_v100": {
+   "node_count": 4,
+   "sites": {
+    "CHI@UC": 4
+   },
+   "ram_gib": {
+    "128": 4
+   },
+   "smt_size": {
+    "80": 4
+   },
+   "smp_size": {
+    "2": 4
+   },
+   "platform_type": {
+    "x86_64": 4
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) Gold 6230 CPU @ 2.10GHz": 4
+   },
+   "gpu_count": {
+    "4": 4
+   },
+   "gpu_models": {
+    "GV100GL [Tesla V100 PCIe 32GB]": 1,
+    "GV100GL [Tesla V100 SXM2 32GB]": 3
+   }
+  },
+  "storage": {
+   "node_count": 20,
+   "sites": {
+    "CHI@TACC": 20
+   },
+   "ram_gib": {
+    "64": 17,
+    "62": 3
+   },
+   "smt_size": {
+    "40": 20
+   },
+   "smp_size": {
+    "2": 20
+   },
+   "platform_type": {
+    "x86_64": 20
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) CPU E5-2650 v3 @ 2.30GHz": 17,
+    "Intel Xeon": 3
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  },
+  "storage_hierarchy": {
+   "node_count": 2,
+   "sites": {
+    "CHI@TACC": 2
+   },
+   "ram_gib": {
+    "512": 2
+   },
+   "smt_size": {
+    "48": 2
+   },
+   "smp_size": {
+    "2": 2
+   },
+   "platform_type": {
+    "x86_64": 2
+   },
+   "cpu_models": {
+    "Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz": 2
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  },
+  "storage_nvme": {
+   "node_count": 10,
+   "sites": {
+    "CHI@UC": 10
+   },
+   "ram_gib": {
+    "238": 1,
+    "256": 9
+   },
+   "smt_size": {
+    "48": 6,
+    "96": 4
+   },
+   "smp_size": {
+    "2": 10
+   },
+   "platform_type": {
+    "x86_64": 10
+   },
+   "cpu_models": {
+    "AMD EPYC 7352 24-Core Processor": 10
+   },
+   "gpu_count": {},
+   "gpu_models": {}
+  }
+ }
+}

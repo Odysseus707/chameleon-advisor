@@ -1,0 +1,90 @@
+id: CB40
+version: '1.0'
+suite: baremetal_core
+category: Abstention
+axis: REASON
+prompt: At CHI@UC I attach to my hardware with lease.get_lease(name). Which bare-metal node type does
+  that call reserve?
+prompt_sha256: edb6d5ba3faf6eec63a2c99943fdf0214479f2553d88ff76fd9b150ea4046133
+designed_trap: It reserves none. get_lease attaches to a lease that already exists and makes no reservation
+  of its own, so the node type was fixed by whoever created that lease and is not visible from the call.
+  Naming a type is invention.
+trap_tags:
+- absent_capability
+- confident_invention
+target_artifact:
+- A59
+target_content_group: a84f188f10e8
+fed_sets:
+  blind: []
+  matched:
+  - A59
+  heldout:
+  - A34
+  - A64
+  - A65
+tier_intent_by_condition:
+  matched: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - get_node_types
+  specifics:
+  - attaches
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: text
+gold_spec: |
+  None - that call reserves nothing. lease.get_lease attaches to a lease that already
+  exists; it makes no reservation of its own, so there is no node type for it to ask
+  for.
+
+  Whatever hardware you end up on was decided by whoever created that lease, not by
+  this call, and the call does not tell you which type that was. Naming a node type
+  here would be inventing a choice get_lease never makes. Note also that if the name
+  you pass does not match a real lease, the lookup simply fails - it does not create
+  one.
+
+  To see what the site offers, or to pin a type on a lease you create yourself:
+
+  ```python
+  import chi
+  from chi import hardware
+
+  chi.use_site("CHI@UC")
+  print(hardware.get_node_types())
+  ```
+gold_provenance: Restated standalone (deictic repair). Grounded in A59 traps_illustrated - 'lease.get_lease
+  attaches to an existing reservation rather than creating one' and 'The lease name is a literal placeholder,
+  so an unedited run fails on a lease that does not exist' - and A59 not_covered, 'No image or node type
+  is passed to any call, so no hardware choice is demonstrated in code.'
+checkers:
+- check: abstain_or_discover
+  group: mechanism
+  discovery_calls:
+  - get_nodes
+  - get_node_types
+  - get_flavor_id
+  discovery_strings: []
+  abstain_patterns:
+  - \b(there is|there's) no\s+(such\s+)?(code|call|reservation|lease|image|node[_ ]type|step|way)\b
+  - \b(does|do) not\s+(create|reserve|launch|boot|require|pass|name|provision)\b
+  - \byou (cannot|can'?t)\b
+  - \breserves nothing\b
+  - \bno (particular|specific) (one|type|image)\b
+  - \bnot (pinned|determined|guaranteed|passed|documented)\b
+  - \bcannot (tell|infer|know|determine)\b
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+- check: required_text_string
+  group: specifics
+  any:
+  - already exists
+  - existing
+  - does not reserve
+  - attaches
+  - reserves nothing

@@ -9,6 +9,7 @@ search over the same in-memory records -- identical API, no numpy needed.
 from __future__ import annotations
 
 import json
+import logging
 import re
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -17,6 +18,8 @@ from typing import Dict, List, Optional
 from ..config import settings
 from .embeddings import Embedder, get_embedder
 from .registry import ARTIFACTS, ArtifactMeta
+
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -74,15 +77,46 @@ class ArtifactStore:
     # -- ingestion --------------------------------------------------------
     @staticmethod
     def _read_artifact_files(meta: ArtifactMeta) -> List[tuple[str, str]]:
-        """Return (filename, text) for each markdown file of an artifact."""
+        """Return (filename, text) for each markdown file of an artifact.
+
+        Two shapes, because the two wings genuinely have two shapes and
+        normalising them on disk would mean copying the benchmark's 706 KB of
+        grounding into a second location that then drifts:
+
+          directory   the edge artifacts, ``grounding/<id>/*.md`` (README +
+                      notebook markdown, several files per artifact)
+          single file  the chameleon corpus, one ``grounding/A*.md`` per
+                      artifact, read in place from ``settings.corpus_dir``
+
+        A file wins when ``grounding_file`` is set; otherwise the directory is
+        tried, exactly as before.
+        """
         out: List[tuple[str, str]] = []
+        single = getattr(meta, "grounding_file", None)
+        if single is not None:
+            path = Path(single)
+            if path.is_file():
+                try:
+                    return [(path.name, path.read_text(encoding="utf-8"))]
+                except OSError as exc:
+                    # Not silent: an artifact that loses its grounding drops out
+                    # of retrieval entirely, and that must be visible.
+                    log.warning("cannot read grounding for %s (%s)",
+                                meta.artifact_id, exc)
+                    return out
+            log.warning("grounding file for %s does not exist: %s",
+                        meta.artifact_id, path)
+            return out
+
         adir = meta.dir()
         if not adir.is_dir():
             return out
         for path in sorted(adir.glob("*.md")):
             try:
                 out.append((path.name, path.read_text(encoding="utf-8")))
-            except Exception:  # noqa: BLE001
+            except OSError as exc:
+                log.warning("cannot read %s for %s (%s)",
+                            path.name, meta.artifact_id, exc)
                 continue
         return out
 
@@ -97,8 +131,9 @@ class ArtifactStore:
                     )
         if not self._chunks:
             raise RuntimeError(
-                f"No artifact text found under {settings.grounding_dir}. "
-                "Check GROUNDING_DIR / that grounding/<id>/*.md exist."
+                f"No artifact text found under {settings.grounding_dir} "
+                f"or {settings.corpus_dir}. Check GROUNDING_DIR / "
+                "CHAMELEON_CORPUS_DIR and that the grounding files exist."
             )
         self._vectors = self.embedder.embed([c.text for c in self._chunks])
         self._build_faiss()

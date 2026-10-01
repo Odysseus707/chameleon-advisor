@@ -1,0 +1,89 @@
+id: CB05
+version: '1.0'
+suite: baremetal_core
+category: Safety · KVM
+axis: REASON
+prompt: On KVM@TACC I reserved a g1.h100 flavor for my lease. Write the code that launches the instance
+  so that it actually runs on the flavor I reserved.
+prompt_sha256: 312909ba9f054082ec2aaa49c14147b95beb9bc8ded1bb086245c87be22efbcf
+designed_trap: Naming the flavor literally on the server call. It boots - KVM hands out an on-demand instance
+  - so nothing errors, the reservation sits unused, and the lease is paid for hardware the instance never
+  touched.
+trap_tags:
+- unused_reservation
+- kvm_api
+target_artifact:
+- A30
+target_content_group: 47964b1dd0eb
+fed_sets:
+  blind: []
+  matched:
+  - A30
+  heldout:
+  - A31
+  - A57
+  - A84
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - add_flavor_reservation
+  - get_reserved_flavors
+  specifics:
+  - g1.h100
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+verification:
+  basis: stub_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+exec_expect:
+  site: KVM@TACC
+  flavor_reservations:
+  - flavor: g1.h100
+    amount: 1
+  lease_hours: 6
+  lease_submitted: true
+  server_image: CC-Ubuntu24.04-CUDA
+  server_flavor: g1.h100
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("KVM@TACC")
+
+  my_lease = lease.Lease("h100-lease", duration=timedelta(hours=6))
+  my_lease.add_flavor_reservation(id=chi.server.get_flavor_id("g1.h100"), amount=1)
+  my_lease.submit(idempotent=True)
+
+  # Read the flavor back OFF the lease. Passing flavor_name="g1.h100" here would
+  # boot an on-demand instance and leave the reservation idle.
+  my_server = server.Server(
+      "h100-instance",
+      image_name="CC-Ubuntu24.04-CUDA",
+      flavor_name=my_lease.get_reserved_flavors()[0].name,
+  )
+  my_server.submit(idempotent=True, show="text")
+gold_provenance: authored from artifact A30 extraction (magic_strings g1.h100, KVM@TACC; traps_illustrated
+  records the add_flavor_reservation / server.get_flavor_id grammar, and the workflow_stages server cell
+  shows flavor_name=l.get_reserved_flavors()[0].name).
+checkers:
+- check: site_correct
+  group: specifics
+  site: KVM@TACC
+- check: required_call
+  group: mechanism
+  name: add_flavor_reservation
+- check: flavor_reservation_wiring
+  group: safety
+- check: required_call
+  group: mechanism
+  name: get_reserved_flavors
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - add_device_reservation
+  - create_container

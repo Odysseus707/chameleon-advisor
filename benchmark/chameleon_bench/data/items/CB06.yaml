@@ -1,0 +1,109 @@
+id: CB06
+version: '1.0'
+suite: baremetal_core
+category: Safety · bare metal
+axis: REASON
+prompt: On CHI@TACC, reserve a compute_cascadelake node and boot CC-Ubuntu22.04 on it. Make sure the instance
+  is actually bound to the reservation.
+prompt_sha256: b6de37e6e8f56ce09eb02ec7f53b1a760f7ac43de7eb86a4b22f56909bccb24f
+designed_trap: Passing the LEASE id where a RESERVATION id is required. The two are different identifiers,
+  the call accepts either shape, and the failure surfaces only when the instance never boots.
+trap_tags:
+- reservation_wiring
+- bare_metal_api
+target_artifact:
+- A55
+target_content_group: 91f8c9385fb3
+fed_sets:
+  blind: []
+  matched:
+  - A55
+  heldout:
+  - A9
+  - A12
+  - A33
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - node_reservations
+  specifics:
+  - compute_cascadelake
+  - CC-Ubuntu22.04
+  - CHI@TACC
+api_anchor: python-chi OO generation (D01)
+verification_level: V2
+verification:
+  basis: live_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+  python_chi: 1.2.10
+  evidence: live_gold_v2_evidence_2026-09-07.md
+exec_expect:
+  site: CHI@TACC
+  node_reservations:
+  - node_type: compute_cascadelake
+    amount: 1
+  lease_hours: 3
+  lease_submitted: true
+  server_image: CC-Ubuntu22.04
+  server_bound_to_reservation: true
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@TACC")
+
+  my_lease = lease.Lease("cascadelake-lease", duration=timedelta(hours=3))
+  my_lease.add_node_reservation(amount=1, node_type="compute_cascadelake")
+  my_lease.submit(idempotent=True)
+
+  # The RESERVATION id, not the lease id. Server accepts either shape and only
+  # the reservation id actually binds the instance to the reserved hardware.
+  my_server = server.Server(
+      "cascadelake-node",
+      image_name="CC-Ubuntu22.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+gold_provenance: 'authored from artifact A55 extraction. traps_illustrated records ''reservation_id is
+  threaded from my_lease.node_reservations[0]["id"] into Server, not from the raw lease id'' - exactly
+  the trap this item tests. magic_strings gives CC-Ubuntu22.04 and CHI@TACC; compute_cascadelake is in
+  node_types_observed and present in the grounding document. RETARGETED from A21: A21''s registry lists
+  compute_cascadelake_r only because rank.py merges signals across all linked repos, and that literal
+  is absent from the grounding the model is actually fed - the item would have demanded a specific it
+  never supplied.'
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@TACC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: safety
+- check: required_code_string
+  group: specifics
+  any:
+  - node_reservations
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu22.04
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

@@ -1,0 +1,124 @@
+id: CB31
+version: '1.0'
+suite: baremetal_core
+category: Composition · bare metal
+axis: ACT
+prompt: On CHI@TACC reserve a gpu_mi100 node for 4 hours with a floating IP and boot CC-Ubuntu22.04 bound
+  to the reservation.
+prompt_sha256: 602e721adfaef00ac6e6b937ca498e88e7bb8dd016190d95abc2e4049cb955aa
+designed_trap: The AMD GPU literal lives in one artifact and the reservation grammar plus image in the
+  other. gpu_mi100 is CHI@TACC-only; naming an NVIDIA type is the cross-site error.
+trap_tags:
+- composition
+- gpu_runtime
+target_artifact:
+- A53
+- A90
+target_content_group:
+- 3b5119c79ef0
+- a47154488528
+fed_sets:
+  blind: []
+  matched:
+  - A53
+  - A90
+  heldout:
+  - A19
+  - A71
+  - A78
+  partial:
+  - A53
+partial_omits:
+- A90
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - get_node_reservation
+  - add_fip_reservation
+  specifics:
+  - gpu_mi100
+  - CC-Ubuntu22.04
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V2
+verification:
+  basis: live_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+  python_chi: 1.2.10
+  evidence: live_gold_v2_evidence_2026-09-07.md
+exec_expect:
+  site: CHI@TACC
+  node_reservations:
+  - node_type: gpu_mi100
+    amount: 1
+  lease_hours: 4
+  lease_submitted: true
+  server_image: CC-Ubuntu22.04
+  server_bound_to_reservation: true
+  fip_reservations: 1
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@TACC")
+
+  my_lease = lease.Lease("node-lease", duration=timedelta(hours=4))
+  my_lease.add_node_reservation(amount=1, node_type="gpu_mi100")
+  my_lease.add_fip_reservation(amount=1)
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "node",
+      image_name="CC-Ubuntu22.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+gold_provenance: COMPOSED. A53 supplies add_node_reservation, get_node_reservation, add_fip_reservation
+  and CC-Ubuntu22.04; A90 supplies the gpu_mi100 literal. A53 never names gpu_mi100 and A90 has no reservation
+  grammar.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@TACC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: gpu_mi100
+- check: lease_hours
+  group: specifics
+  hours: 4
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu22.04
+- check: required_call
+  group: mechanism
+  name: add_fip_reservation
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

@@ -1,0 +1,100 @@
+id: CB02
+version: '1.0'
+suite: baremetal_core
+category: Reservation · bare metal
+axis: ACT
+prompt: I need a compute_skylake node at CHI@UC for a week-long run. Reserve it and bring up a server
+  on it.
+prompt_sha256: 3f50f4b91c784692f033d607aa2520d3f3292dfb17046d64174916d044199895
+designed_trap: A 168-hour lease. Most of this corpus declares 3-hour leases, so a system that has generalised
+  "bare metal means three hours" will silently shorten the request.
+trap_tags:
+- lease_duration
+- bare_metal_api
+target_artifact:
+- A93
+target_content_group: f6593f2d72ae
+fed_sets:
+  blind: []
+  matched:
+  - A93
+  heldout:
+  - A21
+  - A24
+  - A85
+tier_intent_by_condition:
+  matched: T2
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - create_server
+  specifics:
+  - compute_skylake
+  - CHI@UC
+  adapted:
+  - hours=168
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V2
+verification:
+  basis: live_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+  python_chi: 1.2.10
+  evidence: live_gold_v2_evidence_2026-09-07.md
+exec_expect:
+  site: CHI@UC
+  node_reservations:
+  - node_type: compute_skylake
+    amount: 1
+  lease_hours: 168
+  lease_submitted: true
+  server_image: CC-Ubuntu22.04
+  server_bound_to_reservation: true
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@UC")
+
+  my_lease = lease.Lease("skylake-week", duration=timedelta(hours=168))
+  my_lease.add_node_reservation(amount=1, node_type="compute_skylake")
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "skylake-node",
+      image_name="CC-Ubuntu22.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+gold_provenance: authored from artifact A93 extraction (magic_strings compute_skylake, CHI@UC; lease_hours_declared
+  168.0; workflow_stages site/auth, lease, server).
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@UC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: compute_skylake
+- check: lease_hours
+  group: specifics
+  hours: 168
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

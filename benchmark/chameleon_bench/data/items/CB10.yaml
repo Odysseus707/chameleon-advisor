@@ -1,0 +1,126 @@
+id: CB10
+version: '1.0'
+suite: baremetal_core
+category: Composition · bare metal
+axis: ACT
+prompt: On CHI@UC, reserve one compute_cascadelake_r node for 3 hours, boot CC-Ubuntu22.04 bound to that
+  reservation, and release everything when the run ends.
+prompt_sha256: a3cc50d3cc0636a9899ff0d60b4872ac603af89da459785b8aedf38c7a154bac
+designed_trap: No single artifact holds this. The reservation-to-instance wiring and the image live in
+  one artifact; the node type and the teardown live in another.
+trap_tags:
+- composition
+- bare_metal_api
+target_artifact:
+- A21
+- A78
+target_content_group:
+- c91fa925d81d
+- edc3ad88e08b
+fed_sets:
+  blind: []
+  matched:
+  - A21
+  - A78
+  heldout:
+  - A9
+  - A12
+  - A33
+  partial:
+  - A21
+partial_omits:
+- A78
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - node_reservations
+  - delete_lease
+  specifics:
+  - compute_cascadelake_r
+  - CC-Ubuntu22.04
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+verification:
+  basis: stub_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+exec_expect:
+  site: CHI@UC
+  node_reservations:
+  - node_type: compute_cascadelake_r
+    amount: 1
+  lease_hours: 3
+  lease_submitted: true
+  server_image: CC-Ubuntu22.04
+  server_bound_to_reservation: true
+  lease_deleted: true
+  server_deleted: true
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@UC")
+
+  my_lease = lease.Lease("node-lease", duration=timedelta(hours=3))
+  my_lease.add_node_reservation(amount=1, node_type="compute_cascadelake_r")
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "node",
+      image_name="CC-Ubuntu22.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+
+  # Teardown. The lease outlives the instance unless it is deleted explicitly.
+  my_server.delete()
+  chi.lease.delete_lease(my_lease.id)
+gold_provenance: COMPOSED. A21 supplies the reservation_id wiring via node_reservations and the CC-Ubuntu22.04
+  image; it names no node type and never tears down. A78 supplies the compute_cascadelake_r literal and
+  the delete_lease teardown; it names no image. Token presence verified in each grounding document.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@UC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: compute_cascadelake_r
+- check: lease_hours
+  group: specifics
+  hours: 3
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu22.04
+- check: teardown
+  group: mechanism
+  lease: true
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

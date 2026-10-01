@@ -1,0 +1,859 @@
+# Chameleon bare-metal node capability table (chameleon wing)
+#
+# HAND-AUTHORED GROUND TRUTH, IN PART. This file is load-bearing for every
+# reservation verdict and must be declared as such in any writeup.
+#
+# WHY IT EXISTS
+# Blazar reports which hosts exist and whether they are free. It reports almost
+# nothing about what they can DO: 18 of the 29 node types below have ZERO
+# artifact coverage, so for those "correct" is defined by this file and by
+# nothing else. That is the same situation the edge wing documents for five of
+# its seven device types.
+#
+# PROVENANCE, PER FIELD. These are not the same kind of claim and must not be
+# read as if they were:
+#
+#   MEASURED   node_count, sites
+#              Read from Blazar in the 2026-09-04 capture. Blazar is
+#              authoritative for what EXISTS and what is reservable.
+#
+#   CATALOG    ram_gb, vcpus, gpu_per_node, gpu_model, accelerator
+#              Read from the Chameleon reference API
+#              (https://api.chameleoncloud.org), the testbed's own hardware
+#              catalog, on the date each row's capability_source names. It
+#              answers for 100% of the nodes at both graded sites; Blazar
+#              answered for 102 of 345 TACC hosts, which is why 17 of these
+#              rows were null and why 12 items rejected hardware for lack of
+#              data rather than lack of capability.
+#
+#              THE UNIT IS PHYSICAL CORES. vcpus = threads / 2 on x86_64 and
+#              threads / 1 on aarch64 (the Ampere part in compute_arm64 has no
+#              SMT). This conversion is the only assumption in the column.
+#              Blazar's old `vcpus` was neither cores nor threads but whatever
+#              Ironic recorded per node: compute_haswell_ib, gpu_k80, gpu_m40
+#              and gpu_p100 are all 2x Xeon E5-2670 v3, and the table used to
+#              say 24 for the first and 48 for the other three.
+#
+#              CONSERVATIVE WHERE A TYPE IS NOT ONE MACHINE. compute_gigaio is
+#              6 Intel/256 GB nodes at CHI@TACC and 8 AMD/512 GB ones at
+#              CHI@UC, and 10 of its 14 nodes carry a GPU. It reports the
+#              weaker half - 256 GB, and gpu_per_node 0 - because reserving
+#              the type can hand you any of its nodes, so the only honest
+#              scalar is what the type GUARANTEES.
+#
+#   VENDOR     cuda_compute, cuda_cores, tensor_cores, vram_gb_per_gpu
+#              Published NVIDIA/AMD/Intel specifications for the part named in
+#              gpu_model, multiplied by gpu_per_node. Not measured, not from
+#              any artifact. Because they scale with gpu_per_node, a wrong GPU
+#              count silently corrupts capability_score too - gpu_h100 was
+#              recorded with 2 GPUs and has 4.
+#
+#   capability_source, per row, names which of the two sources that row's
+#   capability came from. A number from a live catalog and a number from a
+#   hand-authored table must not sit in the same column unlabelled.
+#
+#   DERIVED    microarchitecture, architecture
+#              Read off the node_type name, which states it (compute_skylake
+#              is Skylake). accelerator is no longer derived from the name:
+#              compute_liqid is named for its composable fabric and every one
+#              of its 8 nodes carries an A100 that this table used to record
+#              as no GPU at all.
+#
+#   CORPUS     covered_by - artifacts whose grounding names this type. Empty
+#              for 18 of 29. Capability fields NEVER come from an artifact, so
+#              a wrong artifact claim cannot leak into this table.
+#
+# accelerator does the most work in the solver:
+#   none    CPU only.
+#   cuda    NVIDIA. CUDA code runs.
+#   rocm    AMD CDNA (gpu_mi100). ROCm only - CUDA code will NOT run on it.
+#           This is the accelerator-confusion trap for this wing, and it is the
+#           one an artifact-anchored system is most likely to get wrong,
+#           because "GPU" reads as "CUDA" everywhere else in the corpus.
+#   oneapi  Intel Data Center GPU Max (gpu_pontevecchio). Level Zero, not CUDA.
+#   fpga    No general-purpose compute API at all.
+#
+# SITE MATTERS. The same type name can exist at one site and not the other:
+# gpu_rtx_6000 is CHI@UC only, gpu_mi100 and gpu_p100 are CHI@TACC only. The
+# per-type `sites` map records where each one actually is, and a reservation
+# naming hardware absent from the chosen site is wrong in a way no amount of
+# waiting fixes.
+#
+# compute_haswell IS NOT GONE. It appears here with 27 hosts at CHI@TACC from
+# the 2026-09-04 capture and was reported ABSENT from live Blazar on
+# 2026-09-05, which this file previously recorded as known drift. Re-probed on
+# 2026-09-07: all 27 hosts are present and all 27 are reservable (none free -
+# the whole type was busy). The 2026-09-05 reading was transient, and the
+# absence of compute_haswell from the reference API is a gap in that catalog,
+# not corroboration. One probe is an observation, not a decommissioning.
+#
+# Its ram_gb and vcpus are null and stay null: Blazar reports 0 for all 27 and
+# the reference API does not list it, so BOTH sources are silent. Under R4 that
+# is a missing measurement, not a small machine, and it fails every minimum on
+# purpose. kvm_compute is the other row the catalog does not describe; it keeps
+# its capture values for the same reason.
+#
+# THE SYNTHETIC SNAPSHOT VARIANTS ARE A FUNCTION OF THIS FILE.
+# make_variants.py reads `accelerator` to decide which types a gpu_blackout
+# blacks out. Changing an accelerator here and not regenerating them leaves a
+# variant whose _meta still claims "every accelerator type unreservable" while
+# one of them is free - which is how correcting compute_liqid turned two
+# infeasible golds feasible for the wrong reason.
+
+version: '1.0'
+wing: chameleon
+sites:
+- CHI@UC
+- CHI@TACC
+snapshot_basis: baremetal_uc_2026-09-04 / baremetal_tacc_2026-09-04
+ranking:
+  capability_score:
+    cuda_cores: 1
+    tensor_cores: 4
+    ram_gb: 8
+    vcpus: 4
+node_types:
+  compute_arm64:
+    architecture: aarch64
+    microarchitecture: ARM Neoverse
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 32
+    vcpus: 48
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 8
+    node_count: 8
+    covered_by: []
+    notes: aarch64, not x86_64
+  compute_cascadelake:
+    architecture: x86_64
+    microarchitecture: Intel Cascade Lake
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 192
+    vcpus: 32
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 24
+    node_count: 24
+    covered_by:
+    - A7
+    - A19
+    - A26
+    - A53
+    - A55
+    - A56
+    - A68
+    - A70
+    - A71
+    - A73
+    - A78
+    - A81
+    - A95
+  compute_cascadelake_r:
+    architecture: x86_64
+    microarchitecture: Intel Cascade Lake (R)
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 192
+    vcpus: 48
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 56
+      CHI@UC: 42
+    node_count: 98
+    covered_by:
+    - A7
+    - A19
+    - A26
+    - A53
+    - A56
+    - A68
+    - A70
+    - A71
+    - A78
+    - A81
+    - A95
+  compute_gigaio:
+    architecture: x86_64
+    microarchitecture: Intel
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 256
+    vcpus: 80
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 6
+      CHI@UC: 8
+    node_count: 14
+    covered_by:
+    - A8
+    - A41
+    - A42
+    - A72
+    notes: GigaIO composable fabric
+  compute_haswell:
+    architecture: x86_64
+    microarchitecture: Intel Haswell
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: null
+    vcpus: null
+    capability_source: blazar_2026-09-04
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 27
+    node_count: 27
+    covered_by:
+    - A63
+    - A71
+  compute_haswell_ib:
+    architecture: x86_64
+    microarchitecture: Intel Haswell
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 128
+    vcpus: 24
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 17
+    node_count: 17
+    covered_by: []
+    notes: InfiniBand fabric
+  compute_icelake_r650:
+    architecture: x86_64
+    microarchitecture: Intel Ice Lake
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 256
+    vcpus: 80
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 52
+    node_count: 52
+    covered_by:
+    - A92
+    notes: Dell R650
+  compute_icelake_r750:
+    architecture: x86_64
+    microarchitecture: Intel Ice Lake
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 256
+    vcpus: 80
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 20
+    node_count: 20
+    covered_by: []
+    notes: Dell R750
+  compute_liqid:
+    architecture: x86_64
+    microarchitecture: Intel
+    accelerator: cuda
+    gpu_model: A100
+    gpu_per_node: 1
+    cuda_compute: 8.0
+    cuda_cores: 6912
+    tensor_cores: 432
+    vram_gb_per_gpu: 40
+    ram_gb: 256
+    vcpus: 128
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 8
+    node_count: 8
+    covered_by:
+    - A8
+    - A37
+    - A38
+    - A39
+    - A41
+    - A42
+    - A90
+    - A91
+    notes: Liqid composable fabric; GPUs attach dynamically
+  compute_nvdimm:
+    architecture: x86_64
+    microarchitecture: Intel
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 3840
+    vcpus: 112
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@UC: 2
+    node_count: 2
+    covered_by: []
+    notes: persistent memory (NVDIMM)
+  compute_skylake:
+    architecture: x86_64
+    microarchitecture: Intel Skylake
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 192
+    vcpus: 24
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 32
+      CHI@UC: 23
+    node_count: 55
+    covered_by:
+    - A7
+    - A23
+    - A25
+    - A53
+    - A69
+    - A71
+    - A75
+    - A93
+  compute_zen3:
+    architecture: x86_64
+    microarchitecture: AMD Zen 3
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 256
+    vcpus: 128
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 32
+    node_count: 32
+    covered_by: []
+  fpga:
+    architecture: x86_64
+    microarchitecture: Intel
+    accelerator: fpga
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 192
+    vcpus: 24
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - int8
+    sites:
+      CHI@UC: 1
+    node_count: 1
+    covered_by: []
+    notes: FPGA accelerator; no CUDA
+  gpu_a100_nvlink:
+    architecture: x86_64
+    microarchitecture: AMD/Intel
+    accelerator: cuda
+    gpu_model: A100
+    gpu_per_node: 4
+    cuda_compute: 8.0
+    cuda_cores: 27648
+    tensor_cores: 1728
+    vram_gb_per_gpu: 80
+    ram_gb: 512
+    vcpus: 128
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - fp16
+    - bf16
+    - int8
+    sites:
+      CHI@UC: 1
+    node_count: 1
+    covered_by: []
+    notes: NVLink A100
+  gpu_a100_pcie:
+    architecture: x86_64
+    microarchitecture: AMD/Intel
+    accelerator: cuda
+    gpu_model: A100
+    gpu_per_node: 4
+    cuda_compute: 8.0
+    cuda_cores: 27648
+    tensor_cores: 1728
+    vram_gb_per_gpu: 80
+    ram_gb: 512
+    vcpus: 80
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - fp16
+    - bf16
+    - int8
+    sites:
+      CHI@UC: 4
+    node_count: 4
+    covered_by: []
+    notes: PCIe A100
+  gpu_h100:
+    architecture: x86_64
+    microarchitecture: Intel
+    accelerator: cuda
+    gpu_model: H100
+    gpu_per_node: 4
+    cuda_compute: 9.0
+    cuda_cores: 67584
+    tensor_cores: 2112
+    vram_gb_per_gpu: 94
+    ram_gb: 1024
+    vcpus: 96
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - fp16
+    - bf16
+    - int8
+    sites:
+      CHI@TACC: 2
+    node_count: 2
+    covered_by: []
+  gpu_k80:
+    architecture: x86_64
+    microarchitecture: Intel Haswell
+    accelerator: cuda
+    gpu_model: K80
+    gpu_per_node: 2
+    cuda_compute: 3.7
+    cuda_cores: 4992
+    tensor_cores: 0
+    vram_gb_per_gpu: 12
+    ram_gb: 128
+    vcpus: 24
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 2
+    node_count: 2
+    covered_by: []
+  gpu_m40:
+    architecture: x86_64
+    microarchitecture: Intel Haswell
+    accelerator: cuda
+    gpu_model: M40
+    gpu_per_node: 1
+    cuda_compute: 5.2
+    cuda_cores: 3072
+    tensor_cores: 0
+    vram_gb_per_gpu: 24
+    ram_gb: 128
+    vcpus: 24
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 2
+    node_count: 2
+    covered_by: []
+  gpu_mi100:
+    architecture: x86_64
+    microarchitecture: AMD
+    accelerator: rocm
+    gpu_model: MI100
+    gpu_per_node: 2
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: 32
+    ram_gb: 256
+    vcpus: 128
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - fp16
+    - bf16
+    - int8
+    sites:
+      CHI@TACC: 8
+    node_count: 8
+    covered_by:
+    - A15
+    - A34
+    - A37
+    - A38
+    - A39
+    - A90
+    - A91
+    notes: AMD CDNA. ROCm only - CUDA code will NOT run.
+  gpu_p100:
+    architecture: x86_64
+    microarchitecture: Intel Haswell
+    accelerator: cuda
+    gpu_model: P100
+    gpu_per_node: 2
+    cuda_compute: 6.0
+    cuda_cores: 7168
+    tensor_cores: 0
+    vram_gb_per_gpu: 16
+    ram_gb: 128
+    vcpus: 24
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - fp16
+    - int8
+    sites:
+      CHI@TACC: 15
+    node_count: 15
+    covered_by:
+    - A36
+    - A52
+    - A87
+  gpu_p100_nvlink:
+    architecture: x86_64
+    microarchitecture: Intel Haswell
+    accelerator: cuda
+    gpu_model: P100
+    gpu_per_node: 2
+    cuda_compute: 6.0
+    cuda_cores: 7168
+    tensor_cores: 0
+    vram_gb_per_gpu: 16
+    ram_gb: 128
+    vcpus: 28
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - fp16
+    - int8
+    sites:
+      CHI@TACC: 4
+    node_count: 4
+    covered_by: []
+    notes: NVLink interconnect
+  gpu_p100_v100:
+    architecture: x86_64
+    microarchitecture: Intel
+    accelerator: cuda
+    gpu_model: V100
+    gpu_per_node: 2
+    cuda_compute: 7.0
+    cuda_cores: 10240
+    tensor_cores: 1280
+    vram_gb_per_gpu: 16
+    ram_gb: 128
+    vcpus: 24
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - fp16
+    - int8
+    sites:
+      CHI@TACC: 1
+    node_count: 1
+    covered_by: []
+    notes: mixed P100/V100 host
+  gpu_pontevecchio:
+    architecture: x86_64
+    microarchitecture: Intel
+    accelerator: oneapi
+    gpu_model: Ponte Vecchio
+    gpu_per_node: 4
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: 128
+    ram_gb: 1024
+    vcpus: 96
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - fp16
+    - bf16
+    - int8
+    sites:
+      CHI@TACC: 2
+    node_count: 2
+    covered_by: []
+    notes: Intel Data Center GPU Max. oneAPI/Level Zero, not CUDA.
+  gpu_rtx_6000:
+    architecture: x86_64
+    microarchitecture: Intel Cascade Lake
+    accelerator: cuda
+    gpu_model: RTX 6000
+    gpu_per_node: 1
+    cuda_compute: 7.5
+    cuda_cores: 4608
+    tensor_cores: 576
+    vram_gb_per_gpu: 24
+    ram_gb: 192
+    vcpus: 24
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - fp16
+    - int8
+    sites:
+      CHI@UC: 37
+    node_count: 37
+    covered_by:
+    - A12
+    - A14
+    - A15
+    - A49
+    - A60
+    - A61
+    - A62
+    - A74
+    - A76
+    - A77
+    - A79
+    - A88
+  gpu_v100:
+    architecture: x86_64
+    microarchitecture: Intel
+    accelerator: cuda
+    gpu_model: V100
+    gpu_per_node: 4
+    cuda_compute: 7.0
+    cuda_cores: 20480
+    tensor_cores: 2560
+    vram_gb_per_gpu: 32
+    ram_gb: 128
+    vcpus: 40
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - fp16
+    - int8
+    sites:
+      CHI@UC: 4
+    node_count: 4
+    covered_by: []
+  kvm_compute:
+    architecture: x86_64
+    microarchitecture: Intel
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 110
+    vcpus: 48
+    capability_source: blazar_2026-09-04
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 5
+    node_count: 5
+    covered_by: []
+    notes: hypervisor host, not user-reservable as bare metal
+  storage:
+    architecture: x86_64
+    microarchitecture: Intel Haswell
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 64
+    vcpus: 20
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 20
+    node_count: 20
+    covered_by:
+    - A9
+    - A10
+    - A15
+    - A18
+    - A23
+    - A24
+    - A33
+    - A34
+    - A35
+    - A37
+    - A38
+    - A39
+    - A40
+    - A43
+    - A44
+    - A45
+    - A47
+    - A52
+    - A57
+    - A59
+    - A60
+    - A61
+    - A71
+    - A76
+    - A77
+    - A79
+    - A81
+    - A84
+    - A85
+    - A90
+    - A91
+    - A94
+    notes: large local disk
+  storage_hierarchy:
+    architecture: x86_64
+    microarchitecture: Intel
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 512
+    vcpus: 24
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@TACC: 2
+    node_count: 2
+    covered_by: []
+    notes: tiered storage
+  storage_nvme:
+    architecture: x86_64
+    microarchitecture: Intel
+    accelerator: none
+    gpu_model: null
+    gpu_per_node: 0
+    cuda_compute: null
+    cuda_cores: 0
+    tensor_cores: 0
+    vram_gb_per_gpu: null
+    ram_gb: 256
+    vcpus: 48
+    capability_source: reference_api_2026-09-07
+    precisions:
+    - fp64
+    - fp32
+    - int8
+    sites:
+      CHI@UC: 10
+    node_count: 10
+    covered_by: []
+    notes: NVMe local storage

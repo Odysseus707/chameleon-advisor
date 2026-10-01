@@ -1,0 +1,87 @@
+id: CB39
+version: '1.0'
+suite: baremetal_core
+category: Abstention
+axis: REASON
+prompt: Show me the python-chi calls that create the instances for a Kubernetes cluster on KVM@TACC.
+prompt_sha256: 56c4a75ea9b7fc3a5ab5382c463e0fd25e4beaba4ae21e4b7c1ea5f9bacf04de
+designed_trap: python-chi does not create them. At the KVM site instances are created through an openstacksdk
+  connection - the documented escape hatch for what python-chi does not wrap - and python-chi is used
+  only to establish context. A plausible Server(...) block is exactly what a lookup system will supply.
+trap_tags:
+- absent_capability
+- confident_invention
+target_artifact:
+- A18
+target_content_group: 5496d73abae1
+fed_sets:
+  blind: []
+  matched:
+  - A18
+  heldout:
+  - A11
+  - A34
+  - A66
+tier_intent_by_condition:
+  matched: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - get_node_types
+  specifics:
+  - openstacksdk
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+expected_answer_type: text
+gold_spec: |
+  python-chi does not create them. At the KVM site it is used only to establish
+  context - version, project and site - and the instances themselves are created
+  through an openstacksdk connection, which is the documented escape hatch for what
+  python-chi does not wrap.
+
+  No lease is involved either: the KVM site does not require one for these instances,
+  so there is no reservation to bind them to. Quoting a python-chi Server(...) call
+  here would be inventing an API path that is not the one used.
+
+  To establish context and see the site:
+
+  ```python
+  import chi
+  from chi import hardware
+
+  chi.use_site("KVM@TACC")
+  print(hardware.get_node_types())
+  ```
+gold_provenance: Restated standalone (deictic repair). Grounded in A18 traps_illustrated - 'python-chi
+  is used only for context; instances are created through an openstacksdk connection, which is the documented
+  escape hatch' - and A18 not_covered, 'No lease is created at all, since the KVM site does not require
+  one for these instances.'
+checkers:
+- check: abstain_or_discover
+  group: mechanism
+  discovery_calls:
+  - get_nodes
+  - get_node_types
+  - get_flavor_id
+  discovery_strings: []
+  abstain_patterns:
+  - \b(there is|there's) no\s+(such\s+)?(code|call|reservation|lease|image|node[_ ]type|step|way)\b
+  - \b(does|do) not\s+(create|reserve|launch|boot|require|pass|name|provision)\b
+  - \byou (cannot|can'?t)\b
+  - \breserves nothing\b
+  - \bno (particular|specific) (one|type|image)\b
+  - \bnot (pinned|determined|guaranteed|passed|documented)\b
+  - \bcannot (tell|infer|know|determine)\b
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - add_flavor_reservation
+  - add_device_reservation
+  - create_container
+  - Container
+- check: required_text_string
+  group: specifics
+  any:
+  - openstacksdk
+  - escape hatch

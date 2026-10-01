@@ -1,0 +1,141 @@
+id: CB18
+version: '1.0'
+suite: baremetal_core
+category: Composition · full lifecycle
+axis: ACT
+prompt: At CHI@UC, reserve a compute_cascadelake_r node for 4 hours with a floating IP, boot CC-Ubuntu22.04
+  bound to the reservation, attach the IP, then release everything.
+prompt_sha256: b46eb449dd376d50dc4d941b8a3f0ed0a3a82297ebbd37d6e62c8216e40c0da3
+designed_trap: 'A full lifecycle assembled from two halves: one artifact reserves and wires but never
+  tears down; the other tears down but names neither the node type nor the image.'
+trap_tags:
+- composition
+- networking
+- bare_metal_api
+target_artifact:
+- A56
+- A60
+target_content_group:
+- 5b06d2f42603
+- cf753d3f1f7e
+fed_sets:
+  blind: []
+  matched:
+  - A56
+  - A60
+  heldout:
+  - A9
+  - A33
+  - A72
+  partial:
+  - A56
+partial_omits:
+- A60
+tier_intent_by_condition:
+  matched: T3
+  partial: T4
+  heldout: T4
+key_tokens:
+  mechanism:
+  - add_node_reservation
+  - node_reservations
+  - add_fip_reservation
+  - delete_lease
+  specifics:
+  - compute_cascadelake_r
+  - CC-Ubuntu22.04
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+verification:
+  basis: stub_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+exec_expect:
+  site: CHI@UC
+  node_reservations:
+  - node_type: compute_cascadelake_r
+    amount: 1
+  lease_hours: 4
+  lease_submitted: true
+  server_image: CC-Ubuntu22.04
+  server_bound_to_reservation: true
+  lease_deleted: true
+  server_deleted: true
+  fip_reservations: 1
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("CHI@UC")
+
+  my_lease = lease.Lease("node-lease", duration=timedelta(hours=4))
+  my_lease.add_node_reservation(amount=1, node_type="compute_cascadelake_r")
+  my_lease.add_fip_reservation(amount=1)
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "node",
+      image_name="CC-Ubuntu22.04",
+      reservation_id=my_lease.node_reservations[0]["id"],
+  )
+  my_server.submit(idempotent=True, show="text")
+
+  # The floating IP THIS lease reserved. associate_floating_ip() with no
+  # argument calls get_free_floating_ip(), which returns the first unallocated
+  # floating IP in the PROJECT - not the one reserved here - so in a shared
+  # project it can bind an address another lease is holding, and fails as
+  # "None of the ports can route to floating ip ...", which names neither cause.
+  reserved_fip = my_lease.get_reserved_floating_ips()[0]
+  fip = my_server.associate_floating_ip(reserved_fip)
+  print(fip)
+
+  my_server.delete()
+  chi.lease.delete_lease(my_lease.id)
+gold_provenance: COMPOSED. A56 supplies compute_cascadelake_r, CC-Ubuntu22.04, node_reservations wiring
+  and add_fip_reservation but never deletes a lease. A60 supplies delete_lease and get_node_reservation
+  but names neither literal.
+checkers:
+- check: site_correct
+  group: specifics
+  site: CHI@UC
+- check: required_call
+  group: mechanism
+  name: add_node_reservation
+- check: kwarg
+  group: specifics
+  call:
+  - add_node_reservation
+  arg:
+  - node_type
+  equals: compute_cascadelake_r
+- check: lease_hours
+  group: specifics
+  hours: 4
+- check: server_call
+  group: mechanism
+- check: node_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu22.04
+- check: required_call
+  group: mechanism
+  name: add_fip_reservation
+- check: teardown
+  group: mechanism
+  lease: true
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_device_reservation
+  - create_container
+  - Container
+  - add_flavor_reservation

@@ -1,0 +1,98 @@
+id: CB03
+version: '1.0'
+suite: baremetal_core
+category: Reservation · KVM
+axis: ACT
+prompt: On KVM@TACC, reserve an m1.xlarge flavor for 8 hours and launch an instance on the reserved flavor.
+prompt_sha256: 89ecc23ba8674f08f4504c99e39bb9312223f28688e61aa497212b4d779c4006
+designed_trap: Bare-metal grammar on the virtual-machine cloud. KVM@TACC reserves FLAVORS, not node types;
+  add_node_reservation has nothing to bind to there.
+trap_tags:
+- bare_metal_api
+- kvm_api
+target_artifact:
+- A17
+target_content_group: 1a033c47a506
+fed_sets:
+  blind: []
+  matched:
+  - A17
+  heldout:
+  - A37
+  - A61
+  - A90
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - add_flavor_reservation
+  - get_flavor_id
+  specifics:
+  - m1.xlarge
+  - KVM@TACC
+api_anchor: python-chi OO generation (D01); imperative accepted at full credit iff trap-free
+verification_level: V0
+verification:
+  basis: stub_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+exec_expect:
+  site: KVM@TACC
+  flavor_reservations:
+  - flavor: m1.xlarge
+    amount: 1
+  lease_hours: 8
+  lease_submitted: true
+  server_image: CC-Ubuntu24.04
+  server_flavor: m1.xlarge
+expected_answer_type: code
+gold_spec: |
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("KVM@TACC")
+
+  my_lease = lease.Lease("kvm-xlarge-8h", duration=timedelta(hours=8))
+  my_lease.add_flavor_reservation(id=chi.server.get_flavor_id("m1.xlarge"), amount=1)
+  my_lease.submit(idempotent=True)
+
+  my_server = server.Server(
+      "kvm-xlarge",
+      image_name="CC-Ubuntu24.04",
+      flavor_name=my_lease.get_reserved_flavors()[0].name,
+  )
+  my_server.submit(idempotent=True, show="text")
+gold_provenance: authored from artifact A17 extraction (magic_strings KVM@TACC, m1.xlarge; traps_illustrated
+  records the add_flavor_reservation / get_flavor_id grammar and submit(idempotent=True)). Server launch
+  shape from the same wing's A30/A57/A94, which show get_reserved_flavors()[0].name.
+checkers:
+- check: site_correct
+  group: specifics
+  site: KVM@TACC
+- check: required_call
+  group: mechanism
+  any:
+  - Lease
+  - create_lease
+- check: required_call
+  group: mechanism
+  name: add_flavor_reservation
+- check: required_call
+  group: mechanism
+  name: get_flavor_id
+- check: required_code_string
+  group: specifics
+  s: m1.xlarge
+- check: lease_hours
+  group: specifics
+  hours: 8
+- check: flavor_reservation_wiring
+  group: mechanism
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - add_device_reservation
+  - create_container
+  - Container

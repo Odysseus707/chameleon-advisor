@@ -1,0 +1,100 @@
+id: CB04
+version: '1.0'
+suite: baremetal_core
+category: GPU / KVM
+axis: ACT
+prompt: I want a GPU virtual machine on Chameleon's KVM cloud running a CUDA-ready Ubuntu image. Reserve
+  the flavor and launch the instance.
+prompt_sha256: 9dd2f3c701b5275df532f38a26d3747614e988dfa008b9ccedbd4cebbe3cb2b0
+designed_trap: The image string. CC-Ubuntu24.04-CUDA is the CUDA-ready image; a plain CC-Ubuntu24.04 boots
+  fine and has no driver, so the failure surfaces only when the workload runs.
+trap_tags:
+- gpu_runtime
+- kvm_api
+target_artifact:
+- A94
+target_content_group: 77500c984c60
+fed_sets:
+  blind: []
+  matched:
+  - A94
+  heldout:
+  - A7
+  - A10
+  - A37
+tier_intent_by_condition:
+  matched: T1
+key_tokens:
+  mechanism:
+  - add_flavor_reservation
+  - get_reserved_flavors
+  specifics:
+  - CC-Ubuntu24.04-CUDA
+  - KVM@TACC
+api_anchor: python-chi OO generation (D01)
+verification_level: V0
+verification:
+  basis: stub_execution
+  probe_utc: '2026-09-07T12:09:17.430891+00:00'
+exec_expect:
+  site: KVM@TACC
+  flavor_reservations:
+  - flavor: g1.h100
+    amount: 1
+  lease_hours: 4
+  lease_submitted: true
+  server_image: CC-Ubuntu24.04-CUDA
+  server_flavor: g1.h100
+expected_answer_type: code
+gold_spec: |
+  import os
+  from datetime import timedelta
+
+  import chi
+  from chi import lease, server
+
+  chi.use_site("KVM@TACC")
+
+  my_lease = lease.Lease(f"{os.getenv('USER')}-gpu-lease", duration=timedelta(hours=4))
+  my_lease.add_flavor_reservation(id=chi.server.get_flavor_id("g1.h100"), amount=1)
+  my_lease.submit(idempotent=True)
+
+  reserved_flavor = my_lease.get_reserved_flavors().pop()
+
+  my_server = server.Server(
+      f"{os.getenv('USER')}-gpu-instance",
+      flavor_name=reserved_flavor.name,
+      image_name="CC-Ubuntu24.04-CUDA",
+  )
+  my_server.submit(idempotent=True, show="text")
+gold_provenance: authored from artifact A94 extraction (magic_strings CC-Ubuntu24.04-CUDA, KVM@TACC; traps_illustrated
+  records reserving the flavor then reading it back with get_reserved_flavors().pop(), and pinning the
+  site with use_site rather than choose_site). The g1.h100 flavor literal is grounded in A30's magic_strings.
+checkers:
+- check: site_correct
+  group: specifics
+  site: KVM@TACC
+- check: required_call
+  group: mechanism
+  name: add_flavor_reservation
+- check: required_call
+  group: mechanism
+  name: get_reserved_flavors
+- check: flavor_reservation_wiring
+  group: mechanism
+- check: kwarg
+  group: specifics
+  call:
+  - Server
+  - create_server
+  arg:
+  - image_name
+  - image
+  equals: CC-Ubuntu24.04-CUDA
+- check: forbidden_calls
+  group: safety
+  names:
+  - add_node_reservation
+  - add_device_reservation
+  - create_container
+  - Container
